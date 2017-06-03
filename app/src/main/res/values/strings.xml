@@ -1,4 +1,23 @@
 <resources>
-    <string name="app_name">DroidFlatAuction</string>
     <string name="action_settings">Settings</string>
+    <string name="app_name">RoomAuction</string>
+    <string name="non_member_home_welcome_note">Welcome to RoomAuction!</string>
+    <string name="non_member_home_paragraph">Create an account and sign in to bid for your
+favourite properties, receive email alerts for new results and much more.</string>
+    <string name="footer_note">Room Auction UK 2017</string>
+    <!-- sign in -->
+    <string name="sign_in_welcome_note">Welcome Back!</string>
+    <string name="sign_in_paragraph">It is great to see you again. We hope your search is going well.</string>
+    <string name="sign_up_create_password_paragraph">Your password must be 8 or more characters long.
+        Do not use any common passwords, repetition or sequences. Try making is longer or adding symbols
+        like !, # or %.</string>
+    <string name="sign_up_joining_top_paragraph">Whether its your first time using RoomAuction or you are
+    one of our original bidders, please commit to respecting and including everyone in the  RoomAuction Community.</string>
+    <string name="sign_up_joining_bottom_paragraph">I agree to treat everyone in the RoomAuction community - regardless
+        of their race, religion, national origin, ethnicuty, disability, sex, gender, identity, sexual orientation or age
+        - with respect and without judgement or bias.</string>
+    <string name="title_activity_member_dashboard">MemberDashboard</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
