@@ -86,6 +86,18 @@
         <activity
             android:name=".MemberDashboard"
             android:label="@string/title_activity_member_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ProfileDashboard"
+            android:label="@string/title_activity_profile_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".UserProfile"
+            android:label="@string/title_activity_user_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".EditUserProfile"
+            android:label="@string/title_activity_edit_user_profile"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

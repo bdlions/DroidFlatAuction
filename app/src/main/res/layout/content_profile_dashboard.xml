@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="50dp"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="auction.org.droidflatauction.ProfileDashboard"
+    tools:showIn="@layout/app_bar_profile_dashboard">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Profile"
+        android:textColor="#2874b9"
+        android:textSize="14dp"
+        android:textStyle="bold" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#ff9711" />
+    <Button
+        android:id="@+id/user_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_centerVertical="false"
+        android:text="User Profile"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+    <Button
+        android:id="@+id/edit_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="Edit Profile"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+    <Button
+        android:id="@+id/profile_verification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="Profile Verification"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+</LinearLayout>

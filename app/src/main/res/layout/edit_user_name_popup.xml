@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+        android:text="First Name"
+        android:textSize="16dp"
+        android:textColor="#5a5a5a"/>
+    <EditText
+        android:id="@+id/user_first_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:textColor="#5a5a5a"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textSize="16dp"
+        android:gravity="left"
+        android:text="Last Name"
+        android:textColor="#5a5a5a"/>
+    <EditText
+        android:id="@+id/user_last_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:textColor="#5a5a5a"/>
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:stretchColumns="0,1">
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+          <Button
+              android:id="@+id/user_name_edit_cancel_button"
+              android:layout_width="wrap_content"
+              android:layout_height="30dp"
+              android:layout_marginRight="20dp"
+              android:gravity="center"
+              android:text="Cancel"
+              android:textColor="#fff"
+              android:textAllCaps="false"
+              android:textSize="16dp"
+              android:background="@drawable/custom_round_corner_orange_button"/>
+            <Button
+                android:id="@+id/user_name_edit_submit_button"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="Submit"
+                android:textColor="#fff"
+                android:textAllCaps="false"
+                android:textSize="16dp"
+                android:background="@drawable/custom_round_corner_blue_button"/>
+        </TableRow>
+    </TableLayout>
+
+
+</LinearLayout>

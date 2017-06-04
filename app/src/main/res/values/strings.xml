@@ -16,8 +16,11 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="sign_up_joining_bottom_paragraph">I agree to treat everyone in the RoomAuction community - regardless
         of their race, religion, national origin, ethnicuty, disability, sex, gender, identity, sexual orientation or age
         - with respect and without judgement or bias.</string>
-    <string name="title_activity_member_dashboard">MemberDashboard</string>
+    <string name="title_activity_member_dashboard">RoomAuction</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="title_activity_profile_dashboard">RoomAuction</string>
+    <string name="title_activity_user_profile">RoomAuction</string>
+    <string name="title_activity_edit_user_profile">RoomAuction</string>
 </resources>

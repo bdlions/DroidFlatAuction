@@ -6,7 +6,7 @@ import com.auction.util.REQUEST_TYPE;
 import org.bdlions.transport.packet.IPacketHeader;
 
 /**
- * Created by alamgir on 5/18/2017.
+ * Created by alamgir on account_setting/18/2017.
  */
 public class PacketHeaderImpl implements IPacketHeader{
     private ACTION action = ACTION.SIGN_IN;
