@@ -7,6 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+
+import org.auction.udp.BackgroundWork;
+import org.bdlions.client.reqeust.threads.IServerCallback;
+import org.bdlions.transport.packet.*;
+
 public class SignIn extends AppCompatActivity {
     private  static ImageButton login_ib_back_arrow;
     private  static Button login_btn;
@@ -36,6 +43,21 @@ public class SignIn extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.SIGN_IN);
+                        packetHeader.setRequestType(REQUEST_TYPE.AUTH);
+                        new BackgroundWork().execute(packetHeader, "{\"userName\": \"" + "bdlions@gmail.com" + "\", \"password\": \"" + "password" + "\"}", new IServerCallback() {
+                            @Override
+                            public void timeout(String s) {
+                                System.out.println(s);
+                            }
+
+                            @Override
+                            public void resultHandler(IPacketHeader iPacketHeader, String s) {
+                                System.out.println(s);
+                            }
+                        });
+
                         Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
                         startActivity(login_intent);
                     }
