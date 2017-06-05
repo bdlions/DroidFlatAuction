@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+
 public class SignUpStep1 extends AppCompatActivity {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     @Override
@@ -15,6 +16,7 @@ public class SignUpStep1 extends AppCompatActivity {
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
+
     }
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton)findViewById(R.id.sing_up_step1_back_arrow);
@@ -40,4 +42,5 @@ public class SignUpStep1 extends AppCompatActivity {
                 }
         );
     }
+
 }

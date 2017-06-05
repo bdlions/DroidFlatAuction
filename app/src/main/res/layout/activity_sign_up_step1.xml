@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/scrollview"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent"
+    android:isScrollContainer="true">
+<LinearLayout
+    android:id="@+id/signup_name"
     android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:padding="0dp"
+    android:stretchColumns="*"
     android:orientation="vertical"
     android:background="#fff"
     tools:context="auction.org.droidflatauction.SignUpStep1">
@@ -42,6 +50,7 @@
         android:id="@+id/sign_up_first_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"/>
     <TextView
@@ -60,6 +69,7 @@
         android:id="@+id/sign_up_last_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="text"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"/>
     <LinearLayout
@@ -88,3 +98,4 @@
             android:textStyle="bold"/>
     </LinearLayout>
 </LinearLayout>
+</ScrollView>
