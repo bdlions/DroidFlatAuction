@@ -3,6 +3,7 @@
     package="auction.org.droidflatauction">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -99,6 +100,58 @@
         <activity
             android:name=".EditUserProfile"
             android:label="@string/title_activity_edit_user_profile"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertDashboard"
+            android:label="@string/title_activity_manage_advert_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MessageDashboard"
+            android:label="@string/title_activity_message_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AccountSettingsDashboard"
+            android:label="@string/title_activity_account_settings_dashboard"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MemberPropertySearch"
+            android:label="@string/title_activity_member_property_search"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep1"
+            android:label="@string/title_activity_create_advert_step1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyAdvertStep1"
+            android:label="@string/title_activity_my_advert_step1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SavedAdvertStep1"
+            android:label="@string/title_activity_saved_advert_step1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertAccountSettingsStep1"
+            android:label="@string/title_activity_manage_advert_account_settings_step1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertIndividualAdBidsStep1"
+            android:label="@string/title_activity_manage_advert_individual_ad_bids_step1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertStats"
+            android:label="@string/title_activity_manage_advert_stats"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertRanking"
+            android:label="@string/title_activity_manage_advert_ranking"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertFAQ"
+            android:label="@string/title_activity_manage_advert_faq"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep2"
+            android:label="@string/title_activity_create_advert_step2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

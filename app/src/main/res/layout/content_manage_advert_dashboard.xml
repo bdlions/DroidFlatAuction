@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fff"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="auction.org.droidflatauction.ManageAdvertDashboard"
+    tools:showIn="@layout/app_bar_manage_advert_dashboard">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Manage Advert"
+        android:textColor="#2874b9"
+        android:textSize="14dp"
+        android:textStyle="bold" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#ff9711" />
+    <Button
+        android:id="@+id/create_advert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="Create Ads"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+    <Button
+        android:id="@+id/my_advert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="My Ads"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+    <Button
+        android:id="@+id/saved_advert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="Saved Ads"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+        <Button
+            android:id="@+id/account_settings_advert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="false"
+            android:text="Account Settings"
+            android:background="@drawable/button_pressed"
+            android:textColor="#fff"
+            android:textSize="12dp"/>
+        <Button
+            android:id="@+id/individual_ad_bid"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="false"
+            android:text="Individual Ad Bid"
+            android:background="@drawable/button_pressed"
+            android:textColor="#fff"
+            android:textSize="12dp"/>
+        <Button
+            android:id="@+id/stats_advert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="false"
+            android:text="Stats"
+            android:background="@drawable/button_pressed"
+            android:textColor="#fff"
+            android:textSize="12dp"/>
+        <Button
+            android:id="@+id/ranking_advert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="false"
+            android:text="Ranking"
+            android:background="@drawable/button_pressed"
+            android:textColor="#fff"
+            android:textSize="12dp"/>
+        <Button
+            android:id="@+id/faq_advert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_centerVertical="false"
+            android:text="FAQ"
+            android:background="@drawable/button_pressed"
+            android:textColor="#fff"
+            android:textSize="12dp"/>
+</LinearLayout>
+</LinearLayout>

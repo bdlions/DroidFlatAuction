@@ -8,14 +8,14 @@
     android:orientation="vertical"
     android:background="#fff"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="auction.org.droidflatauction.EditUserProfile"
-    tools:showIn="@layout/app_bar_edit_user_profile">
+    tools:context="auction.org.droidflatauction.CreateAdvertStep1"
+    tools:showIn="@layout/app_bar_create_advert_step1">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <ImageButton
-            android:id="@+id/user_edit_profile_back_arrow"
+            android:id="@+id/create_advert_step1_back_arrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
@@ -27,11 +27,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginLeft="5dp"
-            android:text="Edit Profile"
+            android:text="Step 1"
             android:textColor="#5a5a5a"
             android:textSize="16dp"
             android:textStyle="normal" />
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,104 +41,101 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="5dp"
-            android:text="Profile Image"
+            android:text="I have for rent"
             android:textColor="#2874b9"
             android:textSize="16dp"
             android:textStyle="bold" />
-        <ImageView
-            android:id="@+id/user_photo"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/i_have_for_rent_spinner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
-           android:src="@drawable/user"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="5dp"
-            android:text="User"
-            android:textColor="#2874b9"
             android:textSize="16dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/user_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-10dp"
-            android:layout_marginLeft="5dp"
-            android:text="Nazmul Hasan"
             android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:background="@null"
-            android:textAllCaps="false"
-            android:textStyle="normal"
-            />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="5dp"
-            android:text="Email"
-            android:textColor="#2874b9"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/user_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-10dp"
-            android:layout_marginLeft="5dp"
-            android:text="bdlions@gmail.com"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:background="@null"
-            android:textAllCaps="false"
             android:textStyle="normal" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="5dp"
-            android:text="Password"
-            android:textColor="#2874b9"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/user_password"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-10dp"
-            android:layout_marginLeft="5dp"
-            android:inputType="textPassword"
-            android:text="+8801234512345"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:background="@null"
-            android:textAllCaps="false"
-            android:textStyle="normal" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="5dp"
-            android:text="Cell"
-            android:textColor="#2874b9"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/user_cell"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-10dp"
-            android:layout_marginLeft="5dp"
-            android:text="+8801234512345"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:background="@null"
-            android:textAllCaps="false"
-            android:textStyle="normal" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="#ff9711" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:text="Size of property"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <Spinner
+            android:id="@+id/size_of_property_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="16dp"
+            android:textColor="#5a5a5a"
+            android:textStyle="normal" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="#ff9711" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:text="Type of property"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <Spinner
+            android:id="@+id/type_of_property_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:textSize="16dp"
+            android:textColor="#5a5a5a"
+            android:textStyle="normal" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="2dp"
+            android:background="#ff9711" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:gravity="bottom"
+        android:orientation="vertical">
+        <ImageButton
+            android:id="@+id/create_advert_step1_forward_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/forward_arrow"
+            android:background="#fff"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_gravity="center_horizontal|center"
+            android:gravity="center_horizontal|center"
+            android:text="@string/footer_note"
+            android:background="#2874b9"
+            android:textColor="#fff"
+            android:textStyle="bold"/>
     </LinearLayout>
 </LinearLayout>

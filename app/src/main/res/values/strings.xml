@@ -23,4 +23,42 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_profile_dashboard">RoomAuction</string>
     <string name="title_activity_user_profile">RoomAuction</string>
     <string name="title_activity_edit_user_profile">RoomAuction</string>
+    <string name="title_activity_manage_advert_dashboard">RoomAuction</string>
+    <string name="title_activity_message_dashboard">RoomAuction</string>
+    <string name="title_activity_account_settings_dashboard">RoomAuction</string>
+    <string name="title_activity_member_property_search">RoomAuction</string>
+    <string name="title_activity_create_advert_step1">RoomAuction</string>
+    <string name="title_activity_create_advert_step2">RoomAuction</string>
+    <string name="title_activity_my_advert_step1">RoomAuction</string>
+    <string name="title_activity_saved_advert_step1">RoomAuction</string>
+    <string name="title_activity_manage_advert_account_settings_step1">RoomAuction</string>
+    <string name="title_activity_manage_advert_individual_ad_bids">RoomAuction</string>
+    <string name="title_activity_manage_advert_individual_ad_bids_step1"> RoomAuction </string>
+    <string name="title_activity_manage_advert_stats">RoomAuction</string>
+    <string name="title_activity_manage_advert_ranking">RoomAuction</string>
+    <string name="title_activity_manage_advert_faq">RoomAuction</string>
+
+    <string-array name="i_have_for_rent_spinner_options">
+        <item>1 Room</item>
+        <item>2 Rooms</item>
+        <item>3 Rooms</item>
+        <item>4 Rooms</item>
+        <item>5 Rooms</item>
+        <item>6 Rooms</item>
+    </string-array>
+
+    <string-array name="size_of_property_spinner_options">
+        <item>1 Bed</item>
+        <item>2 Beds</item>
+        <item>3 Beds</item>
+        <item>4 Beds</item>
+        <item>5 Beds</item>
+    </string-array>
+
+    <string-array name="type_of_property_spinner_options">
+        <item>Flat/Apartment</item>
+        <item>Options 2</item>
+        <item>Options 3</item>
+    </string-array>
+
 </resources>

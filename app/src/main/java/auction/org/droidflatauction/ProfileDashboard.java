@@ -105,17 +105,21 @@ public class ProfileDashboard extends AppCompatActivity
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
-
+            Intent member_manage_advert_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+            startActivity(member_manage_advert_intent);
         } else if (id == R.id.nav_message) {
-
+            Intent member_message_intent = new Intent(getBaseContext(), MessageDashboard.class);
+            startActivity(member_message_intent);
         } else if (id == R.id.nav_profile) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), ProfileDashboard.class);
             startActivity(member_bashboard_intent);
 
         }else if (id == R.id.nav_account_settings) {
-
+            Intent member_account_settings_intent = new Intent(getBaseContext(), AccountSettingsDashboard.class);
+            startActivity(member_account_settings_intent);
         }else if (id == R.id.nav_search) {
-
+            Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
+            startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

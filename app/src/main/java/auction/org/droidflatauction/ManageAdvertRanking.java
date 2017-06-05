@@ -13,23 +13,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.LinearLayout;
 
-public class MemberDashboard extends AppCompatActivity
+public class ManageAdvertRanking extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static LinearLayout manage_advert_layout, message_layout, profile_layout, account_settings_layout, property_search_layout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_dashboard);
+        setContentView(R.layout.activity_manage_advert_ranking);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        onClickButtonManageAdvertDashboardListener();
-        onClickButtonMessageDashboardListener();
-        onClickButtonProfileDashboardListener();
-        onClickButtonAccountSettingsDashboardListener();
-        onClickButtonPropertySearchListener();
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -39,71 +34,6 @@ public class MemberDashboard extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    public void onClickButtonManageAdvertDashboardListener(){
-        manage_advert_layout = (LinearLayout) findViewById(R.id.manage_advert);
-        manage_advert_layout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent manage_advert_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                        startActivity(manage_advert_intent);
-                    }
-                }
-        );
-    }
-
-    public void onClickButtonMessageDashboardListener(){
-        message_layout = (LinearLayout) findViewById(R.id.message);
-        message_layout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent message_intent = new Intent(getBaseContext(), MessageDashboard.class);
-                        startActivity(message_intent);
-                    }
-                }
-        );
-    }
-
-    public void onClickButtonProfileDashboardListener(){
-        profile_layout = (LinearLayout) findViewById(R.id.profile);
-        profile_layout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent profile_dashboard_intent = new Intent(getBaseContext(), ProfileDashboard.class);
-                        startActivity(profile_dashboard_intent);
-                    }
-                }
-        );
-    }
-
-    public void onClickButtonAccountSettingsDashboardListener(){
-        account_settings_layout = (LinearLayout) findViewById(R.id.account_settings);
-        account_settings_layout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent account_settings_intent = new Intent(getBaseContext(), AccountSettingsDashboard.class);
-                        startActivity(account_settings_intent);
-                    }
-                }
-        );
-    }
-
-    public void onClickButtonPropertySearchListener(){
-        property_search_layout = (LinearLayout) findViewById(R.id.search);
-        property_search_layout.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent property_search_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
-                        startActivity(property_search_intent);
-                    }
-                }
-        );
     }
 
     @Override
@@ -119,7 +49,7 @@ public class MemberDashboard extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.member_dashboard, menu);
+        getMenuInflater().inflate(R.menu.manage_advert_ranking, menu);
         return true;
     }
 
@@ -131,8 +61,8 @@ public class MemberDashboard extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
-        //    return true;
+      //  if (id == R.id.action_settings) {
+      //      return true;
        // }
 
         return super.onOptionsItemSelected(item);
@@ -143,6 +73,7 @@ public class MemberDashboard extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+
 
         if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
