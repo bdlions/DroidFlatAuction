@@ -51,7 +51,7 @@
         android:textStyle="bold"
         android:textAllCaps="true"/>
     <EditText
-        android:id="@+id/sign_up_create_password"
+        android:id="@+id/et_sign_up_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"

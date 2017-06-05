@@ -7,8 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.auction.dto.User;
+import com.auction.dto.response.SignInResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
 
 import org.auction.udp.BackgroundWork;
 import org.bdlions.client.reqeust.threads.IServerCallback;
@@ -53,11 +56,16 @@ public class SignIn extends AppCompatActivity {
                             }
 
                             @Override
-                            public void resultHandler(IPacketHeader iPacketHeader, String s) {
-                                System.out.println(s);
+                            public void resultHandler(IPacketHeader iPacketHeader, String stringSignInResponse) {
+                                System.out.println(stringSignInResponse);
+                                Gson gson = new Gson();
+                                SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                                if(signInResponse.isSuccess())
+                                {
+                                    //navigate to member dashboard
+                                }
                             }
                         });
-
                         Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
                         startActivity(login_intent);
                     }

@@ -12,6 +12,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.auction.dto.User;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.Calendar;
 
 public class SignUpStep4 extends AppCompatActivity {
@@ -19,11 +23,16 @@ public class SignUpStep4 extends AppCompatActivity {
     private static ImageButton ib_back_arrow,ib_forward_arrow;
     private static EditText et_sign_up_birthday;
     private DatePickerDialog.OnDateSetListener datePickerSetListener;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_step4);
+
+        String userString = getIntent().getExtras().getString("userString");
+        Gson gson = new Gson();
+        user = gson.fromJson(userString, User.class);
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -47,8 +56,12 @@ public class SignUpStep4 extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent sing_up_step4_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep5.class);
-                        startActivity(sing_up_step4_forward_arrow_intent);
+                        Intent sign_up_step4_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep5.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String userString = gson.toJson(user);
+                        sign_up_step4_forward_arrow_intent.putExtra("userString", userString);
+                        startActivity(sign_up_step4_forward_arrow_intent);
                     }
                 }
         );
