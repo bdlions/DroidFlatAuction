@@ -13,17 +13,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-public class ManageAdvertAccountSettingsStep1 extends AppCompatActivity
+public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private  static ImageButton ib_back_arrow;
+    private  static Button btn_submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_advert_account_settings_step1);
+        setContentView(R.layout.activity_manage_advert_account_settings_step);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        onClickButtonBackArrowListener();
+        onClickButtonSubmitListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -34,7 +41,31 @@ public class ManageAdvertAccountSettingsStep1 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton) findViewById(R.id.account_settings_advert_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent account_settings_advert_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                        startActivity(account_settings_advert_back_arrow_intent);
+                    }
+                }
+        );
+    }
+    public void onClickButtonSubmitListener(){
+        btn_submit = (Button) findViewById(R.id.account_settings_advert_submit_button);
+        btn_submit.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getBaseContext(),   "Account Seetings is Updated", Toast.LENGTH_SHORT).show();
+                      //  Intent account_settings_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                      //  startActivity(account_settings_advert_submit_button_intent);
+                    }
+                }
+        );
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -48,7 +79,7 @@ public class ManageAdvertAccountSettingsStep1 extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.manage_advert_account_settings_step1, menu);
+        getMenuInflater().inflate(R.menu.manage_advert_account_settings_step, menu);
         return true;
     }
 

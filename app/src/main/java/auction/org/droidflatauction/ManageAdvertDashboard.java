@@ -2,8 +2,6 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -86,7 +84,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent account_settings_advert_intent = new Intent(getBaseContext(), ManageAdvertAccountSettingsStep1.class);
+                        Intent account_settings_advert_intent = new Intent(getBaseContext(), ManageAdvertAccountSettingsStep.class);
                         startActivity(account_settings_advert_intent);
                     }
                 }

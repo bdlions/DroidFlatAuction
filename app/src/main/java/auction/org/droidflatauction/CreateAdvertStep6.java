@@ -21,7 +21,7 @@ import android.widget.Toast;
 public class CreateAdvertStep6 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private  static Button btn_forward_arrow;
+    private  static Button btn_submit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
-        onClickButtonForwardArrowListener();
+        onClickButtonSubmitListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -75,9 +75,9 @@ public class CreateAdvertStep6 extends AppCompatActivity
                 }
         );
     }
-    public void onClickButtonForwardArrowListener(){
-        btn_forward_arrow = (Button) findViewById(R.id.create_advert_submit_button);
-        btn_forward_arrow.setOnClickListener(
+    public void onClickButtonSubmitListener(){
+        btn_submit = (Button) findViewById(R.id.create_advert_submit_button);
+        btn_submit.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
