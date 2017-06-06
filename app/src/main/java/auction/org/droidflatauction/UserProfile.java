@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -70,27 +72,35 @@ public class UserProfile extends AppCompatActivity
         packetHeader.setAction(ACTION.FETCH_USER_INFO);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new IServerCallback() {
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
-            public void timeout(String s) {
-                System.out.println(s);
-            }
-
-            @Override
-            public void resultHandler(IPacketHeader iPacketHeader, String userString) {
+            public void handleMessage(Message msg) {
+                String userString = (String) msg.obj;
                 System.out.println(userString);
                 Gson gson = new Gson();
                 User user = gson.fromJson(userString, User.class);
                 if(user.isSuccess())
                 {
-                    //tvProfileFullName.setText("Nazmul Hasan");
-                    //tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
-                    //tvProfileEmail.setText(user.getEmail());
-                    //tvProfileTelephone.setText(user.getCellNo());
-                    //set user profile info into design
+                    tvProfileFullName.setText("Nazmul Hasan");
+                    tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
+                    tvProfileEmail.setText(user.getEmail());
+                    tvProfileTelephone.setText(user.getCellNo());
+//                    set user profile info into design
                 }
             }
         });
+
+//        new BackgroundWork().execute(packetHeader, "{}", new IServerCallback() {
+//            @Override
+//            public void timeout(String s) {
+//                System.out.println(s);
+//            }
+//
+//            @Override
+//            public void resultHandler(IPacketHeader iPacketHeader, String userString) {
+//
+//            }
+//        });
     }
 
     public void onClickButtonBackArrowListener(){

@@ -1,12 +1,15 @@
 package auction.org.droidflatauction;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.User;
 import com.auction.dto.response.SignInResponse;
@@ -69,14 +72,11 @@ public class SignIn extends AppCompatActivity {
                         packetHeader.setAction(ACTION.SIGN_IN);
                         packetHeader.setRequestType(REQUEST_TYPE.AUTH);
                         //new BackgroundWork().execute(packetHeader, "{\"userName\": \"" + "bdlions@gmail.com" + "\", \"password\": \"" + "password" + "\"}", new IServerCallback() {
-                        new BackgroundWork().execute(packetHeader, userString, new IServerCallback() {
+                        new BackgroundWork().execute(packetHeader, userString, new Handler(){
                             @Override
-                            public void timeout(String s) {
-                                System.out.println(s);
-                            }
-
-                            @Override
-                            public void resultHandler(IPacketHeader iPacketHeader, String stringSignInResponse) {
+                            public void handleMessage(Message msg) {
+                                String stringSignInResponse = (String)msg.obj;
+                                Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
                                 System.out.println(stringSignInResponse);
                                 Gson gson = new Gson();
                                 SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
