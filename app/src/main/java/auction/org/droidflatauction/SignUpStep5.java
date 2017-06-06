@@ -1,13 +1,18 @@
 package auction.org.droidflatauction;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.User;
+import com.auction.dto.response.SignInResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
@@ -53,10 +58,10 @@ public class SignUpStep5 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
-                        /*org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         packetHeader.setAction(ACTION.SIGN_UP);
                         packetHeader.setRequestType(REQUEST_TYPE.AUTH);
-                        new BackgroundWork().execute(packetHeader, userString, new IServerCallback() {
+                        /*new BackgroundWork().execute(packetHeader, userString, new IServerCallback() {
                             @Override
                             public void timeout(String s) {
                                 System.out.println(s);
@@ -70,8 +75,27 @@ public class SignUpStep5 extends AppCompatActivity {
                                 startActivity(sing_up_step5_accept_intent);
                             }
                         });*/
-                        Intent sing_up_step5_accept_intent = new Intent(getBaseContext(), MemberDashboard.class);
-                        startActivity(sing_up_step5_accept_intent);
+                        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                String stringSignInResponse = (String)msg.obj;
+                                //Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
+                                //System.out.println(stringSignInResponse);
+                                Gson gson = new Gson();
+                                SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                                if(signInResponse.isSuccess())
+                                {
+                                    Toast.makeText(getApplicationContext(), "Registration successful. Please login.", Toast.LENGTH_LONG).show();
+                                    Intent sing_up_step5_accept_intent = new Intent(getBaseContext(), SignIn.class);
+                                    startActivity(sing_up_step5_accept_intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Error while registration. Please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+
                     }
                 }
         );

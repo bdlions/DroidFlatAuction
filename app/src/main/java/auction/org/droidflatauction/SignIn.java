@@ -76,7 +76,7 @@ public class SignIn extends AppCompatActivity {
                             @Override
                             public void handleMessage(Message msg) {
                                 String stringSignInResponse = (String)msg.obj;
-                                Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
                                 System.out.println(stringSignInResponse);
                                 Gson gson = new Gson();
                                 SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
@@ -86,6 +86,10 @@ public class SignIn extends AppCompatActivity {
                                     //navigate to member dashboard
                                     Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
                                     startActivity(login_intent);
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Invalid login. Please try again later.", Toast.LENGTH_LONG).show();
                                 }
                             }
                         });
