@@ -13,16 +13,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.ImageButton;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class CreateAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private  static ImageButton ib_back_arrow,ib_forward_arrow;
+    private static Spinner sp_area;
+    ArrayAdapter<CharSequence> area_adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_advert_step2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        onClickButtonBackArrowListener();
+        onClickButtonForwardArrowListener();
+        areaSpinner();
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -34,7 +47,97 @@ public class CreateAdvertStep2 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+    public void selectItem( View view){
+        boolean checked = ((CheckBox) view).isChecked();
 
+        switch (view.getId()){
+            case R.id.amenities_parking:
+                String st_parking = getString(R.string.parking);
+                if(checked){
+                    Toast.makeText(getBaseContext(), st_parking + " is selected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), st_parking + " is deselected", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.amenities_balcony_patio:
+                String st_balcony_patio = getString(R.string.balcony_patio);
+                if(checked){
+                    Toast.makeText(getBaseContext(), st_balcony_patio + " is selected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), st_balcony_patio + " is deselected", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.amenities_garden_rootTerrace:
+                String st_garden_rootTerrace = getString(R.string.garden_rootTerrace);
+                if(checked){
+                    Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is selected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is deselected", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.amenities_disabled_access:
+                String st_disabled_access = getString(R.string.disabled_access);
+                if(checked){
+                    Toast.makeText(getBaseContext(), st_disabled_access + " is selected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), st_disabled_access + " is deselected", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            case R.id.amenities_garage:
+                String st_garage = getString(R.string.garage);
+                if(checked){
+                    Toast.makeText(getBaseContext(), st_garage + " is selected", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getBaseContext(), st_garage + " is deselected", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step2_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent create_advert_step2_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
+                        startActivity(create_advert_step2_back_arrow_intent);
+                    }
+                }
+        );
+    }
+    public void onClickButtonForwardArrowListener(){
+        ib_forward_arrow = (ImageButton) findViewById(R.id.create_advert_step2_forward_arrow);
+        ib_forward_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent create_advert_step2_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
+                        startActivity(create_advert_step2_forward_arrow_intent);
+                    }
+                }
+        );
+    }
+    public void areaSpinner(){
+        sp_area = (Spinner) findViewById(R.id.area_spinner);
+        area_adapter = ArrayAdapter.createFromResource(this,R.array.area_spinner_options,android.R.layout.simple_spinner_item);
+        area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sp_area.setAdapter(area_adapter);
+        sp_area.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -60,9 +163,9 @@ public class CreateAdvertStep2 extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-      //  if (id == R.id.action_settings) {
-      //      return true;
-       // }
+        //  if (id == R.id.action_settings) {
+        //      return true;
+        // }
 
         return super.onOptionsItemSelected(item);
     }

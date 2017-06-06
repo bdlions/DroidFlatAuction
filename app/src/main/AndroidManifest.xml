@@ -31,9 +31,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".SignIn"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="auction.org.droidflatauction.SignIn" />
 
@@ -41,9 +41,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:windowSoftInputMode="adjustResize"
             android:name=".SignUpStep1"
-            android:theme="@style/AppTheme">
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="auction.org.droidflatauction.SignIn" />
 
@@ -154,6 +154,22 @@
         <activity
             android:name=".CreateAdvertStep2"
             android:label="@string/title_activity_create_advert_step2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep3"
+            android:label="@string/title_activity_create_advert_step3"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep4"
+            android:label="@string/title_activity_create_advert_step4"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep5"
+            android:label="@string/title_activity_create_advert_step5"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep6"
+            android:label="@string/title_activity_create_advert_step6"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

@@ -29,6 +29,10 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_member_property_search">RoomAuction</string>
     <string name="title_activity_create_advert_step1">RoomAuction</string>
     <string name="title_activity_create_advert_step2">RoomAuction</string>
+    <string name="title_activity_create_advert_step3">RoomAuction</string>
+    <string name="title_activity_create_advert_step4">RoomAuction</string>
+    <string name="title_activity_create_advert_step5">RoomAuction</string>
+    <string name="title_activity_create_advert_step6">RoomAuction</string>
     <string name="title_activity_my_advert_step1">RoomAuction</string>
     <string name="title_activity_saved_advert_step1">RoomAuction</string>
     <string name="title_activity_manage_advert_account_settings_step1">RoomAuction</string>
@@ -61,4 +65,41 @@ favourite properties, receive email alerts for new results and much more.</strin
         <item>Options 3</item>
     </string-array>
 
+    <string-array name="area_spinner_options">
+        <item>London</item>
+        <item>London 123</item>
+        <item>London 321</item>
+    </string-array>
+
+    <string name="parking">Parking</string>
+    <string name="balcony_patio">Balcony/patio</string>
+    <string name="garden_rootTerrace">Garden/roof terrace</string>
+    <string name="disabled_access">Disabled access</string>
+    <string name="garage">Garage</string>
+    <string-array name="minimum_spinner_options">
+        <item>No Minimum</item>
+        <item>100</item>
+        <item>200</item>
+        <item>300</item>
+    </string-array>
+    <string-array name="maximum_spinner_options">
+        <item>No Maximum</item>
+        <item>400</item>
+        <item>500</item>
+        <item>600</item>
+    </string-array>
+    <string-array name="smoking_spinner_options">
+        <item>No Preference</item>
+        <item>Yes</item>
+    </string-array>
+    <string-array name="occupation_spinner_options">
+        <item>No Preference</item>
+        <item>Yes</item>
+    </string-array>
+    <string-array name="pets_spinner_options">
+        <item>No Preference</item>
+        <item>Yes</item>
+    </string-array>
+    <string name="daily_email_alerts">Yes, please send me daily summary emails of new Rooms Wanted ad</string>
+    <string name="instant_email_alerts">Yes, please send me emails of new Rooms Wanted adverts matching my requirements as soon as they are placed on the website</string>
 </resources>

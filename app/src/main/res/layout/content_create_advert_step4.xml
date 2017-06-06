@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="auction.org.droidflatauction.CreateAdvertStep1"
-    tools:showIn="@layout/app_bar_create_advert_step1">
+    tools:context="auction.org.droidflatauction.CreateAdvertStep4"
+    tools:showIn="@layout/app_bar_create_advert_step4">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageButton
-                android:id="@+id/create_advert_step1_back_arrow"
+                android:id="@+id/create_advert_step4_back_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:layout_marginLeft="5dp"
-                android:text="Step 1"
+                android:text="Step 4"
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
                 android:textStyle="normal" />
@@ -47,12 +47,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="5dp"
-                android:text="I have for Rent"
+                android:text="Smoking"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <Spinner
-                android:id="@+id/i_have_for_rent_spinner"
+                android:id="@+id/smoking_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
@@ -73,17 +73,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="5dp"
-                android:text="Size of Property"
+                android:text="Occupation"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <Spinner
-                android:id="@+id/size_of_property_spinner"
+                android:id="@+id/occupation_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="16dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="-5dp"
-                android:textSize="16dp"
                 android:textColor="#5a5a5a"
                 android:textStyle="normal" />
             <View
@@ -99,12 +99,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="5dp"
-                android:text="Type of Property"
+                android:text="Pets"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <Spinner
-                android:id="@+id/type_of_property_spinner"
+                android:id="@+id/pets_spinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="16dp"
@@ -128,7 +128,7 @@
             android:gravity="bottom"
             android:orientation="vertical">
             <ImageButton
-                android:id="@+id/create_advert_step1_forward_arrow"
+                android:id="@+id/create_advert_step4_forward_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
