@@ -73,7 +73,7 @@
             android:textStyle="bold"
             android:textAllCaps="true"/>
         <EditText
-            android:id="@+id/sign_in_email_address"
+            android:id="@+id/et_sign_in_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -92,7 +92,7 @@
             android:textStyle="bold"
             android:textAllCaps="true"/>
         <EditText
-            android:id="@+id/sign_in_password"
+            android:id="@+id/et_sign_in_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"

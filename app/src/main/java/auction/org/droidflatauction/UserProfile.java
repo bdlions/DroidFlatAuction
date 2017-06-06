@@ -13,18 +13,38 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+
+import com.auction.dto.User;
+import com.auction.dto.response.SignInResponse;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+
+import org.auction.udp.BackgroundWork;
+import org.bdlions.client.reqeust.threads.IServerCallback;
+import org.bdlions.transport.packet.IPacketHeader;
 
 public class UserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
+    SessionManager session;
+    public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        tvProfileFullName = (TextView) findViewById(R.id.tv_profile_full_name);
+        tvProfileEmail = (TextView) findViewById(R.id.tv_profile_email);
+        tvProfileTelephone = (TextView) findViewById(R.id.tv_profile_telephone);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonBackArrowListener();
 
@@ -36,6 +56,41 @@ public class UserProfile extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //retrieve user profile from the database
+        initUserProfile();
+    }
+
+    public void initUserProfile()
+    {
+        tvProfileFullName.setText("Hello World");
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_USER_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new IServerCallback() {
+            @Override
+            public void timeout(String s) {
+                System.out.println(s);
+            }
+
+            @Override
+            public void resultHandler(IPacketHeader iPacketHeader, String userString) {
+                System.out.println(userString);
+                Gson gson = new Gson();
+                User user = gson.fromJson(userString, User.class);
+                if(user.isSuccess())
+                {
+                    //tvProfileFullName.setText("Nazmul Hasan");
+                    //tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
+                    //tvProfileEmail.setText(user.getEmail());
+                    //tvProfileTelephone.setText(user.getCellNo());
+                    //set user profile info into design
+                }
+            }
+        });
     }
 
     public void onClickButtonBackArrowListener(){

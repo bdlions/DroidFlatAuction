@@ -42,17 +42,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="5dp"
-            android:text="User"
+            android:text="Name"
             android:textColor="#2874b9"
             android:textSize="16dp"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/user_name"
+            android:id="@+id/tv_profile_full_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginLeft="5dp"
-            android:text="Nazmul Hasan"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:textStyle="normal" />
@@ -66,12 +66,12 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/user_email"
+            android:id="@+id/tv_profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginLeft="5dp"
-            android:text="bdlions@gmail.com"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:textStyle="normal" />
@@ -80,17 +80,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="5dp"
-            android:text="Cell"
+            android:text="Telephone"
             android:textColor="#2874b9"
             android:textSize="16dp"
             android:textStyle="bold" />
         <TextView
-            android:id="@+id/user_cell"
+            android:id="@+id/tv_profile_telephone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:layout_marginLeft="5dp"
-            android:text="+8801234512345"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:textStyle="normal" />
