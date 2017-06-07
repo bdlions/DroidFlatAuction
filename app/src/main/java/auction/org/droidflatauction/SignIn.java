@@ -1,8 +1,11 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -89,7 +92,27 @@ public class SignIn extends AppCompatActivity {
                                 }
                                 else
                                 {
-                                    Toast.makeText(getApplicationContext(), "Invalid login. Please try again later.", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), "Invalid login. Please try again later.", Toast.LENGTH_LONG).show();
+                                    AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
+                                    sign_in_builder.setMessage("Invalid login. Please try again later.")
+                                            .setCancelable(false)
+                                            .setPositiveButton("", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    finish();
+                                                }
+                                            })
+                                            .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.cancel();
+                                                }
+                                            });
+
+                                    AlertDialog sign_in_alert = sign_in_builder.create();
+                                    sign_in_alert.setTitle("Alert!!!");
+                                    sign_in_alert.show();
+
                                 }
                             }
                         });
