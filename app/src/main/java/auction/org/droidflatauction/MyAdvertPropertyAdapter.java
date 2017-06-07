@@ -52,7 +52,7 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent my_advert_property_intent = new Intent(context, ManageAdvertDashboard.class);
+                    Intent my_advert_property_intent = new Intent(context, MyAdvertStep2.class);
                     context.startActivity(my_advert_property_intent);
                 }
             });
