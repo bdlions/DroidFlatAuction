@@ -2,10 +2,12 @@ package auction.org.droidflatauction;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.TypedValue;
@@ -29,6 +31,7 @@ import org.bdlions.client.reqeust.uploads.UploadService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URI;
 
 public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,8 +46,25 @@ public class EditUserProfile extends AppCompatActivity
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
                     try {
-                        final Uri imageUri = imageReturnedIntent.getData();
-                        new BackgroundUploader().execute(imageUri, new Handler(){
+                        Uri uri = imageReturnedIntent.getData();
+                        String[] projection = { MediaStore.Images.Media.DATA };
+
+                        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+                        cursor.moveToFirst();
+
+
+                        int columnIndex = cursor.getColumnIndex(projection[0]);
+                        String picturePath = cursor.getString(columnIndex); // returns null
+                        cursor.close();
+                        System.out.println("Path---------:" + picturePath);
+//                        if (imageUri != null) {
+//                            String path = imageUri.toString();
+//                            if (path.toLowerCase().startsWith("file://")) {
+//                                path = (new File(URI.create(path))).getAbsolutePath();
+//                            }
+//                            System.out.println("Path---------: " + path);
+//                        }
+                        new BackgroundUploader().execute(picturePath, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
                                 Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
