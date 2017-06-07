@@ -103,4 +103,6 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="daily_email_alerts">Yes, please send me daily summary emails of new Rooms Wanted ad</string>
     <string name="instant_email_alerts">Yes, please send me emails of new Rooms Wanted adverts matching my requirements as soon as they are placed on the website</string>
     <string name="title_activity_manage_advert_account_settings_step"> RoomAuction </string>
+    <string name="title_activity_my_advert_step2">RoomAuction</string>
+    <string name="title_activity_member_property_search_product">RoomAuction</string>
 </resources>
