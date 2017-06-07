@@ -170,6 +170,14 @@
         <activity
             android:name=".ManageAdvertAccountSettingsStep"
             android:label="@string/title_activity_manage_advert_account_settings_step"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyAdvertStep2"
+            android:label="@string/title_activity_my_advert_step2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MemberPropertySearchProduct"
+            android:label="@string/title_activity_member_property_search_product"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

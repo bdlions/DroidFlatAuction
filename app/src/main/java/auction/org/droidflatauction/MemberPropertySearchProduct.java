@@ -1,12 +1,9 @@
 package auction.org.droidflatauction;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,34 +13,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MyAdvertStep1 extends AppCompatActivity
+public class MemberPropertySearchProduct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    ListView myAdvertPropertyListView;
+    ListView member_property_search_product_listview;
     ArrayList<Integer> property_iamges;
     ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
-    MyAdvertPropertyAdapter myAdvertPropertyAdapter;
-
+    SavedAdvertPropertyAdapter member_property_search_product_adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_advert_step1);
+        setContentView(R.layout.activity_member_property_search_product);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
 
-        myAdvertPropertyListView = (ListView) findViewById(R.id.my_advert_property_listview);
+        member_property_search_product_listview = (ListView) findViewById(R.id.member_property_search_product_listview);
         property_iamges = new ArrayList<>();
         property_title_list = new ArrayList<>();
         property_iamges = getPropertyIamges();
@@ -52,15 +44,12 @@ public class MyAdvertStep1 extends AppCompatActivity
         property_bathroom_list = getPropertyBathroomList();
         property_bathroom_list = getPropertyBathroomList();
         property_price_list = getPropertyPriceList();
-        myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
-        myAdvertPropertyListView.setAdapter(myAdvertPropertyAdapter);
-        myAdvertPropertyListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+
+        member_property_search_product_listview.setAdapter(member_property_search_product_adapter);
+        member_property_search_product_listview.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // how to go MyAdvertStep2.class activity by clicking on a propery item
-                    Intent my_advert_property_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                    startActivity(my_advert_property_intent);
-
 
             }
 
@@ -80,17 +69,18 @@ public class MyAdvertStep1 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
     public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton)findViewById(R.id.my_advert_step1_back_arrow);
+        ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step1_back_arrow);
         ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent my_advert_step1_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                        startActivity(my_advert_step1_back_arrow_intent);
+                        Intent saved_advert_step1_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                        startActivity(saved_advert_step1_back_arrow_intent);
                     }
                 }
         );
     }
+
     public ArrayList<Integer> getPropertyIamges(){
         property_iamges = new ArrayList<>();
         property_iamges.add(R.drawable.property_image_01);
@@ -149,7 +139,7 @@ public class MyAdvertStep1 extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_advert_step1, menu);
+        getMenuInflater().inflate(R.menu.member_property_search_product, menu);
         return true;
     }
 
@@ -161,9 +151,9 @@ public class MyAdvertStep1 extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        //   if (id == R.id.action_settings) {
-        //      return true;
-        // }
+       // if (id == R.id.action_settings) {
+       //     return true;
+       // }
 
         return super.onOptionsItemSelected(item);
     }

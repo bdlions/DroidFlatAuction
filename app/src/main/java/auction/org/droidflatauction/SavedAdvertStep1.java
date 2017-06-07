@@ -13,9 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ImageButton;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class SavedAdvertStep1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private  static ImageButton ib_back_arrow;
+    ListView savedAdvertPropertyListView;
+    ArrayList<Integer> property_iamges;
+    ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
+    SavedAdvertPropertyAdapter savedAdvertPropertyAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +33,34 @@ public class SavedAdvertStep1 extends AppCompatActivity
         setContentView(R.layout.activity_saved_advert_step1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        onClickButtonBackArrowListener();
+
+        savedAdvertPropertyListView = (ListView) findViewById(R.id.saved_advert_property_listview);
+        property_iamges = new ArrayList<>();
+        property_title_list = new ArrayList<>();
+        property_iamges = getPropertyIamges();
+        property_title_list = getPropertyTitileList();
+        property_bedroom_list = getPropertyBedroomList();
+        property_bathroom_list = getPropertyBathroomList();
+        property_bathroom_list = getPropertyBathroomList();
+        property_price_list = getPropertyPriceList();
+        savedAdvertPropertyAdapter = new SavedAdvertPropertyAdapter(SavedAdvertStep1.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+
+        savedAdvertPropertyListView.setAdapter(savedAdvertPropertyAdapter);
+        savedAdvertPropertyListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -35,6 +73,64 @@ public class SavedAdvertStep1 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step1_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent saved_advert_step1_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                        startActivity(saved_advert_step1_back_arrow_intent);
+                    }
+                }
+        );
+    }
+
+    public ArrayList<Integer> getPropertyIamges(){
+        property_iamges = new ArrayList<>();
+        property_iamges.add(R.drawable.property_image_01);
+        property_iamges.add(R.drawable.property_image_02);
+        property_iamges.add(R.drawable.property_image_03);
+        property_iamges.add(R.drawable.property_image_04);
+        property_iamges.add(R.drawable.property_image_05);
+        return property_iamges;
+    }
+    public ArrayList<String> getPropertyTitileList(){
+        property_title_list = new ArrayList<>();
+        property_title_list.add("23 pLANET ST, london EC4N 6AJ, UK");
+        property_title_list.add("10 Trinity Square, OXFORD EC3N 4AJ, UK");
+        property_title_list.add("23 pLANET ST, london EC4N 6AJ, UK");
+        property_title_list.add("100 Trinity Square, OXFORD EC3N 4AJ, UK");
+        property_title_list.add("223 pLANET ST, london EC4N 6AJ, UK");
+        return property_title_list;
+    }
+    public ArrayList<String> getPropertyBedroomList(){
+        property_bedroom_list = new ArrayList<>();
+        property_bedroom_list.add("1 Bed Room");
+        property_bedroom_list.add("2 Bed Rooms");
+        property_bedroom_list.add("3 Bed Rooms");
+        property_bedroom_list.add("4 Bed Rooms");
+        property_bedroom_list.add("5 Bed Rooms");
+        return property_bedroom_list;
+    }
+    public ArrayList<String> getPropertyBathroomList(){
+        property_bathroom_list = new ArrayList<>();
+        property_bathroom_list.add("1 Bathroom");
+        property_bathroom_list.add("2 Bathrooms");
+        property_bathroom_list.add("3 Bathrooms");
+        property_bathroom_list.add("4 Bathrooms");
+        property_bathroom_list.add("5 Bathrooms");
+        return property_bathroom_list;
+    }
+    public ArrayList<String> getPropertyPriceList(){
+        property_price_list = new ArrayList<>();
+        property_price_list.add("$152.40 PW");
+        property_price_list.add("$162.40 PW");
+        property_price_list.add("$172.40 PW");
+        property_price_list.add("$182.40 PW");
+        property_price_list.add("$192.40 PW");
+        return property_price_list;
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
