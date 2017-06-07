@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -18,10 +20,32 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.auction.dto.Image;
+import com.auction.dto.Location;
+import com.auction.dto.Occupation;
+import com.auction.dto.Pet;
+import com.auction.dto.Product;
+import com.auction.dto.ProductCategory;
+import com.auction.dto.ProductSize;
+import com.auction.dto.ProductType;
+import com.auction.dto.Smoking;
+import com.auction.dto.Stay;
+import com.auction.dto.User;
+import com.auction.dto.response.SignInResponse;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
+
 public class CreateAdvertStep6 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private  static Button btn_submit;
+    Product product;
+    String productString;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +53,11 @@ public class CreateAdvertStep6 extends AppCompatActivity
         setContentView(R.layout.activity_create_advert_step6);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        product = (Product)getIntent().getExtras().get("product");
 
         onClickButtonBackArrowListener();
         onClickButtonSubmitListener();
@@ -81,6 +110,81 @@ public class CreateAdvertStep6 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        //for testing purpose some default fields are set here but it should come from user selection
+                        ProductCategory productCategory = new ProductCategory();
+                        productCategory.setId(1);
+                        product.setProductCategory(productCategory);
+
+                        ProductSize productSize = new ProductSize();
+                        productSize.setId(1);
+                        product.setProductSize(productSize);
+
+                        ProductType productType = new ProductType();
+                        productType.setId(1);
+                        product.setProductType(productType);
+
+                        Location location = new Location();
+                        location.setId(1);
+                        product.setLocation(location);
+
+                        Stay minStay = new Stay();
+                        minStay.setId(1);
+                        Stay maxStay = new Stay();
+                        maxStay.setId(1);
+                        product.setMinStay(minStay);
+                        product.setMaxStay(maxStay);
+
+                        Smoking smoking = new Smoking();
+                        smoking.setId(1);
+                        Occupation occupation = new Occupation();
+                        occupation.setId(1);
+                        Pet pet = new Pet();
+                        pet.setId(1);
+                        product.setSmoking(smoking);
+                        product.setOccupation(occupation);
+                        product.setPet(pet);
+
+                        product.setImg("a.jpg");
+
+                        Image image = new Image();
+                        image.setId(1);
+                        image.setTitle("b.jpg");
+
+                        Image[] images = new Image[1];
+                        images[0] = image;
+                        product.setImages(images);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        productString = gson.toJson(product);
+
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.ADD_PRODUCT);
+                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+                        packetHeader.setSessionId(session.getSessionId());
+                        new BackgroundWork().execute(packetHeader, productString, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                String stringSignInResponse = (String)msg.obj;
+                                //Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
+                                //System.out.println(stringSignInResponse);
+                                Gson gson = new Gson();
+                                SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                                if(signInResponse.isSuccess())
+                                {
+                                    Toast.makeText(getApplicationContext(), "Ad is created.", Toast.LENGTH_LONG).show();
+
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Error while creating a new ad. Please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                        //show a message that advert is created and go to my ads page
+
+
                         Intent create_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                         startActivity(create_advert_submit_button_intent);
                     }
