@@ -1,11 +1,13 @@
 package auction.org.droidflatauction;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -14,7 +16,7 @@ import java.util.ArrayList;
  */
 
 public class MyAdvertPropertyAdapter extends BaseAdapter {
-    private Context context;
+    private static Context context;
     private ArrayList<Integer> listId;
     private ArrayList<String> property_title_list, property_bedroom_list,property_bathroom_list,property_price_list;
 
@@ -45,9 +47,16 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-    if(convertView == null){
-    convertView = View.inflate(context,R.layout.my_advert_property_row, null);
-    }
+        if(convertView == null){
+            convertView = View.inflate(context,R.layout.my_advert_property_row, null);
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent my_advert_property_intent = new Intent(context, ManageAdvertDashboard.class);
+                    context.startActivity(my_advert_property_intent);
+                }
+            });
+        }
         ImageView property_images = (ImageView) convertView.findViewById(R.id.my_advert_property_image);
 
         TextView property_title = (TextView) convertView.findViewById(R.id.my_advert_property_title);

@@ -2,7 +2,10 @@ package auction.org.droidflatauction;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.util.TypedValue;
@@ -21,10 +24,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.auction.udp.BackgroundUploader;
+import org.bdlions.client.reqeust.uploads.UploadService;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+
 public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private final int SELECT_PHOTO = 1;
     private static ImageView iv_profile_photo;
     private static Button btn_user_name,btn__user_email,btn__user_password,btn__cell_number;
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch(requestCode) {
+            case SELECT_PHOTO:
+                if(resultCode == RESULT_OK){
+                    try {
+                        final Uri imageUri = imageReturnedIntent.getData();
+                        new BackgroundUploader().execute(imageUri, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                }
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +102,10 @@ public class EditUserProfile extends AppCompatActivity
                 submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                        photoPickerIntent.setType("image/*");
+                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
                     }
                 });
                 Button declineButton = (Button) dialog.findViewById(R.id.user_photo_upload_cancel_button);

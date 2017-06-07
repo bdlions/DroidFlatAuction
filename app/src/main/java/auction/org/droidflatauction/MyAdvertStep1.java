@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -54,21 +55,7 @@ public class MyAdvertStep1 extends AppCompatActivity
         property_price_list = getPropertyPriceList();
         myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
         myAdvertPropertyListView.setAdapter(myAdvertPropertyAdapter);
-        myAdvertPropertyListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                // how to go MyAdvertStep2.class activity by clicking on a propery item
-                    Intent my_advert_property_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                    startActivity(my_advert_property_intent);
 
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
