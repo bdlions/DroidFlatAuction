@@ -19,17 +19,23 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.auction.dto.Product;
+
 public class CreateAdvertStep4 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner sp_smoking,sp_occupation,sp_pets;
     ArrayAdapter<CharSequence> smoking_adapter,occupation_adapter,pets_adapter;
+    Product product;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_advert_step4);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        product = (Product)getIntent().getExtras().get("product");
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -65,6 +71,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step4_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
+                        create_advert_step4_forward_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step4_forward_arrow_intent);
                     }
                 }

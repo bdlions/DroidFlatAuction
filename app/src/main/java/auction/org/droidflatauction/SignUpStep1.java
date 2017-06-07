@@ -49,10 +49,11 @@ public class SignUpStep1 extends AppCompatActivity {
                         User user = new User();
                         user.setFirstName(etFirstName.getText().toString());
                         user.setLastName(etLastName.getText().toString());
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String userString = gson.toJson(user);
-                        sign_up_step1_forward_arrow_intent.putExtra("userString",userString);
+                        //GsonBuilder gsonBuilder = new GsonBuilder();
+                        //Gson gson = gsonBuilder.create();
+                        //String userString = gson.toJson(user);
+                        //sign_up_step1_forward_arrow_intent.putExtra("userString",userString);
+                        sign_up_step1_forward_arrow_intent.putExtra("user",user);
                         startActivity(sign_up_step1_forward_arrow_intent);
                     }
                 }

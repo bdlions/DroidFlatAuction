@@ -30,9 +30,11 @@ public class SignUpStep4 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_step4);
 
-        String userString = getIntent().getExtras().getString("userString");
-        Gson gson = new Gson();
-        user = gson.fromJson(userString, User.class);
+        //String userString = getIntent().getExtras().getString("userString");
+        //Gson gson = new Gson();
+        //user = gson.fromJson(userString, User.class);
+
+        user = (User)getIntent().getExtras().get("user");
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -57,10 +59,15 @@ public class SignUpStep4 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent sign_up_step4_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep5.class);
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String userString = gson.toJson(user);
-                        sign_up_step4_forward_arrow_intent.putExtra("userString", userString);
+
+                        //date of birth is not set yet
+
+                        //GsonBuilder gsonBuilder = new GsonBuilder();
+                        //Gson gson = gsonBuilder.create();
+                        //String userString = gson.toJson(user);
+
+                        sign_up_step4_forward_arrow_intent.putExtra("user", user);
+
                         startActivity(sign_up_step4_forward_arrow_intent);
                     }
                 }

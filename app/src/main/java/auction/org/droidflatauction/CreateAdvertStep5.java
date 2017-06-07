@@ -13,17 +13,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageButton;
+
+import com.auction.dto.Product;
 
 public class CreateAdvertStep5 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
+    private static EditText etCreateProductTitle, etCreateProductDescription;
+    Product product;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_advert_step5);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        product = (Product)getIntent().getExtras().get("product");
+
+        etCreateProductTitle = (EditText) findViewById(R.id.et_create_product_title);
+        etCreateProductDescription = (EditText) findViewById(R.id.et_create_product_description);
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -55,7 +66,10 @@ public class CreateAdvertStep5 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        product.setTitle(etCreateProductTitle.getText().toString());
+                        product.setDescription(etCreateProductDescription.getText().toString());
                         Intent create_advert_step5_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
+                        create_advert_step5_forward_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step5_forward_arrow_intent);
                     }
                 }

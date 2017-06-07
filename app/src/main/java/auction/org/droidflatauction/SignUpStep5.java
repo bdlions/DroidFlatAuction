@@ -16,6 +16,7 @@ import com.auction.dto.response.SignInResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 import org.bdlions.client.reqeust.threads.IServerCallback;
@@ -31,9 +32,14 @@ public class SignUpStep5 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_step5);
 
-        userString = getIntent().getExtras().getString("userString");
-        Gson gson = new Gson();
-        user = gson.fromJson(userString, User.class);
+        //userString = getIntent().getExtras().getString("userString");
+        //Gson gson = new Gson();
+        //user = gson.fromJson(userString, User.class);
+
+        user = (User)getIntent().getExtras().get("user");
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        userString = gson.toJson(user);
 
         onClickButtonBackArrowListener();
         onClickButtonAcceptListener();

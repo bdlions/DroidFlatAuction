@@ -22,9 +22,12 @@ public class SignUpStep3 extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_step3);
 
         etPassword = (EditText) findViewById(R.id.et_sign_up_password);
-        String userString = getIntent().getExtras().getString("userString");
-        Gson gson = new Gson();
-        user = gson.fromJson(userString, User.class);
+
+        //String userString = getIntent().getExtras().getString("userString");
+        //Gson gson = new Gson();
+        //user = gson.fromJson(userString, User.class);
+
+        user = (User)getIntent().getExtras().get("user");
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -50,10 +53,13 @@ public class SignUpStep3 extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent sign_up_step3_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep4.class);
                         user.setPassword(etPassword.getText().toString());
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String userString = gson.toJson(user);
-                        sign_up_step3_forward_arrow_intent.putExtra("userString", userString);
+
+                        //GsonBuilder gsonBuilder = new GsonBuilder();
+                        //Gson gson = gsonBuilder.create();
+                        //String userString = gson.toJson(user);
+
+                        sign_up_step3_forward_arrow_intent.putExtra("user", user);
+
                         startActivity(sign_up_step3_forward_arrow_intent);
                     }
                 }
