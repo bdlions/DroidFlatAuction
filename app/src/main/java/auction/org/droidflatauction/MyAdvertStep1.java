@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
@@ -25,6 +27,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auction.dto.User;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+
+import org.auction.udp.BackgroundWork;
+
 import java.util.ArrayList;
 
 public class MyAdvertStep1 extends AppCompatActivity
@@ -34,6 +43,7 @@ public class MyAdvertStep1 extends AppCompatActivity
     ArrayList<Integer> property_iamges;
     ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
     MyAdvertPropertyAdapter myAdvertPropertyAdapter;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +51,12 @@ public class MyAdvertStep1 extends AppCompatActivity
         setContentView(R.layout.activity_my_advert_step1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        initMyads();
+
 
         onClickButtonBackArrowListener();
 
@@ -66,6 +82,25 @@ public class MyAdvertStep1 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void initMyads()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                //String userString = (String) msg.obj;
+                //System.out.println(userString);
+                System.out.println(msg.obj);
+
+            }
+        });
+    }
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton)findViewById(R.id.my_advert_step1_back_arrow);
         ib_back_arrow.setOnClickListener(
