@@ -13,22 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.ImageButton;
 
-public class MyAdvertStep2 extends AppCompatActivity
+public class MyAdvertStep3 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static ImageButton ib_back_arrow;
-    private  static Button propperty_content_edit_btn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_advert_step2);
+        setContentView(R.layout.activity_my_advert_step3);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        onClickButtonBackArrowListener();
-        onClickButtonEditListener();
+
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -37,31 +34,6 @@ public class MyAdvertStep2 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton)findViewById(R.id.my_advert_step2_back_arrow);
-        ib_back_arrow.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent my_advert_step2_back_arrow_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                        startActivity(my_advert_step2_back_arrow_intent);
-                    }
-                }
-        );
-    }
-    public void onClickButtonEditListener(){
-        propperty_content_edit_btn = (Button)findViewById(R.id.my_advert_prpperty_edit_button);
-        propperty_content_edit_btn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent my_advert_prpperty_edit_button_intent = new Intent(getBaseContext(), MyAdvertStep3.class);
-                        startActivity(my_advert_prpperty_edit_button_intent);
-                    }
-                }
-        );
     }
 
     @Override
@@ -77,7 +49,7 @@ public class MyAdvertStep2 extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_advert_step2, menu);
+        getMenuInflater().inflate(R.menu.my_advert_step3, menu);
         return true;
     }
 

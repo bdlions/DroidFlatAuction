@@ -179,6 +179,10 @@
         <activity
             android:name=".MemberPropertySearchProduct"
             android:label="@string/title_activity_member_property_search_product"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MyAdvertStep3"
+            android:label="@string/title_activity_my_advert_step3"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
