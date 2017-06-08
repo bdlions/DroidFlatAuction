@@ -183,6 +183,10 @@
         <activity
             android:name=".MyAdvertStep3"
             android:label="@string/title_activity_my_advert_step3"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SavedAdvertStep2"
+            android:label="@string/title_activity_saved_advert_step2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

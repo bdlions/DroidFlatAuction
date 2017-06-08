@@ -1,6 +1,7 @@
 package auction.org.droidflatauction;
 
         import android.content.Context;
+        import android.content.Intent;
         import android.view.View;
         import android.view.ViewGroup;
         import android.widget.AdapterView;
@@ -48,7 +49,15 @@ public class SavedAdvertPropertyAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         if(convertView == null){
             convertView = View.inflate(context,R.layout.saved_advert_property_row, null);
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent saved_advert_property_step2_intent = new Intent(context, SavedAdvertStep2.class);
+                    context.startActivity(saved_advert_property_step2_intent);
+                }
+            });
         }
+
         ImageView property_images = (ImageView) convertView.findViewById(R.id.saved_advert_property_image);
         TextView property_title = (TextView) convertView.findViewById(R.id.saved_advert_property_title);
         TextView property_bedroom = (TextView) convertView.findViewById(R.id.saved_advert_property_bedroom);
