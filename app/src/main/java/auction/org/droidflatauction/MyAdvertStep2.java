@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.android.gms.maps.SupportMapFragment;
+
 public class MyAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
@@ -37,6 +39,9 @@ public class MyAdvertStep2 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+
+
     }
 
     public void onClickButtonBackArrowListener(){
