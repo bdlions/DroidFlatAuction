@@ -16,10 +16,15 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MyAdvertStep2 extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
     private  static ImageButton ib_back_arrow;
     private  static Button propperty_content_edit_btn;
     @Override
@@ -41,7 +46,24 @@ public class MyAdvertStep2 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
 
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        // Add a marker in Sydney, Australia,
+        // and move the map's camera to the same location.
+        LatLng bangladesh = new LatLng(23.6850, 90.3563);
+        LatLng dhaka = new LatLng(23.8103, 90.4125);
+        LatLng chittagong = new LatLng(22.3475, 91.8123);
+        googleMap.addMarker(new MarkerOptions().position(dhaka)
+                .title("Marker in dhaka"));
+        googleMap.addMarker(new MarkerOptions().position(chittagong)
+                .title("Marker in chittagong"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(bangladesh));
     }
 
     public void onClickButtonBackArrowListener(){

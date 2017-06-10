@@ -26,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.auction.udp.BackgroundUploader;
 import org.bdlions.client.reqeust.uploads.UploadService;
 
@@ -99,6 +101,9 @@ public class EditUserProfile extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
+        Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(iv_profile_photo);
     }
     public void onClickEditUserProfilePhotoEditListener(){
         iv_profile_photo = (ImageView) findViewById(R.id.user_photo);

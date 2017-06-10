@@ -1,6 +1,7 @@
 package auction.org.droidflatauction;
 
 import android.content.Intent;
+import android.content.pm.PackageInstaller;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,9 @@ public class NonMemberHome extends AppCompatActivity {
         onClickButtonSignInListener();
         onClickButtonSignUpListener();
         onClickButtonSearchListener();
+
+        SessionManager session = new SessionManager(getApplicationContext());
+        session.checkLogin();
     }
     public void onClickButtonSignInListener(){
         sign_in_btn = (Button)findViewById(R.id.sign_in_button);

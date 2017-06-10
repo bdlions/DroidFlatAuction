@@ -26,7 +26,7 @@ public class SessionManager {
     private static final String PREF_NAME = "AndroidHivePref";
 
     // All Shared Preferences Keys
-    //private static final String IS_LOGIN = "IsLoggedIn";
+    private static final String IS_LOGIN = "IsLoggedIn";
 
     // User name (make variable public to access from outside)
     //public static final String KEY_NAME = "name";
@@ -48,7 +48,7 @@ public class SessionManager {
      * */
     public void createLoginSession(String identity, String sessionId){
         // Storing login value as TRUE
-        //editor.putBoolean(IS_LOGIN, true);
+        editor.putBoolean(IS_LOGIN, true);
 
         // Storing email in pref
         editor.putString(KEY_IDENTITY, identity);
@@ -64,22 +64,22 @@ public class SessionManager {
      * If false it will redirect user to login page
      * Else won't do anything
      * */
-    /*public void checkLogin(){
+    public void checkLogin(){
         // Check login status
         if(!this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
-            Intent i = new Intent(_context, LoginActivity.class);
+            Intent i = new Intent(_context, MemberDashboard.class);
             // Closing all the Activities
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
             // Add new Flag to start new Activity
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             // Staring Login Activity
             _context.startActivity(i);
         }
 
-    }*/
+    }
 
 
 
@@ -122,9 +122,9 @@ public class SessionManager {
      * Quick check for login
      * **/
     // Get Login State
-    /*public boolean isLoggedIn(){
+    public boolean isLoggedIn(){
         return pref.getBoolean(IS_LOGIN, false);
-    }*/
+    }
 
     public String getSessionId()
     {

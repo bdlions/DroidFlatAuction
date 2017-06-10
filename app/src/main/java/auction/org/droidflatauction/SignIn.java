@@ -45,6 +45,8 @@ public class SignIn extends AppCompatActivity {
         onClickButtonBackArrowListener();
         onClickButtonLoginListener();
     }
+
+
     public void onClickButtonBackArrowListener(){
         login_ib_back_arrow = (ImageButton)findViewById(R.id.login_back_arrow);
         login_ib_back_arrow.setOnClickListener(
@@ -88,6 +90,7 @@ public class SignIn extends AppCompatActivity {
                                     session.createLoginSession(identity, signInResponse.getSessionId());
                                     //navigate to member dashboard
                                     Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
+                                    login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(login_intent);
                                 }
                                 else
