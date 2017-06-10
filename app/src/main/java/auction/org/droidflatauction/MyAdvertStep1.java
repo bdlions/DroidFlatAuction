@@ -27,22 +27,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auction.dto.Product;
+import com.auction.dto.ProductList;
 import com.auction.dto.User;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
 public class MyAdvertStep1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static ImageButton ib_back_arrow;
-    ListView myAdvertPropertyListView;
-    ArrayList<Integer> property_iamges;
-    ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
-    MyAdvertPropertyAdapter myAdvertPropertyAdapter;
+    public static ImageButton ib_back_arrow;
+    public static ListView myAdvertPropertyListView;
+    public static ArrayList<Integer> property_iamges;
+    public static ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
+    public static MyAdvertPropertyAdapter myAdvertPropertyAdapter;
     SessionManager session;
 
     @Override
@@ -55,20 +59,35 @@ public class MyAdvertStep1 extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
-        initMyads();
-
-
         onClickButtonBackArrowListener();
 
         myAdvertPropertyListView = (ListView) findViewById(R.id.my_advert_property_listview);
         property_iamges = new ArrayList<>();
         property_title_list = new ArrayList<>();
-        property_iamges = getPropertyIamges();
-        property_title_list = getPropertyTitileList();
-        property_bedroom_list = getPropertyBedroomList();
-        property_bathroom_list = getPropertyBathroomList();
-        property_bathroom_list = getPropertyBathroomList();
-        property_price_list = getPropertyPriceList();
+        property_bedroom_list = new ArrayList<>();
+        property_bathroom_list = new ArrayList<>();
+        property_price_list = new ArrayList<>();
+
+        property_iamges = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        property_title_list = (ArrayList<String>)getIntent().getExtras().get("titleList");
+        property_bedroom_list = (ArrayList<String>)getIntent().getExtras().get("bedroomList");
+        property_bathroom_list = (ArrayList<String>)getIntent().getExtras().get("bathroomList");
+        property_price_list = (ArrayList<String>)getIntent().getExtras().get("priceList");
+
+        //myAdvertPropertyListView = (ListView) findViewById(R.id.my_advert_property_listview);
+        //myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+        //myAdvertPropertyListView.setAdapter(myAdvertPropertyAdapter);
+
+
+        myAdvertPropertyListView = (ListView) findViewById(R.id.my_advert_property_listview);
+        //property_iamges = new ArrayList<>();
+        //property_title_list = new ArrayList<>();
+        //property_iamges = getPropertyIamges();
+        //property_title_list = getPropertyTitileList();
+        //property_bedroom_list = getPropertyBedroomList();
+        //property_bathroom_list = getPropertyBathroomList();
+        //property_bathroom_list = getPropertyBathroomList();
+        //property_price_list = getPropertyPriceList();
         myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
         myAdvertPropertyListView.setAdapter(myAdvertPropertyAdapter);
 
@@ -81,24 +100,6 @@ public class MyAdvertStep1 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-    }
-
-    public void initMyads()
-    {
-        String sessionId = session.getSessionId();
-        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
-        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-        packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                //String userString = (String) msg.obj;
-                //System.out.println(userString);
-                System.out.println(msg.obj);
-
-            }
-        });
     }
 
     public void onClickButtonBackArrowListener(){

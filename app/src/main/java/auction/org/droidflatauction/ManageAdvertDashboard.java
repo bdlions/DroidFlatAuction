@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,16 +15,30 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.auction.dto.Product;
+import com.auction.dto.ProductList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+
+import org.auction.udp.BackgroundWork;
+
+import java.util.ArrayList;
+
 public class ManageAdvertDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static Button create_ad_btn, my_ad_btn, saved_ad_btn, ad_account_settings_btn,
                             individual_ad_bids_btn,ad_stats_btn,ad_ranking,ad_faq;
+    SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_advert_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonCreateAdListener();
         onClickButtonMyAdListener();
@@ -60,8 +76,54 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                        startActivity(my_advert_intent);
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
+                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                        packetHeader.setSessionId(sessionId);
+                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                try
+                                {
+                                    String resultString = (String)msg.obj;
+                                    Gson gson = new Gson();
+                                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                                    System.out.println(response);
+                                    ArrayList<Product> productList = response.getProducts();
+                                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                                    ArrayList<String> titleList = new ArrayList<String>();
+                                    ArrayList<String> bedroomList = new ArrayList<String>();
+                                    ArrayList<String> bathroomList = new ArrayList<String>();
+                                    ArrayList<String> priceList = new ArrayList<String>();
+                                    if(productList != null)
+                                    {
+                                        int totalProducts = productList.size();
+                                        for(int productCounter = 0; productCounter < totalProducts; productCounter++)
+                                        {
+                                            Product product = productList.get(productCounter);
+                                            imageList.add(R.drawable.property_image_01);
+                                            titleList.add(product.getTitle());
+                                            bedroomList.add("");
+                                            bathroomList.add("");
+                                            priceList.add("");
+                                        }
+                                    }
+                                    Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                                    my_advert_intent.putExtra("imageList", imageList);
+                                    my_advert_intent.putExtra("titleList", titleList);
+                                    my_advert_intent.putExtra("bedroomList", bedroomList);
+                                    my_advert_intent.putExtra("bathroomList", bathroomList);
+                                    my_advert_intent.putExtra("priceList", priceList);
+                                    startActivity(my_advert_intent);
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        });
+
                     }
                 }
         );
