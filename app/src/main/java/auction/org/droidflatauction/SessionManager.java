@@ -66,7 +66,7 @@ public class SessionManager {
      * */
     public void checkLogin(){
         // Check login status
-        if(!this.isLoggedIn()){
+        if(this.isLoggedIn()){
             // user is not logged in redirect him to Login Activity
             Intent i = new Intent(_context, MemberDashboard.class);
             // Closing all the Activities
