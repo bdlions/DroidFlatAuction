@@ -205,7 +205,7 @@
         <activity
             android:name=".CreateAdvertStep7"
             android:label="@string/title_activity_create_advert_step7"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" /> 
         <activity
             android:name=".PropertyBidList"
             android:label="@string/title_activity_property_bid_list"
