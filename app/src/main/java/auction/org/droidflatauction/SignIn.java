@@ -65,7 +65,7 @@ public class SignIn extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        identity = etIdentity.getText().toString();
+                     /*   identity = etIdentity.getText().toString();
                         password = etPassword.getText().toString();
                         User user = new User();
                         user.setUserName(identity);
@@ -118,8 +118,9 @@ public class SignIn extends AppCompatActivity {
 
                                 }
                             }
-                        });
-
+                        });*/
+                        Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
+                        startActivity(login_intent);
                     }
                 }
         );

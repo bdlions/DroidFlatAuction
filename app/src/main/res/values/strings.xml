@@ -107,4 +107,5 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_member_property_search_product">RoomAuction</string>
     <string name="title_activity_my_advert_step3">RoomAuction</string>
     <string name="title_activity_saved_advert_step2">RoomAuction</string>
+    <string name="title_activity_create_advert_step7">RoomAuction</string>
 </resources>
