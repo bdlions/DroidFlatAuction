@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MyAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
     private  static ImageButton ib_back_arrow;
+    private static TextView tv_property_total_bids;
     private  static Button propperty_content_edit_btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class MyAdvertStep2 extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
+        onClickShowTotalBiddersListener();
         onClickButtonEditListener();
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -66,14 +69,14 @@ public class MyAdvertStep2 extends AppCompatActivity
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(bangladesh));
     }
 
-    public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton)findViewById(R.id.my_advert_step2_back_arrow);
-        ib_back_arrow.setOnClickListener(
+    public void onClickShowTotalBiddersListener(){
+        tv_property_total_bids = (TextView) findViewById(R.id.property_total_bids);
+        tv_property_total_bids.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent my_advert_step2_back_arrow_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                        startActivity(my_advert_step2_back_arrow_intent);
+                        Intent property_total_bids_intent = new Intent(getBaseContext(), PropertyBidList.class);
+                        startActivity(property_total_bids_intent);
                     }
                 }
         );
@@ -90,7 +93,18 @@ public class MyAdvertStep2 extends AppCompatActivity
                 }
         );
     }
-
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton)findViewById(R.id.my_advert_step2_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent my_advert_step2_back_arrow_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                        startActivity(my_advert_step2_back_arrow_intent);
+                    }
+                }
+        );
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
