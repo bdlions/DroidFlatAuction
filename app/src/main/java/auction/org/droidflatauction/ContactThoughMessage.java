@@ -15,23 +15,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
-public class SavedAdvertStep2 extends AppCompatActivity
+public class ContactThoughMessage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tv_property_total_bids;
-    private  static Button btn_propperty_contact_button;
+    private  static Button btn_message_send;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_saved_advert_step2);
+        setContentView(R.layout.activity_contact_though_message);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
-        onClickShowTotalBiddersListener();
-        onClickPropertyContactButtonListener();
+        onClickButtonMessageSendListener();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -42,37 +40,25 @@ public class SavedAdvertStep2 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
     public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step2_back_arrow);
+        ib_back_arrow = (ImageButton)findViewById(R.id.send_message_back_arrow);
         ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent saved_advert_step2_back_arrow_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
-                        startActivity(saved_advert_step2_back_arrow_intent);
+                        Intent send_message_back_arrow_intent = new Intent(getBaseContext(), SavedAdvertStep2.class);
+                        startActivity(send_message_back_arrow_intent);
                     }
                 }
         );
     }
-    public void onClickShowTotalBiddersListener(){
-        tv_property_total_bids = (TextView) findViewById(R.id.property_total_bids);
-        tv_property_total_bids.setOnClickListener(
+    public void onClickButtonMessageSendListener(){
+        btn_message_send = (Button)findViewById(R.id.message_send_button);
+        btn_message_send.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent property_total_bids_intent = new Intent(getBaseContext(), PropertyBidList.class);
-                        startActivity(property_total_bids_intent);
-                    }
-                }
-        );
-    }
-    public void onClickPropertyContactButtonListener(){
-        btn_propperty_contact_button = (Button)findViewById(R.id.saved_advert_propperty_contact_button);
-        btn_propperty_contact_button.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent propperty_contact_button_intent = new Intent(getBaseContext(), ContactThoughMessage.class);
-                        startActivity(propperty_contact_button_intent);
+                        Intent message_send_button_intent = new Intent(getBaseContext(), SavedAdvertStep2.class);
+                        startActivity(message_send_button_intent);
                     }
                 }
         );
@@ -90,7 +76,7 @@ public class SavedAdvertStep2 extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.saved_advert_step2, menu);
+        getMenuInflater().inflate(R.menu.contact_though_message, menu);
         return true;
     }
 
@@ -104,7 +90,7 @@ public class SavedAdvertStep2 extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         //if (id == R.id.action_settings) {
         //    return true;
-       // }
+        //}
 
         return super.onOptionsItemSelected(item);
     }
@@ -114,7 +100,6 @@ public class SavedAdvertStep2 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);

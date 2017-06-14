@@ -154,9 +154,9 @@ tools:showIn="@layout/app_bar_saved_advert_step2">
                         android:layout_height="40dp"
                         android:gravity="left"
                         android:text="39"
-                        android:textColor="#5a5a5a"
+                        android:textColor="#f06226"
                         android:textSize="14dp"
-                        android:textStyle="normal"
+                        android:textStyle="bold"
                         android:layout_weight="1"/>
                 </LinearLayout>
                 <LinearLayout
