@@ -55,6 +55,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step5_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
+
                         startActivity(create_advert_step5_back_arrow_intent);
                     }
                 }

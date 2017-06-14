@@ -13,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 
+import com.auction.dto.Product;
+
 
 public class CreateAdvertStep6 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
-
+    Product product;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +29,10 @@ public class CreateAdvertStep6 extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
+        product = (Product)getIntent().getExtras().get("product");
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -48,6 +54,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step6_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
+                        create_advert_step6_back_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step6_back_arrow_intent);
                     }
                 }
@@ -61,6 +68,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                     public void onClick(View v) {
 
                         Intent create_advert_step6_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep7.class);
+                        create_advert_step6_forward_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step6_forward_arrow_intent);
                     }
                 }

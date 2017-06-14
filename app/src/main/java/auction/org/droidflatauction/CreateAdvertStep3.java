@@ -59,6 +59,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step3_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
+                        create_advert_step3_back_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step3_back_arrow_intent);
                     }
                 }

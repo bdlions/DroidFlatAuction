@@ -59,6 +59,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step4_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
+                        create_advert_step4_back_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step4_back_arrow_intent);
                     }
                 }
