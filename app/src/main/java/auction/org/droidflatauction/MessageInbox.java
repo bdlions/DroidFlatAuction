@@ -13,19 +13,36 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
 
-public class MessageDashboard extends AppCompatActivity
+import java.util.ArrayList;
+
+public class MessageInbox extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static Button btn_msg_inbox;
+    private  static ImageButton ib_back_arrow;
+    ListView messageListView;
+    ArrayList<Integer> user_iamges;
+    ArrayList<String> user_list,message_subject_list;
+    MessageInboxAdapter messageInboxAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_message_dashboard);
+        setContentView(R.layout.activity_message_inbox);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        onClickButtonMessageInboxListener();
+        onClickButtonBackArrowListener();
+
+        messageListView = (ListView) findViewById(R.id.message_listview);
+        user_iamges = new ArrayList<>();
+        user_iamges = getUserIamges();
+        user_list = getMessageSenderList();
+        message_subject_list = getMessageSubjectList();
+        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_iamges,user_list,message_subject_list);
+
+        messageListView.setAdapter(messageInboxAdapter);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -36,18 +53,64 @@ public class MessageDashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    public void onClickButtonMessageInboxListener(){
-        btn_msg_inbox = (Button) findViewById(R.id.inbox_button);
-        btn_msg_inbox.setOnClickListener(
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton)findViewById(R.id.message_inbox_back_arrow);
+        ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
-                        startActivity(inbox_button_intent);
+                        Intent message_inbox_back_arrow_intent = new Intent(getBaseContext(), MessageDashboard.class);
+                        startActivity(message_inbox_back_arrow_intent);
                     }
                 }
         );
     }
+
+    public ArrayList<Integer> getUserIamges(){
+        user_iamges = new ArrayList<>();
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        user_iamges.add(R.drawable.user);
+        return user_iamges;
+    }
+
+    public ArrayList<String> getMessageSenderList(){
+        user_list = new ArrayList<>();
+        user_list.add("Nazmul Hasan");
+        user_list.add("Alamgir Kabir");
+        user_list.add("Nazmul Hasan");
+        user_list.add("Alamgir Kabir");
+        user_list.add("Nazmul Hasan");
+        user_list.add("Alamgir Kabir");
+        user_list.add("Nazmul Hasan");
+        user_list.add("Alamgir Kabir");
+        user_list.add("Nazmul Hasan");
+        user_list.add("Alamgir Kabir");
+        return user_list;
+    }
+    public ArrayList<String> getMessageSubjectList(){
+        message_subject_list = new ArrayList<>();
+        message_subject_list.add("I need 1 Flat");
+        message_subject_list.add("I need 2 Flats");
+        message_subject_list.add("I need 3 Flats");
+        message_subject_list.add("I need 4 Flats");
+        message_subject_list.add("I need 5 Flats");
+        message_subject_list.add("I need 6 Flats");
+        message_subject_list.add("I need 7 Flats");
+        message_subject_list.add("I need 8 Flats");
+        message_subject_list.add("I need 9 Flats");
+        message_subject_list.add("I need 10 Flats");
+        return message_subject_list;
+    }
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -61,7 +124,7 @@ public class MessageDashboard extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.message_dashboard, menu);
+        getMenuInflater().inflate(R.menu.message_inbox, menu);
         return true;
     }
 
@@ -74,8 +137,8 @@ public class MessageDashboard extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
       //  if (id == R.id.action_settings) {
-       //     return true;
-      //  }
+      //      return true;
+       // }
 
         return super.onOptionsItemSelected(item);
     }
@@ -110,6 +173,7 @@ public class MessageDashboard extends AppCompatActivity
         } else if (id == R.id.nav_phone) {
 
         }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

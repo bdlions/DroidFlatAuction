@@ -5,10 +5,52 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="50dp"
     android:orientation="vertical"
     android:background="#fff"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="auction.org.droidflatauction.MessageDashboard"
     tools:showIn="@layout/app_bar_message_dashboard">
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:textColor="#2874b9"
+        android:textSize="14dp"
+        android:textStyle="bold" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="#ff9711" />
+    <Button
+        android:id="@+id/inbox_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_centerVertical="false"
+        android:text="Inbox"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+    <Button
+        android:id="@+id/Sent_message_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="Sent"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
+    <Button
+        android:id="@+id/saved_message_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_centerVertical="false"
+        android:text="Saved"
+        android:background="@drawable/button_pressed"
+        android:textColor="#fff"
+        android:textSize="12dp"/>
 </LinearLayout>
