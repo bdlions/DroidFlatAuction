@@ -4,8 +4,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,22 +19,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MemberPropertySearch extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String [] search_place_name = {
-            "London 001","London 002","London 003","London 004","London 005","London 006",
-            "London 007","London 008","London 009","London 010","London 011","London 012",
-            "London 013","London 014","London 015","London 016","London 017","London 018"
-    };
-    Toolbar toolbar;
-    RecyclerView recyclerView;
-    MemberPropertySearchAdapter adapter;
-    RecyclerView.LayoutManager layoutManager;
-    ArrayList<Place> placeArrayList = new ArrayList<>();
+    String[] items;
+    ArrayList<String> listitems;
+    ArrayAdapter<String> adapter;
+    ListView listView;
+    EditText editText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,21 +45,30 @@ public class MemberPropertySearch extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-            toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        listView = (ListView) findViewById(R.id.listview);
+        editText = (EditText) findViewById(R.id.txtsearch);
+        initList();
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int before, int i2) {
 
-        recyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
+            }
 
-        int count = 0;
-        for (String place_name : search_place_name){
-            placeArrayList.add(new Place(place_name));
-            count++;
-        }
-        adapter = new MemberPropertySearchAdapter(placeArrayList);
-        recyclerView.setAdapter(adapter);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int i2) {
+                if(s.toString().equals("")){
+                    initList();
+                }
+                else {
+                    searchItem(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -65,6 +80,21 @@ public class MemberPropertySearch extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+    public void searchItem(String textToSearch){
+        for(String item : items){
+            if(!item.contains(textToSearch)){
+            listitems.remove(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+public void initList(){
+    items = new String[]{"London 123","London 124","London 125","London 126","London 127", "NewWork 123","NewWork 124","NewWork 125","NewWork 126","NewWork 127"};
+    listitems = new ArrayList<>(Arrays.asList(items));
+    adapter = new ArrayAdapter<String>(this, R.layout.search_property_place_row, R.id.texitem, listitems);
+    listView.setAdapter(adapter);
+}
 
 
     @Override
@@ -81,6 +111,7 @@ public class MemberPropertySearch extends AppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.member_property_search, menu);
+
         return true;
 
 
@@ -94,7 +125,7 @@ public class MemberPropertySearch extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
+        // if (id == R.id.action_settings) {
         //    return true;
         //}
 

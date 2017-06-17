@@ -17,7 +17,6 @@ favourite properties, receive email alerts for new results and much more.</strin
         of their race, religion, national origin, ethnicuty, disability, sex, gender, identity, sexual orientation or age
         - with respect and without judgement or bias.</string>
     <string name="title_activity_member_dashboard">RoomAuction</string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_profile_dashboard">RoomAuction</string>
@@ -26,7 +25,7 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_manage_advert_dashboard">RoomAuction</string>
     <string name="title_activity_message_dashboard">RoomAuction</string>
     <string name="title_activity_account_settings_dashboard">RoomAuction</string>
-    <string name="title_activity_member_property_search"></string>
+    <string name="title_activity_member_property_search">RoomAuction</string>
     <string name="title_activity_create_advert_step1">RoomAuction</string>
     <string name="title_activity_create_advert_step2">RoomAuction</string>
     <string name="title_activity_create_advert_step3">RoomAuction</string>

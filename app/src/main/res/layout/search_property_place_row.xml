@@ -4,9 +4,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
 <TextView
-    android:id="@+id/search_place"
+    android:id="@+id/texitem"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="10dp"/>
