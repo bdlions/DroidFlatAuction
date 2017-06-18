@@ -13,6 +13,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+import static auction.org.droidflatauction.R.id.list_items;
+import static auction.org.droidflatauction.R.id.manage_advert;
+import static auction.org.droidflatauction.R.id.ranking_advert_list_items;
 
 public class ManageAdvertRanking extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -25,6 +31,12 @@ public class ManageAdvertRanking extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
+        ListView listView = (ListView)findViewById(R.id.listv) ;
+        ViewGroup headerView = (ViewGroup)getLayoutInflater().inflate(R.layout.manage_advert_ranking_header,listView,false);
+        listView.addHeaderView(headerView);
+        String[] items = getResources().getStringArray(R.array.ranking_list_items);
+        ManageAdvertRankingAdapter adapter = new ManageAdvertRankingAdapter(this,R.layout.manage_advert_ranking_row,R.id.txrank,items);
+        listView.setAdapter(adapter);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

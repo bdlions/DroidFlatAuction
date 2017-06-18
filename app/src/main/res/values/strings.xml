@@ -111,4 +111,27 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_contact_though_message">RoomAuction</string>
     <string name="title_activity_message_inbox">RoomAuction</string>
     <string name="title_activity_message_show">RoomAuction</string>
+
+    <string-array name="ranking_list_items">
+        <item>1__Property 1__$10__$100</item>
+        <item>2__Property 2__$20__$200</item>
+        <item>3__Property 3__$30__$300</item>
+        <item>4__Property 4__$40__$400</item>
+        <item>5__Property 5__$50__$500</item>
+        <item>1__Property 1__$10__$100</item>
+        <item>2__Property 2__$20__$200</item>
+        <item>3__Property 3__$30__$300</item>
+        <item>4__Property 4__$40__$400</item>
+        <item>5__Property 5__$50__$500</item>
+        <item>1__Property 1__$10__$100</item>
+        <item>2__Property 2__$20__$200</item>
+        <item>3__Property 3__$30__$300</item>
+        <item>4__Property 4__$40__$400</item>
+        <item>5__Property 5__$50__$500</item>
+        <item>1__Property 1__$10__$100</item>
+        <item>2__Property 2__$20__$200</item>
+        <item>3__Property 3__$30__$300</item>
+        <item>4__Property 4__$40__$400</item>
+        <item>5__Property 5__$50__$500</item>
+    </string-array>
 </resources>
