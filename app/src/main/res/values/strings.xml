@@ -134,4 +134,22 @@ favourite properties, receive email alerts for new results and much more.</strin
         <item>4__Property 4__$40__$400</item>
         <item>5__Property 5__$50__$500</item>
     </string-array>
+    <string name="faq_paragraph">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent a sodales ante.
+        In sit amet nulla id nisi faucibus tincidunt. Ut convallis, tortor id porttitor convallis, eros lorem lobortis
+        ligula, et feugiat mi elit nec mauris. Nam quis ultricies nibh. Aliquam tincidunt dapibus malesuada. Aenean risus
+        massa, accumsan non lacus ac, euismod mattis metus. Aliquam condimentum leo id eros elementum congue. Nullam
+        molestie nulla nec dolor pretium porttitor. Nunc hendrerit suscipit ex quis semper. Orci varius natoque penatibus
+        et magnis dis parturient montes, nascetur ridiculus mus. Mauris sit amet turpis lacus. Proin vulputate laoreet
+        iaculis. Nulla id orci viverra, feugiat felis at, fermentum risus. In facilisis lorem ac nisl pretium pulvinar.
+        Quisque vulputate quam sed sem fringilla, ac porta lorem tristique.</string>
+    <string-array name="select_advert_spinner_options">
+        <item>Advert 1</item>
+        <item>Advert 2</item>
+        <item>Advert 3</item>
+        <item>Advert 4</item>
+        <item>Advert 5</item>
+        <item>Advert 6</item>
+    </string-array>
+    <string name="title_activity_manage_advert_stats_step1">RoomAuction</string>
+    <string name="title_activity_manage_advert_stats_step2">RoomAuction</string>
 </resources>

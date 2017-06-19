@@ -170,7 +170,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent stats_advert_intent = new Intent(getBaseContext(), ManageAdvertStats.class);
+                        Intent stats_advert_intent = new Intent(getBaseContext(), ManageAdvertStatsStep1.class);
                         startActivity(stats_advert_intent);
                     }
                 }

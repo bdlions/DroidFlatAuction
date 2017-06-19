@@ -13,10 +13,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageButton;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class ManageAdvertIndividualAdBidsStep1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private  static ImageButton ib_back_arrow;
+    ListView individualAdBidsPropertyListView;
+    ArrayList<String> property_title_list,property_postcode_list;
+    ManageAdvertIndividualAdBidsStep1ProductAdapter individualAdBidsPropertyAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +31,16 @@ public class ManageAdvertIndividualAdBidsStep1 extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        onClickButtonBackArrowListener();
+
+        individualAdBidsPropertyListView = (ListView) findViewById(R.id.ad_bids_listview);
+        property_title_list = new ArrayList<>();
+        property_title_list = getPropertyTitileList();
+        property_postcode_list = new ArrayList<>();
+        property_postcode_list = getPropertyPostCodeList();
+        individualAdBidsPropertyAdapter = new ManageAdvertIndividualAdBidsStep1ProductAdapter(ManageAdvertIndividualAdBidsStep1.this,property_title_list,property_postcode_list);
+
+        individualAdBidsPropertyListView.setAdapter(individualAdBidsPropertyAdapter);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -33,6 +50,37 @@ public class ManageAdvertIndividualAdBidsStep1 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton)findViewById(R.id.individual_ad_bids_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent individual_ad_bids_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                        startActivity(individual_ad_bids_back_arrow_intent);
+                    }
+                }
+        );
+    }
+
+    public ArrayList<String> getPropertyTitileList(){
+        property_title_list = new ArrayList<>();
+        property_title_list.add("23 PLANET ST, london EC4N 6AJ, UK");
+        property_title_list.add("10 Trinity Square, OXFORD EC3N 4AJ, UK");
+        property_title_list.add("23 PLANET ST, london EC4N 6AJ, UK");
+        property_title_list.add("100 Trinity Square, OXFORD EC3N 4AJ, UK");
+        property_title_list.add("223 PLANET ST, london EC4N 6AJ, UK");
+        return property_title_list;
+    }
+    public ArrayList<String> getPropertyPostCodeList(){
+        property_postcode_list = new ArrayList<>();
+        property_postcode_list.add("LU4 0HL");
+        property_postcode_list.add("LU4 0HL");
+        property_postcode_list.add("LU4 0HL");
+        property_postcode_list.add("LU4 0HL");
+        property_postcode_list.add("LU4 0HL");
+        return property_postcode_list;
     }
 
     @Override

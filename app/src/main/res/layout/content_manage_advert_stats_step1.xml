@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+android:fillViewport="true"
+app:layout_behavior="@string/appbar_scrolling_view_behavior"
+tools:context="auction.org.droidflatauction.ManageAdvertStatsStep1"
+tools:showIn="@layout/app_bar_manage_advert_stats_step1">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#fff">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageButton
+            android:id="@+id/stat_advert_step1_back_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/back_arrow"
+            android:background="#fff"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:text="Featured Ad Statistics"
+            android:textColor="#5a5a5a"
+            android:textSize="16dp"
+            android:textStyle="normal" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Account Summary"
+            android:textColor="#2876b6"
+            android:textSize="14dp"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="5dp"
+            android:background="#ff9711" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Total Balance"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="6"/>
+            <TextView
+                android:id="@+id/total_balance"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="£9.60"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="4"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Daily Budget"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="6"/>
+            <TextView
+                android:id="@+id/daily_budget"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="£4.00"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="4"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Default Bid"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="6"/>
+            <TextView
+                android:id="@+id/default_bid"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="11p"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="4"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Spent Today"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="6"/>
+            <TextView
+                android:id="@+id/spent_today"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="0p"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="4"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:weightSum="10">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Left Today"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="6"/>
+            <TextView
+                android:id="@+id/left_today"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="11p"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:layout_weight="4"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select an Advert"
+                android:textColor="#2874b9"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+            <Spinner
+                android:id="@+id/select_advert_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14dp"
+                android:layout_marginTop="5dp"
+                android:textColor="#5a5a5a"
+                android:textStyle="normal" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="0dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="2dp"
+                android:background="#ff9711" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="From"
+                android:textColor="#2874b9"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/date_from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select a Date"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:textColorHint="#5a5a5a"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To"
+                android:textColor="#2874b9"
+                android:textSize="14dp"
+                android:textStyle="bold" />
+            <EditText
+                android:id="@+id/date_to"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Select a Date"
+                android:textColor="#5a5a5a"
+                android:textSize="14dp"
+                android:textStyle="normal"
+                android:textColorHint="#5a5a5a"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical">
+            <Button
+                android:id="@+id/submit_button"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:textColor="#ffffff"
+                android:textSize="18dp"
+                android:text="View Stats"
+                android:textAllCaps="false"
+                android:background="@drawable/custom_round_corner_blue_button"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
+</ScrollView>
+

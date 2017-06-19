@@ -13,28 +13,41 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-public class ManageAdvertRanking extends AppCompatActivity
+import java.util.ArrayList;
+
+public class ManageAdvertStatsStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
+    ListView statsPropertyListView;
+    ArrayList<String> property_date_list,property_click_list,property_impression_list,property_ctr_list,property_cost_list;
+    ManageAdvertStatsAdapter statsPropertyAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_manage_advert_ranking);
+        setContentView(R.layout.activity_manage_advert_stats_step2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
 
-        ListView listView = (ListView)findViewById(R.id.listv) ;
-        ViewGroup headerView = (ViewGroup)getLayoutInflater().inflate(R.layout.manage_advert_ranking_header,listView,false);
-        listView.addHeaderView(headerView);
-        String[] items = getResources().getStringArray(R.array.ranking_list_items);
-        ManageAdvertRankingAdapter adapter = new ManageAdvertRankingAdapter(this,R.layout.manage_advert_ranking_row,R.id.txrank,items);
-        listView.setAdapter(adapter);
+        statsPropertyListView = (ListView) findViewById(R.id.stats_listview);
+        property_date_list = new ArrayList<>();
+        property_date_list = getPropertyDateList();
+        property_click_list = new ArrayList<>();
+        property_click_list = getPropertyClickList();
+        property_impression_list = new ArrayList<>();
+        property_impression_list = getPropertyImpressionList();
+        property_ctr_list = new ArrayList<>();
+        property_ctr_list = getPropertyCtrList();
+        property_cost_list = new ArrayList<>();
+        property_cost_list = getPropertyCostList();
+        statsPropertyAdapter = new ManageAdvertStatsAdapter(ManageAdvertStatsStep2.this,property_date_list,property_click_list,property_impression_list,property_ctr_list,property_cost_list);
+
+        statsPropertyListView.setAdapter(statsPropertyAdapter);
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -46,16 +59,61 @@ public class ManageAdvertRanking extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
     public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton)findViewById(R.id.ranking_advert_back_arrow);
+        ib_back_arrow = (ImageButton)findViewById(R.id.stat_advert_step2_back_arrow);
         ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent ranking_advert_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                        startActivity(ranking_advert_back_arrow_intent);
+                        Intent stat_advert_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertStatsStep1.class);
+                        startActivity(stat_advert_back_arrow_intent);
                     }
                 }
         );
+    }
+    public ArrayList<String> getPropertyDateList(){
+        property_date_list = new ArrayList<>();
+        property_date_list.add("17 April 2017 08:45AM");
+        property_date_list.add("18 April 2017 07:45AM");
+        property_date_list.add("19 April 2017 06:45AM");
+        property_date_list.add("20 April 2017 05:45AM");
+        property_date_list.add("21 April 2017 04:45AM");
+        return property_date_list;
+    }
+    public ArrayList<String> getPropertyClickList(){
+        property_click_list = new ArrayList<>();
+        property_click_list.add("100");
+        property_click_list.add("200");
+        property_click_list.add("300");
+        property_click_list.add("400");
+        property_click_list.add("500");
+        return property_click_list;
+    }
+    public ArrayList<String> getPropertyImpressionList(){
+        property_click_list = new ArrayList<>();
+        property_click_list.add("Bad");
+        property_click_list.add("Good");
+        property_click_list.add("Very Good");
+        property_click_list.add("Excellent");
+        property_click_list.add("Awesome");
+        return property_click_list;
+    }
+    public ArrayList<String> getPropertyCtrList(){
+        property_click_list = new ArrayList<>();
+        property_click_list.add("Ctr 1");
+        property_click_list.add("Ctr 2");
+        property_click_list.add("Ctr 3");
+        property_click_list.add("Ctr 4");
+        property_click_list.add("Ctr 5");
+        return property_click_list;
+    }
+    public ArrayList<String> getPropertyCostList(){
+        property_click_list = new ArrayList<>();
+        property_click_list.add("$100");
+        property_click_list.add("$200");
+        property_click_list.add("$300");
+        property_click_list.add("$400");
+        property_click_list.add("$500");
+        return property_click_list;
     }
     @Override
     public void onBackPressed() {
@@ -70,7 +128,7 @@ public class ManageAdvertRanking extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.manage_advert_ranking, menu);
+        getMenuInflater().inflate(R.menu.manage_advert_stats_step2, menu);
         return true;
     }
 
@@ -83,7 +141,7 @@ public class ManageAdvertRanking extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
       //  if (id == R.id.action_settings) {
-      //      return true;
+       //     return true;
        // }
 
         return super.onOptionsItemSelected(item);
@@ -94,7 +152,6 @@ public class ManageAdvertRanking extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
 
         if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
@@ -120,7 +177,6 @@ public class ManageAdvertRanking extends AppCompatActivity
         } else if (id == R.id.nav_phone) {
 
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

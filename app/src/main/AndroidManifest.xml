@@ -151,10 +151,6 @@
             android:label="@string/title_activity_manage_advert_individual_ad_bids_step1"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ManageAdvertStats"
-            android:label="@string/title_activity_manage_advert_stats"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".ManageAdvertRanking"
             android:label="@string/title_activity_manage_advert_ranking"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -221,6 +217,14 @@
         <activity
             android:name=".MessageShow"
             android:label="@string/title_activity_message_show"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertStatsStep1"
+            android:label="@string/title_activity_manage_advert_stats_step1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ManageAdvertStatsStep2"
+            android:label="@string/title_activity_manage_advert_stats_step2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
