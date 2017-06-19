@@ -187,6 +187,9 @@ public class CreateAdvertStep4 extends AppCompatActivity
         }else if (id == R.id.nav_search) {
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
+        } else if (id == R.id.nav_logout) {
+            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
+            startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {
