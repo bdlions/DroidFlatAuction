@@ -22,7 +22,7 @@ public class MessageInbox extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     ListView messageListView;
-    ArrayList<Integer> user_iamges;
+    ArrayList<Integer> user_images;
     ArrayList<String> user_list,message_subject_list;
     MessageInboxAdapter messageInboxAdapter;
     @Override
@@ -35,11 +35,11 @@ public class MessageInbox extends AppCompatActivity
         onClickButtonBackArrowListener();
 
         messageListView = (ListView) findViewById(R.id.message_listview);
-        user_iamges = new ArrayList<>();
-        user_iamges = getUserIamges();
+        user_images = new ArrayList<>();
+        user_images = getUserIamges();
         user_list = getMessageSenderList();
         message_subject_list = getMessageSubjectList();
-        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_iamges,user_list,message_subject_list);
+        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_images,user_list,message_subject_list);
 
         messageListView.setAdapter(messageInboxAdapter);
 
@@ -67,18 +67,18 @@ public class MessageInbox extends AppCompatActivity
     }
 
     public ArrayList<Integer> getUserIamges(){
-        user_iamges = new ArrayList<>();
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        user_iamges.add(R.drawable.user);
-        return user_iamges;
+        user_images = new ArrayList<>();
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        user_images.add(R.drawable.user);
+        return user_images;
     }
 
     public ArrayList<String> getMessageSenderList(){

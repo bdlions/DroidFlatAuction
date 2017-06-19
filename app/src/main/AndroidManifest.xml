@@ -225,6 +225,10 @@
         <activity
             android:name=".ManageAdvertStatsStep2"
             android:label="@string/title_activity_manage_advert_stats_step2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".MessageSent"
+            android:label="@string/title_activity_message_sent"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
