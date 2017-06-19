@@ -2,12 +2,23 @@ package auction.org.droidflatauction;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.auction.dto.Product;
+import com.auction.dto.ProductList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
 
 import java.util.ArrayList;
 
@@ -17,12 +28,14 @@ import java.util.ArrayList;
 
 public class MyAdvertPropertyAdapter extends BaseAdapter {
     private static Context context;
-    private ArrayList<Integer> listId;
+    private ArrayList<Integer> listId, productIdList;
     private ArrayList<String> property_title_list, property_bedroom_list,property_bathroom_list,property_price_list;
+    public String sessionId;
 
-
-    public MyAdvertPropertyAdapter(Context context, ArrayList<Integer> listId, ArrayList<String> property_title_list,ArrayList<String> property_bedroom_list,ArrayList<String> property_bathroom_list,ArrayList<String> property_price_list) {
+    public MyAdvertPropertyAdapter(Context context, String sessionId, ArrayList<Integer> productIdList, ArrayList<Integer> listId, ArrayList<String> property_title_list,ArrayList<String> property_bedroom_list,ArrayList<String> property_bathroom_list,ArrayList<String> property_price_list) {
         this.context = context;
+        this.sessionId = sessionId;
+        this.productIdList = productIdList;
         this.listId = listId;
         this.property_title_list = property_title_list;
         this.property_bedroom_list = property_bedroom_list;
@@ -46,14 +59,54 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup viewGroup) {
+    public View getView(final int position, View convertView, ViewGroup viewGroup) {
         if(convertView == null){
             convertView = View.inflate(context,R.layout.my_advert_property_row, null);
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent my_advert_property_intent = new Intent(context, MyAdvertStep2.class);
-                    context.startActivity(my_advert_property_intent);
+
+                    System.out.println(position);
+                    int productId = productIdList.get(position);
+
+                    Product product = new Product();
+                    product.setId(productId);
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    Gson gson = gsonBuilder.create();
+                    String productString = gson.toJson(product);
+
+                    //String sessionId = session.getSessionId();
+                    org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                    packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+                    packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                    packetHeader.setSessionId(sessionId);
+                    new BackgroundWork().execute(packetHeader, productString, new Handler(){
+                        @Override
+                        public void handleMessage(Message msg) {
+                            try
+                            {
+                                String resultString = (String)msg.obj;
+                                Gson gson = new Gson();
+                                Product responseProduct = gson.fromJson(resultString, Product.class);
+                                System.out.println(responseProduct.getTitle());
+
+                                GsonBuilder gsonBuilder = new GsonBuilder();
+                                Gson gson2 = gsonBuilder.create();
+                                String productString = gson2.toJson(responseProduct);
+
+                                Intent my_advert_property_intent = new Intent(context, MyAdvertStep2.class);
+                                my_advert_property_intent.putExtra("productString", productString);
+                                context.startActivity(my_advert_property_intent);
+                            }
+                            catch(Exception ex)
+                            {
+                                System.out.println(ex.toString());
+                            }
+                        }
+                    });
+
+
+
                 }
             });
         }
@@ -71,6 +124,5 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
 
         return convertView;
     }
-
 
 }

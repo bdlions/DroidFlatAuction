@@ -27,7 +27,7 @@
                 android:src="@drawable/back_arrow"
                 android:background="#fff"/>
             <TextView
-                android:id="@+id/profile_title"
+                android:id="@+id/view_product_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -35,7 +35,7 @@
                 android:scrollHorizontally="true"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="10 Trinity Square, London EC3N 4AJ, UK"
+                android:text=""
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
                 android:textStyle="normal" />
@@ -75,11 +75,11 @@
                     android:layout_marginTop="40dp"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/property_price"
+                        android:id="@+id/view_product_price"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:gravity="left"
-                        android:text="$200.00"
+                        android:text=""
                         android:textColor="#ff9000"
                         android:textSize="32dp"
                         android:textStyle="bold"/>
@@ -202,12 +202,12 @@
                             android:layout_marginTop="5dp"
                             android:background="#ff9711" />
                         <TextView
-                            android:id="@+id/property_description"
+                            android:id="@+id/view_product_description"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:layout_marginTop="10dp"
                             android:gravity="left"
-                            android:text="Double room in E16 available from 17/04/2017, short walk away from Prince Regent Lane DLR1."
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"/>

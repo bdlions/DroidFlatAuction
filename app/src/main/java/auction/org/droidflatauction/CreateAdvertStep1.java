@@ -75,6 +75,8 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step1_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
+                        //setting a default image for the time being
+                        product.setImg("a.jpg");
                         create_advert_step1_forward_arrow_intent.putExtra("product",product);
                         startActivity(create_advert_step1_forward_arrow_intent);
                     }
@@ -90,7 +92,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
         sp_i_have_for_rent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -107,7 +109,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
         sp_size_of_property.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -124,7 +126,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
         sp_type_of_property.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override

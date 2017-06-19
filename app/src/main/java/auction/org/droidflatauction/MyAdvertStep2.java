@@ -17,24 +17,48 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.auction.dto.Product;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 public class MyAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
     private  static ImageButton ib_back_arrow;
-    private static TextView tv_property_total_bids;
+    private static TextView tv_view_product_title, tv_view_product_price, tv_view_product_description, tv_property_total_bids;
     private  static Button propperty_content_edit_btn;
+    private Product product;
+    private String productString;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_advert_step2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        tv_view_product_title = (TextView) findViewById(R.id.view_product_title);
+        tv_view_product_price = (TextView) findViewById(R.id.view_product_price);
+        tv_view_product_description = (TextView) findViewById(R.id.view_product_description);
+
+        try
+        {
+            productString = getIntent().getExtras().getString("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+            //product = (Product)getIntent().getExtras().get("productInfo");
+            tv_view_product_title.setText(product.getTitle());
+            tv_view_product_price.setText(product.getBasePrice()+" £");
+            tv_view_product_description.setText(product.getDescription());
+        }
+        catch(Exception ex)
+        {
+            //handle exception
+        }
+
 
         onClickButtonBackArrowListener();
         onClickShowTotalBiddersListener();

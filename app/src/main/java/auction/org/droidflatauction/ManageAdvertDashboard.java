@@ -92,6 +92,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                                     System.out.println(response);
                                     ArrayList<Product> productList = response.getProducts();
                                     ArrayList<Integer> imageList = new ArrayList<Integer>();
+                                    ArrayList<Integer> productIdList = new ArrayList<Integer>();
                                     ArrayList<String> titleList = new ArrayList<String>();
                                     ArrayList<String> bedroomList = new ArrayList<String>();
                                     ArrayList<String> bathroomList = new ArrayList<String>();
@@ -102,6 +103,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                                         for(int productCounter = 0; productCounter < totalProducts; productCounter++)
                                         {
                                             Product product = productList.get(productCounter);
+                                            productIdList.add(product.getId());
                                             imageList.add(R.drawable.property_image_01);
                                             titleList.add(product.getTitle());
                                             bedroomList.add("");
@@ -111,6 +113,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                                     }
                                     Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                                     my_advert_intent.putExtra("imageList", imageList);
+                                    my_advert_intent.putExtra("productIdList", productIdList);
                                     my_advert_intent.putExtra("titleList", titleList);
                                     my_advert_intent.putExtra("bedroomList", bedroomList);
                                     my_advert_intent.putExtra("bathroomList", bathroomList);

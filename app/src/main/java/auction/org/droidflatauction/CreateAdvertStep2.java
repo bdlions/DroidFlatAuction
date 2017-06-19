@@ -60,45 +60,45 @@ public class CreateAdvertStep2 extends AppCompatActivity
             case R.id.amenities_parking:
                 String st_parking = getString(R.string.parking);
                 if(checked){
-                    Toast.makeText(getBaseContext(), st_parking + " is selected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_parking + " is selected", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), st_parking + " is deselected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_parking + " is deselected", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.amenities_balcony_patio:
                 String st_balcony_patio = getString(R.string.balcony_patio);
                 if(checked){
-                    Toast.makeText(getBaseContext(), st_balcony_patio + " is selected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_balcony_patio + " is selected", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), st_balcony_patio + " is deselected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_balcony_patio + " is deselected", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.amenities_garden_rootTerrace:
                 String st_garden_rootTerrace = getString(R.string.garden_rootTerrace);
                 if(checked){
-                    Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is selected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is selected", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is deselected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is deselected", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.amenities_disabled_access:
                 String st_disabled_access = getString(R.string.disabled_access);
                 if(checked){
-                    Toast.makeText(getBaseContext(), st_disabled_access + " is selected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_disabled_access + " is selected", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), st_disabled_access + " is deselected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_disabled_access + " is deselected", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.amenities_garage:
                 String st_garage = getString(R.string.garage);
                 if(checked){
-                    Toast.makeText(getBaseContext(), st_garage + " is selected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_garage + " is selected", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getBaseContext(), st_garage + " is deselected", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getBaseContext(), st_garage + " is deselected", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -137,7 +137,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
         sp_area.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
