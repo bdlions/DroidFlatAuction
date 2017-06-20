@@ -31,6 +31,8 @@ public class MessageInbox extends AppCompatActivity
     public ArrayList<String> subjectList = new ArrayList<String>();
     ArrayList<Integer> imageList = new ArrayList<Integer>();
 
+    SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,9 @@ public class MessageInbox extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         messageIdList = (ArrayList<Integer>)getIntent().getExtras().get("messageIdList");
         userNameList = (ArrayList<String>)getIntent().getExtras().get("userNameList");
@@ -52,7 +57,7 @@ public class MessageInbox extends AppCompatActivity
         //user_list = getMessageSenderList();
         //message_subject_list = getMessageSubjectList();
         //messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_images,user_list,message_subject_list);
-        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,imageList, userNameList, subjectList);
+        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this, session.getSessionId(), messageIdList, imageList, userNameList, subjectList);
 
 
         messageListView.setAdapter(messageInboxAdapter);

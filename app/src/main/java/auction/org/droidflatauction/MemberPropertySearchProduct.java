@@ -23,9 +23,12 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     ListView member_property_search_product_listview;
-    ArrayList<Integer> property_iamges;
+    ArrayList<Integer> property_iamges, productIdList;
     ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
     SavedAdvertPropertyAdapter member_property_search_product_adapter;
+
+    SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +37,17 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         onClickButtonBackArrowListener();
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        productIdList = new ArrayList<>();
+        productIdList.add(1);
+        productIdList.add(2);
+        productIdList.add(3);
+        productIdList.add(4);
+        productIdList.add(5);
+
 
         member_property_search_product_listview = (ListView) findViewById(R.id.member_property_search_product_listview);
         property_iamges = new ArrayList<>();
@@ -44,7 +58,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         property_bathroom_list = getPropertyBathroomList();
         property_bathroom_list = getPropertyBathroomList();
         property_price_list = getPropertyPriceList();
-        member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+        member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
 
         member_property_search_product_listview.setAdapter(member_property_search_product_adapter);
         member_property_search_product_listview.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

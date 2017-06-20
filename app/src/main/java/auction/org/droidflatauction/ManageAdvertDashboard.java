@@ -137,8 +137,61 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent saved_advert_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
-                        startActivity(saved_advert_intent);
+
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.FETCH_SAVED_PRODUCT_LIST);
+                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                        packetHeader.setSessionId(sessionId);
+                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                try
+                                {
+                                    String resultString = (String)msg.obj;
+                                    Gson gson = new Gson();
+                                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                                    System.out.println(response);
+                                    ArrayList<Product> productList = response.getProducts();
+                                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                                    ArrayList<Integer> productIdList = new ArrayList<Integer>();
+                                    ArrayList<String> titleList = new ArrayList<String>();
+                                    ArrayList<String> bedroomList = new ArrayList<String>();
+                                    ArrayList<String> bathroomList = new ArrayList<String>();
+                                    ArrayList<String> priceList = new ArrayList<String>();
+                                    if(productList != null)
+                                    {
+                                        int totalProducts = productList.size();
+                                        for(int productCounter = 0; productCounter < totalProducts; productCounter++)
+                                        {
+                                            Product product = productList.get(productCounter);
+                                            productIdList.add(product.getId());
+                                            imageList.add(R.drawable.property_image_01);
+                                            titleList.add(product.getTitle());
+                                            bedroomList.add("");
+                                            bathroomList.add("");
+                                            priceList.add("");
+                                        }
+                                    }
+
+                                    Intent saved_advert_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
+                                    startActivity(saved_advert_intent);
+
+                                    //Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                                    saved_advert_intent.putExtra("imageList", imageList);
+                                    saved_advert_intent.putExtra("productIdList", productIdList);
+                                    saved_advert_intent.putExtra("titleList", titleList);
+                                    saved_advert_intent.putExtra("bedroomList", bedroomList);
+                                    saved_advert_intent.putExtra("bathroomList", bathroomList);
+                                    saved_advert_intent.putExtra("priceList", priceList);
+                                    startActivity(saved_advert_intent);
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        });
                     }
                 }
         );

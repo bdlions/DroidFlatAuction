@@ -61,7 +61,7 @@
                 android:textStyle="normal"
                 android:layout_weight="3"/>
             <EditText
-                android:id="@+id/message_text"
+                android:id="@+id/et_inbox_send_message_body"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="top|left"
@@ -71,7 +71,7 @@
                 android:textStyle="normal"
                 android:layout_weight="2"/>
             <Button
-                android:id="@+id/message_send_button"
+                android:id="@+id/btn_inbox_send_message"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginTop="20dp"

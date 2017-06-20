@@ -23,9 +23,11 @@ public class SavedAdvertStep1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     ListView savedAdvertPropertyListView;
-    ArrayList<Integer> property_iamges;
+    ArrayList<Integer> property_iamges, productIdList;
     ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
     SavedAdvertPropertyAdapter savedAdvertPropertyAdapter;
+
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,16 +38,28 @@ public class SavedAdvertStep1 extends AppCompatActivity
 
         onClickButtonBackArrowListener();
 
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
         savedAdvertPropertyListView = (ListView) findViewById(R.id.saved_advert_property_listview);
         property_iamges = new ArrayList<>();
         property_title_list = new ArrayList<>();
-        property_iamges = getPropertyIamges();
-        property_title_list = getPropertyTitileList();
-        property_bedroom_list = getPropertyBedroomList();
-        property_bathroom_list = getPropertyBathroomList();
-        property_bathroom_list = getPropertyBathroomList();
-        property_price_list = getPropertyPriceList();
-        savedAdvertPropertyAdapter = new SavedAdvertPropertyAdapter(SavedAdvertStep1.this,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+
+        //property_iamges = getPropertyIamges();
+        //property_title_list = getPropertyTitileList();
+        //property_bedroom_list = getPropertyBedroomList();
+        //property_bathroom_list = getPropertyBathroomList();
+        //property_bathroom_list = getPropertyBathroomList();
+        //property_price_list = getPropertyPriceList();
+
+        productIdList = (ArrayList<Integer>)getIntent().getExtras().get("productIdList");
+        property_iamges = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        property_title_list = (ArrayList<String>)getIntent().getExtras().get("titleList");
+        property_bedroom_list = (ArrayList<String>)getIntent().getExtras().get("bedroomList");
+        property_bathroom_list = (ArrayList<String>)getIntent().getExtras().get("bathroomList");
+        property_price_list = (ArrayList<String>)getIntent().getExtras().get("priceList");
+
+        savedAdvertPropertyAdapter = new SavedAdvertPropertyAdapter(SavedAdvertStep1.this,session.getSessionId(), productIdList, property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
 
         savedAdvertPropertyListView.setAdapter(savedAdvertPropertyAdapter);
 

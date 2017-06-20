@@ -17,17 +17,40 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.auction.dto.Product;
+import com.google.gson.Gson;
+
 public class SavedAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tv_property_total_bids;
+    private static TextView tv_property_total_bids, tv_view_saved_product_title, tv_view_saved_product_price, tv_view_saved_product_description;
     private  static Button btn_propperty_contact_button;
+    private Product product;
+    private String productString;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_saved_advert_step2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        tv_view_saved_product_title = (TextView) findViewById(R.id.tv_view_saved_product_title);
+        tv_view_saved_product_price = (TextView) findViewById(R.id.tv_view_saved_product_price);
+        tv_view_saved_product_description = (TextView) findViewById(R.id.tv_view_saved_product_description);
+        try
+        {
+            productString = getIntent().getExtras().getString("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+            tv_view_saved_product_title.setText(product.getTitle());
+            tv_view_saved_product_price.setText(product.getBasePrice()+" £");
+            tv_view_saved_product_description.setText(product.getDescription());
+        }
+        catch(Exception ex)
+        {
+            //handle exception
+        }
 
         onClickButtonBackArrowListener();
         onClickShowTotalBiddersListener();

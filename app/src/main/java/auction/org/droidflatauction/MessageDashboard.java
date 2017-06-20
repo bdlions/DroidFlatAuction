@@ -120,8 +120,58 @@ public class MessageDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent message_send_button_intent = new Intent(getBaseContext(), MessageSent.class);
-                        startActivity(message_send_button_intent);
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.FETCH_MESSAGE_SENT_LIST);
+                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                        packetHeader.setSessionId(sessionId);
+                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                try
+                                {
+                                    String resultString = (String)msg.obj;
+                                    Gson gson = new Gson();
+                                    MessageList response = gson.fromJson(resultString, MessageList.class);
+
+                                    List<com.auction.dto.Message> messageList = response.getMessageList();
+
+
+                                    ArrayList<Integer> messageIdList = new ArrayList<Integer>();
+                                    ArrayList<String> userNameList = new ArrayList<String>();
+                                    ArrayList<String> subjectList = new ArrayList<String>();
+                                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+
+
+                                    if(messageList != null)
+                                    {
+                                        int totalMessages = messageList.size();
+                                        for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
+                                        {
+                                            com.auction.dto.Message message = messageList.get(messageCounter);
+                                            messageIdList.add(message.getId());
+                                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
+                                            subjectList.add(message.getSubject());
+                                            imageList.add(R.drawable.user);
+                                        }
+                                    }
+                                    Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
+                                    inbox_button_intent.putExtra("messageIdList", messageIdList);
+                                    inbox_button_intent.putExtra("userNameList", userNameList);
+                                    inbox_button_intent.putExtra("subjectList", subjectList);
+                                    inbox_button_intent.putExtra("imageList", imageList);
+                                    startActivity(inbox_button_intent);
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        });
+
+
+                        //Intent message_send_button_intent = new Intent(getBaseContext(), MessageSent.class);
+                        //startActivity(message_send_button_intent);
                     }
                 }
         );

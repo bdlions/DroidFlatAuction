@@ -66,7 +66,6 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
-                    System.out.println(position);
                     int productId = productIdList.get(position);
 
                     Product product = new Product();

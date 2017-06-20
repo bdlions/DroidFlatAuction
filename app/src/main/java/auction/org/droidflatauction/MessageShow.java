@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -13,18 +15,51 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.auction.dto.Image;
+import com.auction.dto.Location;
+import com.auction.dto.MessageText;
+import com.auction.dto.Occupation;
+import com.auction.dto.Pet;
+import com.auction.dto.ProductCategory;
+import com.auction.dto.ProductSize;
+import com.auction.dto.ProductType;
+import com.auction.dto.Smoking;
+import com.auction.dto.Stay;
+import com.auction.dto.response.SignInResponse;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MessageShow extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
+    private EditText etInboxSendMessageBody;
+    private Button btnInboxSendMessage;
     ListView messageListView;
     ArrayList<Integer> user_iamges;
     ArrayList<String> user_list,message_time_list,message_text_list;
     MessageShowAdapter messageInboxAdapter;
+
+    ArrayList<String> messageBodyList = new ArrayList<String>();
+    ArrayList<String> userNameList = new ArrayList<String>();
+    ArrayList<Integer> imageList = new ArrayList<Integer>();
+    ArrayList<String> timeList = new ArrayList<String>();
+
+    public com.auction.dto.Message message;
+
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +70,31 @@ public class MessageShow extends AppCompatActivity
 
         onClickButtonBackArrowListener();
 
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        etInboxSendMessageBody = (EditText) findViewById(R.id.et_inbox_send_message_body);
+        btnInboxSendMessage = (Button) findViewById(R.id.btn_inbox_send_message);
+        onClickButtonSendMessageListener();
+
+        message = new com.auction.dto.Message();
+        message.setId(getIntent().getExtras().getInt("messageId"));
+
+        messageBodyList = (ArrayList<String>)getIntent().getExtras().get("messageBodyList");
+        userNameList = (ArrayList<String>)getIntent().getExtras().get("userNameList");
+        imageList = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        timeList = (ArrayList<String>)getIntent().getExtras().get("timeList");
+
         messageListView = (ListView) findViewById(R.id.message_show_listview);
+
         user_iamges = new ArrayList<>();
-        user_iamges = getUserIamges();
-        user_list = getMessageSenderList();
-        message_time_list = getMessageTimeList();
-        message_text_list = getMessageTextList();
-        messageInboxAdapter = new MessageShowAdapter(MessageShow.this,user_iamges,user_list,message_time_list,message_text_list);
+        //user_iamges = getUserIamges();
+        //user_list = getMessageSenderList();
+        //message_time_list = getMessageTimeList();
+        //message_text_list = getMessageTextList();
+
+        //messageInboxAdapter = new MessageShowAdapter(MessageShow.this,user_iamges,user_list,message_time_list,message_text_list);
+        messageInboxAdapter = new MessageShowAdapter(MessageShow.this,imageList, userNameList, timeList, messageBodyList);
 
         messageListView.setAdapter(messageInboxAdapter);
 
@@ -54,6 +107,49 @@ public class MessageShow extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void onClickButtonSendMessageListener(){
+        btnInboxSendMessage.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MessageText messageText = new MessageText();
+                        messageText.setBody(etInboxSendMessageBody.getText().toString());
+                        List<MessageText> messageTextList = new ArrayList<>();
+                        messageTextList.add(messageText);
+                        message.setMessageTextList(messageTextList);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String messageString = gson.toJson(message);
+
+
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.ADD_MESSAGE_TEXT);
+                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+                        packetHeader.setSessionId(session.getSessionId());
+                        new BackgroundWork().execute(packetHeader, messageString, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                String resultString = (String)msg.obj;
+                                Gson gson = new Gson();
+                                com.auction.dto.Message response = gson.fromJson(resultString, com.auction.dto.Message.class);
+                                if(response.isSuccess())
+                                {
+                                    Toast.makeText(getApplicationContext(), "Message is sent successfully.", Toast.LENGTH_LONG).show();
+                                    etInboxSendMessageBody.setText("");
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Error while sending message Please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    }
+                }
+        );
+    }
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton)findViewById(R.id.message_show_back_arrow);
         ib_back_arrow.setOnClickListener(
