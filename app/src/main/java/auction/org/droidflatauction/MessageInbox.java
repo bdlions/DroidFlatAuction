@@ -25,6 +25,12 @@ public class MessageInbox extends AppCompatActivity
     ArrayList<Integer> user_images;
     ArrayList<String> user_list,message_subject_list;
     MessageInboxAdapter messageInboxAdapter;
+
+    public ArrayList<Integer> messageIdList = new ArrayList<Integer>();
+    public ArrayList<String> userNameList = new ArrayList<String>();
+    public ArrayList<String> subjectList = new ArrayList<String>();
+    ArrayList<Integer> imageList = new ArrayList<Integer>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,12 +40,20 @@ public class MessageInbox extends AppCompatActivity
 
         onClickButtonBackArrowListener();
 
+        messageIdList = (ArrayList<Integer>)getIntent().getExtras().get("messageIdList");
+        userNameList = (ArrayList<String>)getIntent().getExtras().get("userNameList");
+        subjectList = (ArrayList<String>)getIntent().getExtras().get("subjectList");
+        imageList = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+
         messageListView = (ListView) findViewById(R.id.message_listview);
+
         user_images = new ArrayList<>();
-        user_images = getUserIamges();
-        user_list = getMessageSenderList();
-        message_subject_list = getMessageSubjectList();
-        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_images,user_list,message_subject_list);
+        //user_iamges = getUserIamges();
+        //user_list = getMessageSenderList();
+        //message_subject_list = getMessageSubjectList();
+        //messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_images,user_list,message_subject_list);
+        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,imageList, userNameList, subjectList);
+
 
         messageListView.setAdapter(messageInboxAdapter);
 

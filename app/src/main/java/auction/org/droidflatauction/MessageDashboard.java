@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -15,15 +17,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.auction.dto.MessageList;
+import com.auction.dto.Product;
+import com.auction.dto.ProductList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+
+import org.auction.udp.BackgroundWork;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class MessageDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static Button btn_msg_inbox, btn_msg_sent;
+    SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonMessageInboxListener();
         onClickButtonMessageSentListener();
@@ -43,8 +61,55 @@ public class MessageDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                       Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
-                        startActivity(inbox_button_intent);
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.FETCH_MESSAGE_INBOX_LIST);
+                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                        packetHeader.setSessionId(sessionId);
+                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                try
+                                {
+                                    String resultString = (String)msg.obj;
+                                    Gson gson = new Gson();
+                                    MessageList response = gson.fromJson(resultString, MessageList.class);
+
+                                    List<com.auction.dto.Message> messageList = response.getMessageList();
+
+
+                                    ArrayList<Integer> messageIdList = new ArrayList<Integer>();
+                                    ArrayList<String> userNameList = new ArrayList<String>();
+                                    ArrayList<String> subjectList = new ArrayList<String>();
+                                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+
+
+                                    if(messageList != null)
+                                    {
+                                        int totalMessages = messageList.size();
+                                        for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
+                                        {
+                                            com.auction.dto.Message message = messageList.get(messageCounter);
+                                            messageIdList.add(message.getId());
+                                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
+                                            subjectList.add(message.getSubject());
+                                            imageList.add(R.drawable.user);
+                                        }
+                                    }
+                                    Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
+                                    inbox_button_intent.putExtra("messageIdList", messageIdList);
+                                    inbox_button_intent.putExtra("userNameList", userNameList);
+                                    inbox_button_intent.putExtra("subjectList", subjectList);
+                                    inbox_button_intent.putExtra("imageList", imageList);
+                                    startActivity(inbox_button_intent);
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        });
+
                     }
                 }
         );
