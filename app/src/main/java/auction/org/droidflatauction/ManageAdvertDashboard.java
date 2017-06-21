@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.auction.dto.AccountSettingFA;
 import com.auction.dto.Product;
 import com.auction.dto.ProductList;
 import com.auction.util.ACTION;
@@ -175,7 +176,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                                     }
 
                                     Intent saved_advert_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
-                                    startActivity(saved_advert_intent);
+                                    //startActivity(saved_advert_intent);
 
                                     //Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                                     saved_advert_intent.putExtra("imageList", imageList);

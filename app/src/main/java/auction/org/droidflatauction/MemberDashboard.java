@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -15,15 +17,33 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
+import com.auction.dto.Location;
+import com.auction.dto.LocationList;
+import com.auction.dto.Product;
+import com.auction.dto.ProductList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+
+import org.auction.udp.BackgroundWork;
+
+import java.sql.Array;
+import java.util.ArrayList;
+
 public class MemberDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static LinearLayout manage_advert_layout, message_layout, profile_layout, account_settings_layout, property_search_layout;
+    SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonManageAdvertDashboardListener();
         onClickButtonMessageDashboardListener();
@@ -99,8 +119,45 @@ public class MemberDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent property_search_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
-                        startActivity(property_search_intent);
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.FETCH_LOCATION_LIST);
+                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                        packetHeader.setSessionId(sessionId);
+                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                try
+                                {
+                                    String resultString = (String)msg.obj;
+                                    Gson gson = new Gson();
+                                    LocationList response = gson.fromJson(resultString, LocationList.class);
+
+                                    ArrayList<String> locationList = new ArrayList<String>();
+                                    if(response != null)
+                                    {
+
+                                        int totalLocations = response.getLocations().size();
+                                        String[] items = new String[totalLocations];
+                                        for(int counter = 0; counter < totalLocations; counter++)
+                                        {
+                                            Location location = response.getLocations().get(counter);
+                                            locationList.add(location.getSearchString());
+                                            items[counter] = location.getSearchString();
+                                        }
+                                        Intent property_search_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
+                                        property_search_intent.putExtra("locationList", locationList);
+                                        property_search_intent.putExtra("items", items);
+                                        startActivity(property_search_intent);
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        });
+
                     }
                 }
         );

@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.MenuItemCompat;
@@ -25,6 +27,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.auction.dto.Product;
+import com.auction.dto.ProductList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+
+import org.auction.udp.BackgroundWork;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +47,7 @@ public class MemberPropertySearch extends AppCompatActivity
     ArrayAdapter<String> adapter;
     ListView listView;
     EditText editText;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +55,10 @@ public class MemberPropertySearch extends AppCompatActivity
         setContentView(R.layout.activity_member_property_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        items = (String[])getIntent().getExtras().get("items");
 
         listView = (ListView) findViewById(R.id.listview);
         editText = (EditText) findViewById(R.id.txtsearch);
@@ -90,10 +105,68 @@ public class MemberPropertySearch extends AppCompatActivity
     }
 
 public void initList(){
-    items = new String[]{"London 123","London 124","London 125","London 126","London 127", "NewWork 123","NewWork 124","NewWork 125","NewWork 126","NewWork 127"};
+    //items = new String[]{"London 123","London 124","London 125","London 126","London 127", "NewWork 123","NewWork 124","NewWork 125","NewWork 126","NewWork 127"};
     listitems = new ArrayList<>(Arrays.asList(items));
     adapter = new ArrayAdapter<String>(this, R.layout.search_property_place_row, R.id.texitem, listitems);
     listView.setAdapter(adapter);
+    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            //retrieve product list from the server
+            //Toast.makeText(getApplicationContext(), items[position]+" : Item clicked", Toast.LENGTH_LONG).show();
+            String sessionId = session.getSessionId();
+            org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+            packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
+            packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+            packetHeader.setSessionId(sessionId);
+            new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    try
+                    {
+                        String resultString = (String)msg.obj;
+                        Gson gson = new Gson();
+                        ProductList response = gson.fromJson(resultString, ProductList.class);
+                        System.out.println(response);
+                        ArrayList<Product> productList = response.getProducts();
+                        ArrayList<Integer> imageList = new ArrayList<Integer>();
+                        ArrayList<Integer> productIdList = new ArrayList<Integer>();
+                        ArrayList<String> titleList = new ArrayList<String>();
+                        ArrayList<String> bedroomList = new ArrayList<String>();
+                        ArrayList<String> bathroomList = new ArrayList<String>();
+                        ArrayList<String> priceList = new ArrayList<String>();
+                        if(productList != null)
+                        {
+                            int totalProducts = productList.size();
+                            for(int productCounter = 0; productCounter < totalProducts; productCounter++)
+                            {
+                                Product product = productList.get(productCounter);
+                                productIdList.add(product.getId());
+                                imageList.add(R.drawable.property_image_01);
+                                titleList.add(product.getTitle());
+                                bedroomList.add("");
+                                bathroomList.add("");
+                                priceList.add("");
+                            }
+                        }
+                        Intent adverts_intent = new Intent(getBaseContext(), MemberPropertySearchProduct.class);
+                        //Intent adverts_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
+                        adverts_intent.putExtra("imageList", imageList);
+                        adverts_intent.putExtra("productIdList", productIdList);
+                        adverts_intent.putExtra("titleList", titleList);
+                        adverts_intent.putExtra("bedroomList", bedroomList);
+                        adverts_intent.putExtra("bathroomList", bathroomList);
+                        adverts_intent.putExtra("priceList", priceList);
+                        startActivity(adverts_intent);
+                    }
+                    catch(Exception ex)
+                    {
+                        System.out.println(ex.toString());
+                    }
+                }
+            });
+        }
+    });
 }
 
 

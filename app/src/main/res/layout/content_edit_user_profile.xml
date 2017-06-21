@@ -67,12 +67,12 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <Button
-            android:id="@+id/user_name"
+            android:id="@+id/btn_edit_profile_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
             android:layout_marginLeft="5dp"
-            android:text="Nazmul Hasan"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:background="@null"
@@ -89,12 +89,12 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <Button
-            android:id="@+id/user_email"
+            android:id="@+id/btn_edit_profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
             android:layout_marginLeft="5dp"
-            android:text="bdlions@gmail.com"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:background="@null"
@@ -110,13 +110,13 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <Button
-            android:id="@+id/user_password"
+            android:id="@+id/btn_edit_profile_password"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
             android:layout_marginLeft="5dp"
             android:inputType="textPassword"
-            android:text="+8801234512345"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:background="@null"
@@ -132,12 +132,12 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <Button
-            android:id="@+id/user_cell"
+            android:id="@+id/btn_edit_profile_cell"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="-10dp"
             android:layout_marginLeft="5dp"
-            android:text="+8801234512345"
+            android:text=""
             android:textColor="#5a5a5a"
             android:textSize="14dp"
             android:background="@null"

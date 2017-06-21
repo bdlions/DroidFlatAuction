@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -14,13 +16,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.auction.dto.AccountSettingFA;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
 
 public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private  static Button btn_submit;
+    public EditText etSettingDefaultBidPerClick, etSettingDailyBudget;
+    public AccountSettingFA accountSettingFA;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +42,15 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         setContentView(R.layout.activity_manage_advert_account_settings_step);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+        accountSettingFA = new AccountSettingFA();
+
+        etSettingDefaultBidPerClick = (EditText) findViewById(R.id.et_setting_default_bid_per_click);
+        etSettingDailyBudget = (EditText) findViewById(R.id.et_setting_daily_budget);
+
+        this.setAccountSetting();
 
         onClickButtonBackArrowListener();
         onClickButtonSubmitListener();
@@ -41,6 +64,38 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void setAccountSetting()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_ACCOUNT_SETTING_FA);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    accountSettingFA = gson.fromJson(resultString, AccountSettingFA.class);
+                    if(accountSettingFA.isSuccess())
+                    {
+                        //converting pound into p
+                        etSettingDefaultBidPerClick.setText(accountSettingFA.getDefaultBidPerClick()*100 + "");
+                        etSettingDailyBudget.setText(accountSettingFA.getDailyBudget()+"");
+                    }
+
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                }
+            }
+        });
+    }
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.account_settings_advert_back_arrow);
         ib_back_arrow.setOnClickListener(
@@ -59,7 +114,53 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(getBaseContext(),   "Account Seetings is Updated", Toast.LENGTH_SHORT).show();
+                        //set amount here
+                        try
+                        {
+                            accountSettingFA.setDailyBudget(Double.parseDouble(etSettingDailyBudget.getText().toString()));
+                            accountSettingFA.setDefaultBidPerClick(Double.parseDouble(etSettingDefaultBidPerClick.getText().toString()));
+                            //converting p into pound
+                            accountSettingFA.setDefaultBidPerClick(accountSettingFA.getDefaultBidPerClick()/100);
+                        }
+                        catch(Exception ex)
+                        {
+                            Toast.makeText(getBaseContext(),   "Please assign correct number.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+
+
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.SAVE_ACCOUNT_SETTING_FA);
+                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+                        packetHeader.setSessionId(sessionId);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String accountSettingFAString = gson.toJson(accountSettingFA);
+                        new BackgroundWork().execute(packetHeader, accountSettingFAString, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                try
+                                {
+                                    String resultString = (String)msg.obj;
+                                    Gson gson = new Gson();
+                                    accountSettingFA = gson.fromJson(resultString, AccountSettingFA.class);
+                                    if(accountSettingFA.isSuccess())
+                                    {
+                                        Toast.makeText(getBaseContext(),   accountSettingFA.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getBaseContext(),   accountSettingFA.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    System.out.println(ex.toString());
+                                }
+                            }
+                        });
+
                       //  Intent account_settings_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                       //  startActivity(account_settings_advert_submit_button_intent);
                     }

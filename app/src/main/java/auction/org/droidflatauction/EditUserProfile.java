@@ -26,9 +26,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auction.dto.User;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundUploader;
+import org.auction.udp.BackgroundWork;
 import org.bdlions.client.reqeust.uploads.UploadService;
 
 import java.io.File;
@@ -39,7 +44,8 @@ public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private final int SELECT_PHOTO = 1;
     private static ImageView iv_profile_photo;
-    private static Button btn_user_name,btn__user_email,btn__user_password,btn__cell_number;
+    private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell;
+    SessionManager session;
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -86,6 +92,14 @@ public class EditUserProfile extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
+        btnEditProfileName = (Button) findViewById(R.id.btn_edit_profile_name);
+        btnEditProfileEmail = (Button) findViewById(R.id.btn_edit_profile_email);
+        btnEditProfilePassword = (Button) findViewById(R.id.btn_edit_profile_password);
+        btnEditProfileCell = (Button) findViewById(R.id.btn_edit_profile_cell);
+
         onClickEditUserProfilePhotoEditListener();
         onClickEditUserNameEditListener();
         onClickEditUserEmailEditListener();
@@ -103,8 +117,38 @@ public class EditUserProfile extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
-        Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(iv_profile_photo);
+        //Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/logo.png").into(iv_profile_photo);
+        this.initUserProfile();
     }
+
+    public void initUserProfile()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_USER_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                String userString = (String) msg.obj;
+                System.out.println(userString);
+                Gson gson = new Gson();
+                User user = gson.fromJson(userString, User.class);
+                if(user.isSuccess())
+                {
+                    btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
+                    btnEditProfileEmail.setText(user.getEmail());
+                    btnEditProfilePassword.setText(user.getPassword());
+                    btnEditProfileCell.setText(user.getCellNo());
+                    Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/profile/"+user.getImg()).into(iv_profile_photo);
+                }
+            }
+        });
+
+    }
+
+
     public void onClickEditUserProfilePhotoEditListener(){
         iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
         iv_profile_photo.setOnClickListener(new View.OnClickListener() {
@@ -145,8 +189,8 @@ public class EditUserProfile extends AppCompatActivity
         });
     }
     public void onClickEditUserNameEditListener(){
-        btn_user_name = (Button) findViewById(R.id.user_name);
-        btn_user_name.setOnClickListener(new View.OnClickListener() {
+
+        btnEditProfileName.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -184,8 +228,8 @@ public class EditUserProfile extends AppCompatActivity
         });
     }
     public void onClickEditUserEmailEditListener(){
-        btn__user_email = (Button) findViewById(R.id.user_email);
-        btn__user_email.setOnClickListener(new View.OnClickListener() {
+
+        btnEditProfileEmail.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -219,8 +263,8 @@ public class EditUserProfile extends AppCompatActivity
         });
     }
     public void onClickEditUserPasswordEditListener(){
-        btn__user_password = (Button) findViewById(R.id.user_password);
-        btn__user_password.setOnClickListener(new View.OnClickListener() {
+
+        btnEditProfilePassword.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -254,8 +298,8 @@ public class EditUserProfile extends AppCompatActivity
         });
     }
     public void onClickEditUserCellNumberEditListener(){
-        btn__cell_number = (Button) findViewById(R.id.user_cell);
-        btn__cell_number.setOnClickListener(new View.OnClickListener() {
+
+        btnEditProfileCell.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {

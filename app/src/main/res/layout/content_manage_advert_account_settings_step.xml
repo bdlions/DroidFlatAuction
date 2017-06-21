@@ -46,12 +46,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="5dp"
-                android:text="Default Bid Per Click"
+                android:text="Default Bid Per Click (p)"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <EditText
-                android:id="@+id/et_title"
+                android:id="@+id/et_setting_default_bid_per_click"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -61,12 +61,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="5dp"
-                android:text="Daily Budget"
+                android:text="Daily Budget (£)"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <EditText
-                android:id="@+id/et_description"
+                android:id="@+id/et_setting_daily_budget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"

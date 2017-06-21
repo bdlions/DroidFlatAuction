@@ -36,32 +36,41 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        onClickButtonBackArrowListener();
+
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
         productIdList = new ArrayList<>();
-        productIdList.add(1);
-        productIdList.add(2);
-        productIdList.add(3);
-        productIdList.add(4);
-        productIdList.add(5);
+        property_iamges = new ArrayList<>();
+        property_title_list = new ArrayList<>();
+        property_bedroom_list = new ArrayList<>();
+        property_bathroom_list = new ArrayList<>();
+        property_price_list = new ArrayList<>();
+
+        productIdList = (ArrayList<Integer>)getIntent().getExtras().get("productIdList");
+        property_iamges = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        property_title_list = (ArrayList<String>)getIntent().getExtras().get("titleList");
+        property_bedroom_list = (ArrayList<String>)getIntent().getExtras().get("bedroomList");
+        property_bathroom_list = (ArrayList<String>)getIntent().getExtras().get("bathroomList");
+        property_price_list = (ArrayList<String>)getIntent().getExtras().get("priceList");
 
 
         member_property_search_product_listview = (ListView) findViewById(R.id.member_property_search_product_listview);
-        property_iamges = new ArrayList<>();
-        property_title_list = new ArrayList<>();
-        property_iamges = getPropertyIamges();
-        property_title_list = getPropertyTitileList();
-        property_bedroom_list = getPropertyBedroomList();
-        property_bathroom_list = getPropertyBathroomList();
-        property_bathroom_list = getPropertyBathroomList();
-        property_price_list = getPropertyPriceList();
+        //property_iamges = new ArrayList<>();
+        //property_title_list = new ArrayList<>();
+        //property_iamges = getPropertyIamges();
+        //property_title_list = getPropertyTitileList();
+        //property_bedroom_list = getPropertyBedroomList();
+        //property_bathroom_list = getPropertyBathroomList();
+        //property_bathroom_list = getPropertyBathroomList();
+        //property_price_list = getPropertyPriceList();
+        //member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
         member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
 
         member_property_search_product_listview.setAdapter(member_property_search_product_adapter);
-        member_property_search_product_listview.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+        /*member_property_search_product_listview.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -71,7 +80,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -81,6 +90,8 @@ public class MemberPropertySearchProduct extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        //onClickButtonBackArrowListener();
     }
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step1_back_arrow);
@@ -88,7 +99,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent saved_advert_step1_back_arrow_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                        Intent saved_advert_step1_back_arrow_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
                         startActivity(saved_advert_step1_back_arrow_intent);
                     }
                 }
