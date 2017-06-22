@@ -1,9 +1,11 @@
 package auction.org.droidflatauction;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,8 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.auction.dto.Product;
 import com.google.gson.Gson;
@@ -24,7 +28,7 @@ public class SavedAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private static TextView tv_property_total_bids, tv_view_saved_product_title, tv_view_saved_product_price, tv_view_saved_product_description;
-    private  static Button btn_propperty_contact_button;
+    private  static Button btn_propperty_place_bid_button,btn_propperty_contact_button;
     private Product product;
     private String productString;
 
@@ -54,7 +58,9 @@ public class SavedAdvertStep2 extends AppCompatActivity
 
         onClickButtonBackArrowListener();
         onClickShowTotalBiddersListener();
+        onClickPropertyPlaceBidButtonListener();
         onClickPropertyContactButtonListener();
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -63,6 +69,37 @@ public class SavedAdvertStep2 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    public void onClickPropertyPlaceBidButtonListener(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Place Your Bid");
+        final EditText input = new EditText(this);
+        builder.setView(input);
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String txt = input.getText().toString();
+                Toast.makeText(getApplicationContext(),txt, Toast.LENGTH_SHORT).show();
+
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        final AlertDialog ad = builder.create();
+
+        btn_propperty_place_bid_button = (Button)findViewById(R.id.saved_advert_propperty_place_bid_button);
+        btn_propperty_place_bid_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ad.show();
+            }
+        });
+
     }
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step2_back_arrow);
