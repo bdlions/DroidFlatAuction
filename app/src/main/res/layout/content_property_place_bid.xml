@@ -54,6 +54,7 @@
                 android:id="@+id/auto_bid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
                 android:textStyle="normal" />
@@ -69,6 +70,7 @@
                 android:id="@+id/bid_directly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="number"
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
                 android:textStyle="normal" />
