@@ -229,6 +229,10 @@
         <activity
             android:name=".MessageSent"
             android:label="@string/title_activity_message_sent"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".PropertyPlaceBid"
+            android:label="@string/title_activity_property_place_bid"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

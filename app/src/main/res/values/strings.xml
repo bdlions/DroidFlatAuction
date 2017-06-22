@@ -153,4 +153,5 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_manage_advert_stats_step1">RoomAuction</string>
     <string name="title_activity_manage_advert_stats_step2">RoomAuction</string>
     <string name="title_activity_message_sent">RoomAuction</string>
+    <string name="title_activity_property_place_bid">RoomAuction</string>
 </resources>
