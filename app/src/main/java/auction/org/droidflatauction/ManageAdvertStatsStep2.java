@@ -24,12 +24,17 @@ public class ManageAdvertStatsStep2 extends AppCompatActivity
     ListView statsPropertyListView;
     ArrayList<String> property_date_list,property_click_list,property_impression_list,property_ctr_list,property_cost_list;
     ManageAdvertStatsAdapter statsPropertyAdapter;
+    SessionManager session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_advert_stats_step2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonBackArrowListener();
 
@@ -173,8 +178,9 @@ public class ManageAdvertStatsStep2 extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

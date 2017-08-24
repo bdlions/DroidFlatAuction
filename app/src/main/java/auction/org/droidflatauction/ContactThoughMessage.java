@@ -20,12 +20,16 @@ public class ContactThoughMessage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private  static Button btn_message_send;
+    SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_though_message);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonBackArrowListener();
         onClickButtonMessageSendListener();
@@ -119,7 +123,13 @@ public class ContactThoughMessage extends AppCompatActivity
         }else if (id == R.id.nav_search) {
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
-        } else if (id == R.id.nav_email) {
+        }
+        else if (id == R.id.nav_logout) {
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
+        }
+        else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {
 

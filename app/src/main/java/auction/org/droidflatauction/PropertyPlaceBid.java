@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 public class PropertyPlaceBid extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,9 @@ public class PropertyPlaceBid extends AppCompatActivity
         setContentView(R.layout.activity_property_place_bid);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonBackArrowListener();
 
@@ -107,8 +111,9 @@ public class PropertyPlaceBid extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

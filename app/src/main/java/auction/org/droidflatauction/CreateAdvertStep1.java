@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +24,22 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.auction.dto.Product;
+import com.auction.dto.ProductCategory;
+import com.auction.dto.ProductCategoryList;
+import com.auction.dto.ProductSize;
+import com.auction.dto.ProductSizeList;
+import com.auction.dto.ProductType;
+import com.auction.dto.ProductTypeList;
+import com.auction.dto.User;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
+
+import org.auction.udp.BackgroundWork;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateAdvertStep1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -29,6 +47,24 @@ public class CreateAdvertStep1 extends AppCompatActivity
     private static Spinner sp_i_have_for_rent,sp_size_of_property,sp_type_of_property;
     ArrayAdapter<CharSequence> i_have_for_rent_adapter,size_of_property_adapter,type_of_property_adapter;
     Product product;
+    SessionManager session;
+
+    ArrayAdapter<ProductType> productTypeAdapter;
+    ArrayAdapter<ProductSize> productSizeAdapter;
+    ArrayAdapter<ProductCategory> productCategoryAdapter;
+
+    public List<ProductType> productTypeList = new ArrayList<>();
+    public List<ProductSize> productSizeList = new ArrayList<>();
+    public List<ProductCategory> productCategoryList = new ArrayList<>();
+
+    ProductType selectedProductType;
+    ProductSize selectedProductSize;
+    ProductCategory selectedProductCategory;
+
+    public int fetchProductTypeCounter = 0;
+    public int fetchProductSizeCounter = 0;
+    public int fetchProductCategoryCounter = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,13 +72,20 @@ public class CreateAdvertStep1 extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
+
         product = new Product();
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
-        iHaveForRentSpinner();
-        sizeOfPropertySpinner();
-        typeOfPropertySpinner();
+        //iHaveForRentSpinner();
+        //sizeOfPropertySpinner();
+        //typeOfPropertySpinner();
+
+        fetchProductCategoryList();
+        //fetchProductSizeList();
+        //fetchProductTypeList();
 
 
 
@@ -56,6 +99,193 @@ public class CreateAdvertStep1 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void fetchProductCategoryList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_CATEGORY_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                ProductCategoryList pCategoryList = null;
+                String productCategoryListString = null;
+                if(msg != null)
+                {
+                    productCategoryListString = (String) msg.obj;
+                }
+                if(productCategoryListString != null)
+                {
+                    Gson gson = new Gson();
+                    pCategoryList = gson.fromJson(productCategoryListString, ProductCategoryList.class);
+                }
+                if(pCategoryList != null && pCategoryList.isSuccess() && pCategoryList.getProductCategories() != null )
+                {
+                    productCategoryList = pCategoryList.getProductCategories();
+
+                    productCategoryAdapter = new ArrayAdapter<ProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
+                    sp_i_have_for_rent = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
+                    sp_i_have_for_rent.setAdapter(productCategoryAdapter);
+                    sp_i_have_for_rent.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
+
+                                    selectedProductCategory = (ProductCategory)sp_i_have_for_rent.getSelectedItem();
+                                    System.out.println(selectedProductCategory.getTitle());
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                            }
+                    );
+
+                    fetchProductSizeList();
+                }
+                else
+                {
+                    fetchProductCategoryCounter++;
+                    if (fetchProductCategoryCounter <= 5)
+                    {
+                        fetchProductCategoryList();
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    public void fetchProductSizeList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_SIZE_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                ProductSizeList pSizeList = null;
+                String productSizeListString = null;
+                if(msg != null)
+                {
+                    productSizeListString = (String) msg.obj;
+                }
+                if(productSizeListString != null)
+                {
+                    Gson gson = new Gson();
+                    pSizeList = gson.fromJson(productSizeListString, ProductSizeList.class);
+                }
+                if(pSizeList != null && pSizeList.isSuccess() && pSizeList.getProductSizes() != null )
+                {
+                    productSizeList = pSizeList.getProductSizes();
+
+                    productSizeAdapter = new ArrayAdapter<ProductSize>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productSizeList);
+                    sp_size_of_property = (Spinner) findViewById(R.id.size_of_property_spinner);
+                    sp_size_of_property.setAdapter(productSizeAdapter);
+                    sp_size_of_property.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
+
+                                    selectedProductSize = (ProductSize)sp_size_of_property.getSelectedItem();
+                                    System.out.println(selectedProductSize.getTitle());
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                            }
+                    );
+
+                    fetchProductTypeList();
+                }
+                else
+                {
+                    fetchProductSizeCounter++;
+                    if (fetchProductSizeCounter <= 5)
+                    {
+                        fetchProductSizeList();
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    public void fetchProductTypeList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_TYPE_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                ProductTypeList pTypeList = null;
+                String productTypeListString = null;
+                if(msg != null)
+                {
+                    productTypeListString = (String) msg.obj;
+                }
+                if(productTypeListString != null)
+                {
+                    Gson gson = new Gson();
+                    pTypeList = gson.fromJson(productTypeListString, ProductTypeList.class);
+                }
+                if(pTypeList != null && pTypeList.isSuccess() && pTypeList.getProductTypes() != null )
+                {
+                    productTypeList = pTypeList.getProductTypes();
+
+                    productTypeAdapter = new ArrayAdapter<ProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
+                    sp_type_of_property = (Spinner) findViewById(R.id.type_of_property_spinner);
+                    sp_type_of_property.setAdapter(productTypeAdapter);
+                    sp_type_of_property.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
+
+                                    selectedProductType = (ProductType)sp_type_of_property.getSelectedItem();
+                                    System.out.println(selectedProductType.getTitle());
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+
+                                }
+
+                            }
+                    );
+                }
+                else
+                {
+                    fetchProductTypeCounter++;
+                    if (fetchProductTypeCounter <= 5)
+                    {
+                        fetchProductTypeList();
+                    }
+                }
+
+            }
+        });
+
+    }
+
+
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step1_back_arrow);
         ib_back_arrow.setOnClickListener(
@@ -194,8 +424,9 @@ public class CreateAdvertStep1 extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

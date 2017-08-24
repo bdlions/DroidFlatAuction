@@ -50,6 +50,7 @@ public class PropertyBidList extends AppCompatActivity
     TableLayout tl;
     TableRow tr;
     TextView bidder_name,price_list, time_list;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,9 @@ public class PropertyBidList extends AppCompatActivity
         setContentView(R.layout.activity_property_bid_list);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         tl = (TableLayout) findViewById(R.id.bidder_list);
         addHeaders();
@@ -243,8 +247,9 @@ public class PropertyBidList extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

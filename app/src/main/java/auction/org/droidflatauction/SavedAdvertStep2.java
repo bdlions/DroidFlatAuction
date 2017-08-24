@@ -31,6 +31,7 @@ public class SavedAdvertStep2 extends AppCompatActivity
     private  static Button btn_propperty_place_bid_button,btn_propperty_contact_button;
     private Product product;
     private String productString;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,9 @@ public class SavedAdvertStep2 extends AppCompatActivity
         setContentView(R.layout.activity_saved_advert_step2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         tv_view_saved_product_title = (TextView) findViewById(R.id.tv_view_saved_product_title);
         tv_view_saved_product_price = (TextView) findViewById(R.id.tv_view_saved_product_price);
@@ -174,8 +178,9 @@ public class SavedAdvertStep2 extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

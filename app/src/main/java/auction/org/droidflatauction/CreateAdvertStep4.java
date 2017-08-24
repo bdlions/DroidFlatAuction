@@ -27,6 +27,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
     private static Spinner sp_smoking,sp_occupation,sp_pets;
     ArrayAdapter<CharSequence> smoking_adapter,occupation_adapter,pets_adapter;
     Product product;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,9 @@ public class CreateAdvertStep4 extends AppCompatActivity
         setContentView(R.layout.activity_create_advert_step4);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         product = (Product)getIntent().getExtras().get("product");
 
@@ -188,8 +192,9 @@ public class CreateAdvertStep4 extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

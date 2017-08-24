@@ -27,6 +27,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
     private static Spinner sp_minimum_stay,sp_maximum_stay;
     ArrayAdapter<CharSequence> minimum_stay_adapter,maximum_stay_adapter;
     Product product;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +35,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
         setContentView(R.layout.activity_create_advert_step3);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         product = (Product)getIntent().getExtras().get("product");
 
@@ -170,8 +174,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

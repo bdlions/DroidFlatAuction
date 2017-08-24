@@ -33,6 +33,7 @@
                 android:textSize="24dp"
                 android:textStyle="bold" />
             <TextView
+                android:id="@+id/tv_md_user_full_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Nazmul Hasan"

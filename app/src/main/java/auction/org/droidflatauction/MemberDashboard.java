@@ -15,24 +15,34 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.auction.dto.Location;
 import com.auction.dto.LocationList;
 import com.auction.dto.Product;
 import com.auction.dto.ProductList;
+import com.auction.dto.User;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
+import org.w3c.dom.Text;
 
 import java.sql.Array;
 import java.util.ArrayList;
 
 public class MemberDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static ImageView iv_profile_photo;
     private  static LinearLayout manage_advert_layout, message_layout, profile_layout, account_settings_layout, property_search_layout;
+    private static TextView tv_md_user_full_name;
+
+    public int fetchProfileCounter = 0;
+
     SessionManager session;
 
     @Override
@@ -59,6 +69,48 @@ public class MemberDashboard extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        tv_md_user_full_name = (TextView)  findViewById(R.id.tv_md_user_full_name);
+        iv_profile_photo = (ImageView) findViewById(R.id.profile_image);
+        this.initUserProfile();
+    }
+
+    public void initUserProfile()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_USER_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                User user = null;
+                String userString = null;
+                if(msg != null)
+                {
+                    userString = (String) msg.obj;
+                }
+                if(userString != null)
+                {
+                    Gson gson = new Gson();
+                    user = gson.fromJson(userString, User.class);
+                }
+                if(user != null && user.isSuccess())
+                {
+                    tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
+                    Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/profile/"+user.getImg()).into(iv_profile_photo);
+                }
+                else
+                {
+                    fetchProfileCounter++;
+                    if (fetchProfileCounter <= 5)
+                    {
+                        initUserProfile();
+                    }
+                }
+            }
+        });
+
     }
 
     public void onClickButtonManageAdvertDashboardListener(){
@@ -221,8 +273,9 @@ public class MemberDashboard extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {

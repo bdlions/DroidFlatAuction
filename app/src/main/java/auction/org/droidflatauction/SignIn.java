@@ -80,12 +80,19 @@ public class SignIn extends AppCompatActivity {
                         new BackgroundWork().execute(packetHeader, userString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
-                                String stringSignInResponse = (String)msg.obj;
-                                //Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
-                                System.out.println(stringSignInResponse);
-                                Gson gson = new Gson();
-                                SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
-                                if(signInResponse.isSuccess())
+                                SignInResponse signInResponse = null;
+                                String stringSignInResponse = null;
+                                if(msg != null)
+                                {
+                                    stringSignInResponse = (String)msg.obj;
+                                }
+                                if(stringSignInResponse != null)
+                                {
+                                    Gson gson = new Gson();
+                                    signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                                }
+
+                                if(signInResponse != null && signInResponse.isSuccess())
                                 {
                                     session.createLoginSession(identity, signInResponse.getSessionId());
                                     //navigate to member dashboard

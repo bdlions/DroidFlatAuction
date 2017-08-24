@@ -19,6 +19,7 @@ import android.widget.ImageButton;
 public class ProfileDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static Button user_profile_btn,edit_profile_btn;
+    SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,9 @@ public class ProfileDashboard extends AppCompatActivity
         setContentView(R.layout.activity_profile_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Session Manager
+        session = new SessionManager(getApplicationContext());
 
         onClickButtonUserProfileListener();
         onClickButtonEditProfileListener();
@@ -121,8 +125,9 @@ public class ProfileDashboard extends AppCompatActivity
             Intent member_account_settings_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
             startActivity(member_account_settings_intent);
         } else if (id == R.id.nav_logout) {
-            Intent member_logout_intent = new Intent(getBaseContext(), SignIn.class);
-            startActivity(member_logout_intent);
+            session.logoutUser();
+            //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
+            //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
 
         } else if (id == R.id.nav_phone) {
