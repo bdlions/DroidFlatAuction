@@ -30,6 +30,7 @@ public class MessageInbox extends AppCompatActivity
     public ArrayList<String> userNameList = new ArrayList<String>();
     public ArrayList<String> subjectList = new ArrayList<String>();
     ArrayList<Integer> imageList = new ArrayList<Integer>();
+    ArrayList<String> imgList = new ArrayList<String>();
 
     SessionManager session;
 
@@ -49,6 +50,7 @@ public class MessageInbox extends AppCompatActivity
         userNameList = (ArrayList<String>)getIntent().getExtras().get("userNameList");
         subjectList = (ArrayList<String>)getIntent().getExtras().get("subjectList");
         imageList = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        imgList = (ArrayList<String>)getIntent().getExtras().get("imgList");
 
         messageListView = (ListView) findViewById(R.id.message_listview);
 
@@ -57,7 +59,7 @@ public class MessageInbox extends AppCompatActivity
         //user_list = getMessageSenderList();
         //message_subject_list = getMessageSubjectList();
         //messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_images,user_list,message_subject_list);
-        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this, session.getSessionId(), messageIdList, imageList, userNameList, subjectList);
+        messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this, session.getSessionId(), messageIdList, imageList, imgList, userNameList, subjectList);
 
 
         messageListView.setAdapter(messageInboxAdapter);

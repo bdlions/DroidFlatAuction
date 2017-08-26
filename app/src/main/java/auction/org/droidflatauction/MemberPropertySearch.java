@@ -130,6 +130,7 @@ public void initList(){
                         System.out.println(response);
                         ArrayList<Product> productList = response.getProducts();
                         ArrayList<Integer> imageList = new ArrayList<Integer>();
+                        ArrayList<String> imgList = new ArrayList<String>();
                         ArrayList<Integer> productIdList = new ArrayList<Integer>();
                         ArrayList<String> titleList = new ArrayList<String>();
                         ArrayList<String> bedroomList = new ArrayList<String>();
@@ -142,6 +143,7 @@ public void initList(){
                             {
                                 Product product = productList.get(productCounter);
                                 productIdList.add(product.getId());
+                                imgList.add(product.getImg());
                                 imageList.add(R.drawable.property_image_01);
                                 titleList.add(product.getTitle());
                                 bedroomList.add("");
@@ -152,6 +154,7 @@ public void initList(){
                         Intent adverts_intent = new Intent(getBaseContext(), MemberPropertySearchProduct.class);
                         //Intent adverts_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
                         adverts_intent.putExtra("imageList", imageList);
+                        adverts_intent.putExtra("imgList", imgList);
                         adverts_intent.putExtra("productIdList", productIdList);
                         adverts_intent.putExtra("titleList", titleList);
                         adverts_intent.putExtra("bedroomList", bedroomList);

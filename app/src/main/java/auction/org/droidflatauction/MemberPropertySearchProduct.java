@@ -24,7 +24,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     ListView member_property_search_product_listview;
     ArrayList<Integer> property_iamges, productIdList;
-    ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
+    ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list, imgList;
     SavedAdvertPropertyAdapter member_property_search_product_adapter;
 
     SessionManager session;
@@ -50,6 +50,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
 
         productIdList = (ArrayList<Integer>)getIntent().getExtras().get("productIdList");
         property_iamges = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        imgList = (ArrayList<String>)getIntent().getExtras().get("imgList");
         property_title_list = (ArrayList<String>)getIntent().getExtras().get("titleList");
         property_bedroom_list = (ArrayList<String>)getIntent().getExtras().get("bedroomList");
         property_bathroom_list = (ArrayList<String>)getIntent().getExtras().get("bathroomList");
@@ -66,7 +67,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         //property_bathroom_list = getPropertyBathroomList();
         //property_price_list = getPropertyPriceList();
         //member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
-        member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+        member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,imgList, property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
 
         member_property_search_product_listview.setAdapter(member_property_search_product_adapter);
 

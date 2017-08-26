@@ -45,7 +45,7 @@ public class MyAdvertStep1 extends AppCompatActivity
     public static ImageButton ib_back_arrow;
     public static ListView myAdvertPropertyListView;
     public static ArrayList<Integer> property_iamges, productIdList;
-    public static ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list;
+    public static ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list, imgList;
     public static MyAdvertPropertyAdapter myAdvertPropertyAdapter;
     SessionManager session;
 
@@ -71,6 +71,7 @@ public class MyAdvertStep1 extends AppCompatActivity
 
         productIdList = (ArrayList<Integer>)getIntent().getExtras().get("productIdList");
         property_iamges = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        imgList = (ArrayList<String>)getIntent().getExtras().get("imgList");
         property_title_list = (ArrayList<String>)getIntent().getExtras().get("titleList");
         property_bedroom_list = (ArrayList<String>)getIntent().getExtras().get("bedroomList");
         property_bathroom_list = (ArrayList<String>)getIntent().getExtras().get("bathroomList");
@@ -90,7 +91,7 @@ public class MyAdvertStep1 extends AppCompatActivity
         //property_bathroom_list = getPropertyBathroomList();
         //property_bathroom_list = getPropertyBathroomList();
         //property_price_list = getPropertyPriceList();
-        myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,session.getSessionId(), productIdList, property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+        myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,session.getSessionId(), productIdList, property_iamges, imgList, property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
         myAdvertPropertyListView.setAdapter(myAdvertPropertyAdapter);
 
 

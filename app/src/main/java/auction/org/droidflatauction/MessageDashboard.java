@@ -82,6 +82,7 @@ public class MessageDashboard extends AppCompatActivity
                                     ArrayList<String> userNameList = new ArrayList<String>();
                                     ArrayList<String> subjectList = new ArrayList<String>();
                                     ArrayList<Integer> imageList = new ArrayList<Integer>();
+                                    ArrayList<String> imgList = new ArrayList<String>();
 
 
                                     if(messageList != null)
@@ -94,6 +95,7 @@ public class MessageDashboard extends AppCompatActivity
                                             userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
                                             subjectList.add(message.getSubject());
                                             imageList.add(R.drawable.user);
+                                            imgList.add(message.getFrom().getImg());
                                         }
                                     }
                                     Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
@@ -101,6 +103,7 @@ public class MessageDashboard extends AppCompatActivity
                                     inbox_button_intent.putExtra("userNameList", userNameList);
                                     inbox_button_intent.putExtra("subjectList", subjectList);
                                     inbox_button_intent.putExtra("imageList", imageList);
+                                    inbox_button_intent.putExtra("imgList", imgList);
                                     startActivity(inbox_button_intent);
                                 }
                                 catch(Exception ex)
@@ -141,7 +144,7 @@ public class MessageDashboard extends AppCompatActivity
                                     ArrayList<String> userNameList = new ArrayList<String>();
                                     ArrayList<String> subjectList = new ArrayList<String>();
                                     ArrayList<Integer> imageList = new ArrayList<Integer>();
-
+                                    ArrayList<String> imgList = new ArrayList<String>();
 
                                     if(messageList != null)
                                     {
@@ -153,6 +156,7 @@ public class MessageDashboard extends AppCompatActivity
                                             userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
                                             subjectList.add(message.getSubject());
                                             imageList.add(R.drawable.user);
+                                            imgList.add(message.getFrom().getImg());
                                         }
                                     }
                                     Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
@@ -160,6 +164,7 @@ public class MessageDashboard extends AppCompatActivity
                                     inbox_button_intent.putExtra("userNameList", userNameList);
                                     inbox_button_intent.putExtra("subjectList", subjectList);
                                     inbox_button_intent.putExtra("imageList", imageList);
+                                    inbox_button_intent.putExtra("imgList", imgList);
                                     startActivity(inbox_button_intent);
                                 }
                                 catch(Exception ex)

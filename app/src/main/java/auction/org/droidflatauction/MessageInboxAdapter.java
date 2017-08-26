@@ -16,6 +16,7 @@ import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
 
@@ -29,15 +30,16 @@ import java.util.List;
 public class MessageInboxAdapter extends BaseAdapter {
     private Context context;
     private ArrayList<Integer> messageIdList, listId;
-    private ArrayList<String>message_sender_list,message_subject_list;
+    private ArrayList<String>message_sender_list,message_subject_list, imgList;
 
     public String sessionId;
 
-    public MessageInboxAdapter(Context context, String sessionId, ArrayList<Integer> messageIdList, ArrayList<Integer> listId, ArrayList<String> message_sender_list,ArrayList<String> message_subject_list) {
+    public MessageInboxAdapter(Context context, String sessionId, ArrayList<Integer> messageIdList, ArrayList<Integer> listId, ArrayList<String> imgList, ArrayList<String> message_sender_list,ArrayList<String> message_subject_list) {
         this.context = context;
         this.sessionId = sessionId;
         this.messageIdList = messageIdList;
         this.listId = listId;
+        this.imgList = imgList;
         this.message_sender_list = message_sender_list;
         this.message_subject_list = message_subject_list;
     }
@@ -94,6 +96,7 @@ public class MessageInboxAdapter extends BaseAdapter {
                                     ArrayList<String> messageBodyList = new ArrayList<String>();
                                     ArrayList<String> userNameList = new ArrayList<String>();
                                     ArrayList<Integer> imageList = new ArrayList<Integer>();
+                                    ArrayList<String> imgList = new ArrayList<String>();
                                     ArrayList<String> timeList = new ArrayList<String>();
                                     for(int counter = 0 ; counter < messageTextListCounter ; counter++)
                                     {
@@ -108,11 +111,14 @@ public class MessageInboxAdapter extends BaseAdapter {
                                             userNameList.add("");
                                         }
                                         imageList.add(R.drawable.user);
-                                        timeList.add("2017-06-20 10:00AM");
+                                        imgList.add(messageText.getUser().getImg());
+                                        //timeList.add("2017-06-20 10:00AM");
+                                        timeList.add(messageText.getCreatedTime());
                                     }
                                     Intent message_inbox_row_intent = new Intent(context, MessageShow.class);
                                     message_inbox_row_intent.putExtra("userNameList", userNameList);
                                     message_inbox_row_intent.putExtra("imageList", imageList);
+                                    message_inbox_row_intent.putExtra("imgList", imgList);
                                     message_inbox_row_intent.putExtra("messageBodyList", messageBodyList);
                                     message_inbox_row_intent.putExtra("timeList", timeList);
                                     message_inbox_row_intent.putExtra("messageId", responseMessage.getId());
@@ -132,10 +138,12 @@ public class MessageInboxAdapter extends BaseAdapter {
             });
         }
 
-        ImageView user_image = (ImageView) convertView.findViewById(R.id.user_profile_image);
+        ImageView userImage = (ImageView) convertView.findViewById(R.id.user_profile_image);
         TextView message_sender_name = (TextView) convertView.findViewById(R.id.message_sender);
         TextView message_subject = (TextView) convertView.findViewById(R.id.message_subject);
-        user_image.setImageResource(listId.get(position));
+        //userImage.setImageResource(listId.get(position));
+        String imageName = imgList.get(position);
+        Picasso.with(convertView.getContext()).load(Constants.baseUrl+Constants.profilePicturePath_50_50+imageName).into(userImage);
         message_sender_name.setText(message_sender_list.get(position));
         message_subject.setText(message_subject_list.get(position));
         return convertView;

@@ -55,6 +55,7 @@ public class MessageShow extends AppCompatActivity
     ArrayList<String> messageBodyList = new ArrayList<String>();
     ArrayList<String> userNameList = new ArrayList<String>();
     ArrayList<Integer> imageList = new ArrayList<Integer>();
+    ArrayList<String> imgList = new ArrayList<String>();
     ArrayList<String> timeList = new ArrayList<String>();
 
     public com.auction.dto.Message message;
@@ -83,6 +84,7 @@ public class MessageShow extends AppCompatActivity
         messageBodyList = (ArrayList<String>)getIntent().getExtras().get("messageBodyList");
         userNameList = (ArrayList<String>)getIntent().getExtras().get("userNameList");
         imageList = (ArrayList<Integer>)getIntent().getExtras().get("imageList");
+        imgList = (ArrayList<String>)getIntent().getExtras().get("imgList");
         timeList = (ArrayList<String>)getIntent().getExtras().get("timeList");
 
         messageListView = (ListView) findViewById(R.id.message_show_listview);
@@ -94,7 +96,7 @@ public class MessageShow extends AppCompatActivity
         //message_text_list = getMessageTextList();
 
         //messageInboxAdapter = new MessageShowAdapter(MessageShow.this,user_iamges,user_list,message_time_list,message_text_list);
-        messageInboxAdapter = new MessageShowAdapter(MessageShow.this,imageList, userNameList, timeList, messageBodyList);
+        messageInboxAdapter = new MessageShowAdapter(MessageShow.this,imageList, imgList, userNameList, timeList, messageBodyList);
 
         messageListView.setAdapter(messageInboxAdapter);
 
@@ -115,6 +117,7 @@ public class MessageShow extends AppCompatActivity
                     public void onClick(View v) {
                         MessageText messageText = new MessageText();
                         messageText.setBody(etInboxSendMessageBody.getText().toString());
+                        messageText.setMessageId(message.getId());
                         List<MessageText> messageTextList = new ArrayList<>();
                         messageTextList.add(messageText);
                         message.setMessageTextList(messageTextList);
@@ -156,7 +159,7 @@ public class MessageShow extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent message_show_back_arrow_intent = new Intent(getBaseContext(), MessageInbox.class);
+                        Intent message_show_back_arrow_intent = new Intent(getBaseContext(), MessageDashboard.class);
                         startActivity(message_show_back_arrow_intent);
                     }
                 }
