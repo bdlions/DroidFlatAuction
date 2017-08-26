@@ -17,6 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.auction.dto.Product;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class CreateAdvertStep5 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -24,6 +26,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
     private static EditText etCreateProductTitle, etCreateProductDescription;
     Product product;
     SessionManager session;
+    NavigationManager navigationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,8 +37,20 @@ public class CreateAdvertStep5 extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
 
-        product = (Product)getIntent().getExtras().get("product");
+        //product = (Product)getIntent().getExtras().get("product");
+        try
+        {
+            //product = (Product)getIntent().getExtras().get("product");
+            String productString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
 
         etCreateProductTitle = (EditText) findViewById(R.id.et_create_product_title);
         etCreateProductDescription = (EditText) findViewById(R.id.et_create_product_description);
@@ -74,7 +89,12 @@ public class CreateAdvertStep5 extends AppCompatActivity
                         product.setTitle(etCreateProductTitle.getText().toString());
                         product.setDescription(etCreateProductDescription.getText().toString());
                         Intent create_advert_step5_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
-                        create_advert_step5_forward_arrow_intent.putExtra("product", product);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+
+                        create_advert_step5_forward_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step5_forward_arrow_intent);
                     }
                 }
@@ -117,8 +137,9 @@ public class CreateAdvertStep5 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        navigationManager.navigateTo(id);
 
-        if (id == R.id.nav_dashboard) {
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -145,7 +166,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

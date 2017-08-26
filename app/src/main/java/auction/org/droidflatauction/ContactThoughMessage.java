@@ -21,6 +21,8 @@ public class ContactThoughMessage extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     private  static Button btn_message_send;
     SessionManager session;
+    NavigationManager navigationManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +32,7 @@ public class ContactThoughMessage extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
 
         onClickButtonBackArrowListener();
         onClickButtonMessageSendListener();
@@ -104,7 +107,9 @@ public class ContactThoughMessage extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        if (id == R.id.nav_dashboard) {
+        navigationManager.navigateTo(id);
+
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -133,7 +138,7 @@ public class ContactThoughMessage extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

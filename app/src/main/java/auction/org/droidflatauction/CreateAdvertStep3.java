@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -20,6 +22,19 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.auction.dto.Product;
+import com.auction.dto.ProductCategory;
+import com.auction.dto.ProductCategoryList;
+import com.auction.dto.Stay;
+import com.auction.dto.StayList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateAdvertStep3 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -28,6 +43,17 @@ public class CreateAdvertStep3 extends AppCompatActivity
     ArrayAdapter<CharSequence> minimum_stay_adapter,maximum_stay_adapter;
     Product product;
     SessionManager session;
+    NavigationManager navigationManager;
+
+    private static Spinner minStaySpinner, maxStaySpinner;
+
+    public List<Stay> stayList = new ArrayList<>();
+
+    ArrayAdapter<Stay> stayAdapter;
+
+    Stay selectedMinStay, selectedMaxStay;
+
+    public int fetchStayCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +64,27 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
 
-        product = (Product)getIntent().getExtras().get("product");
+        try
+        {
+            //product = (Product)getIntent().getExtras().get("product");
+            String productString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
+
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
-        minimumStaySpinner();
-        maximumStaySpinner();
+        //minimumStaySpinner();
+        //maximumStaySpinner();
 
+        fetchStayList();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -56,6 +95,89 @@ public class CreateAdvertStep3 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void fetchStayList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_STAY_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                StayList pStayList = null;
+                String stayListString = null;
+                if(msg != null && msg.obj != null)
+                {
+                    stayListString = (String) msg.obj;
+                }
+                if(stayListString != null)
+                {
+                    Gson gson = new Gson();
+                    pStayList = gson.fromJson(stayListString, StayList.class);
+                }
+                if(pStayList != null && pStayList.isSuccess() && pStayList.getStays() != null )
+                {
+                    stayList = pStayList.getStays();
+
+                    if(product != null && product.getId() == 0 && stayList.size() > 0)
+                    {
+                        product.setMinStay(stayList.get(0));
+                        product.setMaxStay(stayList.get(0));
+                    }
+
+                    stayAdapter = new ArrayAdapter<Stay>( CreateAdvertStep3.this, android.R.layout.simple_spinner_item, stayList);
+
+                    minStaySpinner = (Spinner) findViewById(R.id.minimum_stay_spinner);
+                    minStaySpinner.setAdapter(stayAdapter);
+                    minStaySpinner.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedMinStay = (Stay)minStaySpinner.getSelectedItem();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+
+                                }
+                            }
+                    );
+
+                    maxStaySpinner = (Spinner) findViewById(R.id.maximum_stay_spinner);
+                    maxStaySpinner.setAdapter(stayAdapter);
+                    maxStaySpinner.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedMaxStay = (Stay)maxStaySpinner.getSelectedItem();
+                                    System.out.println(selectedMaxStay.getTitle());
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+
+                                }
+                            }
+                    );
+                }
+                else
+                {
+                    fetchStayCounter++;
+                    if (fetchStayCounter <= 5)
+                    {
+                        fetchStayList();
+                    }
+                }
+            }
+        });
+    }
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step3_back_arrow);
         ib_back_arrow.setOnClickListener(
@@ -76,13 +198,28 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step3_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
-                        create_advert_step3_forward_arrow_intent.putExtra("product", product);
+
+                        if(selectedMinStay != null)
+                        {
+                            product.setMinStay(selectedMinStay);
+                        }
+                        if(selectedMaxStay != null)
+                        {
+                            product.setMaxStay(selectedMaxStay);
+                        }
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+
+                        create_advert_step3_forward_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step3_forward_arrow_intent);
                     }
                 }
         );
     }
-    public void minimumStaySpinner(){
+
+    /*public void minimumStaySpinner(){
         sp_minimum_stay = (Spinner) findViewById(R.id.minimum_stay_spinner);
         minimum_stay_adapter = ArrayAdapter.createFromResource(this,R.array.minimum_spinner_options,android.R.layout.simple_spinner_item);
         minimum_stay_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -115,7 +252,8 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
             }
         });
-    }
+    }*/
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -153,8 +291,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        navigationManager.navigateTo(id);
 
-        if (id == R.id.nav_dashboard) {
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -181,7 +320,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

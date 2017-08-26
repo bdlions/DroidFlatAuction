@@ -34,6 +34,7 @@ import com.auction.dto.User;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
@@ -44,10 +45,11 @@ import java.util.List;
 public class CreateAdvertStep1 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
-    private static Spinner sp_i_have_for_rent,sp_size_of_property,sp_type_of_property;
-    ArrayAdapter<CharSequence> i_have_for_rent_adapter,size_of_property_adapter,type_of_property_adapter;
+    private static Spinner productCategorySpinner, productSizeSpinner, productTypeSpinner;
+    //ArrayAdapter<CharSequence> i_have_for_rent_adapter,size_of_property_adapter,type_of_property_adapter;
     Product product;
     SessionManager session;
+    NavigationManager navigationManager;
 
     ArrayAdapter<ProductType> productTypeAdapter;
     ArrayAdapter<ProductSize> productSizeAdapter;
@@ -74,6 +76,10 @@ public class CreateAdvertStep1 extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
+
+        //-------------if this activity is called by product id then handle it ----------------------------------
+        //-------------if this activity is called from back arrow of step2 then handle it -----------------------
 
         product = new Product();
 
@@ -100,6 +106,9 @@ public class CreateAdvertStep1 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+    /***
+     * this method will fetch product category list from the server
+    * */
     public void fetchProductCategoryList()
     {
         String sessionId = session.getSessionId();
@@ -112,7 +121,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 ProductCategoryList pCategoryList = null;
                 String productCategoryListString = null;
-                if(msg != null)
+                if(msg != null && msg.obj != null)
                 {
                     productCategoryListString = (String) msg.obj;
                 }
@@ -125,27 +134,28 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 {
                     productCategoryList = pCategoryList.getProductCategories();
 
+                    if(product != null && product.getId() == 0 && productCategoryList.size() > 0)
+                    {
+                        product.setProductCategory(productCategoryList.get(0));
+                    }
+
                     productCategoryAdapter = new ArrayAdapter<ProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
-                    sp_i_have_for_rent = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
-                    sp_i_have_for_rent.setAdapter(productCategoryAdapter);
-                    sp_i_have_for_rent.setOnItemSelectedListener(
+                    productCategorySpinner = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
+                    productCategorySpinner.setAdapter(productCategoryAdapter);
+                    productCategorySpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
-                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
-
-                                    selectedProductCategory = (ProductCategory)sp_i_have_for_rent.getSelectedItem();
-                                    System.out.println(selectedProductCategory.getTitle());
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedProductCategory = (ProductCategory)productCategorySpinner.getSelectedItem();
                                 }
 
                                 @Override
                                 public void onNothingSelected(AdapterView<?> arg0) {
                                     // TODO Auto-generated method stub
-
                                 }
-
                             }
                     );
-
                     fetchProductSizeList();
                 }
                 else
@@ -156,12 +166,13 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         fetchProductCategoryList();
                     }
                 }
-
             }
         });
-
     }
 
+    /***
+     * this method will fetch product size list from the server
+     * */
     public void fetchProductSizeList()
     {
         String sessionId = session.getSessionId();
@@ -174,7 +185,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 ProductSizeList pSizeList = null;
                 String productSizeListString = null;
-                if(msg != null)
+                if(msg != null && msg.obj != null)
                 {
                     productSizeListString = (String) msg.obj;
                 }
@@ -187,27 +198,28 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 {
                     productSizeList = pSizeList.getProductSizes();
 
+                    if(product != null && product.getId() == 0 && productSizeList.size() > 0)
+                    {
+                        product.setProductSize(productSizeList.get(0));
+                    }
+
                     productSizeAdapter = new ArrayAdapter<ProductSize>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productSizeList);
-                    sp_size_of_property = (Spinner) findViewById(R.id.size_of_property_spinner);
-                    sp_size_of_property.setAdapter(productSizeAdapter);
-                    sp_size_of_property.setOnItemSelectedListener(
+                    productSizeSpinner = (Spinner) findViewById(R.id.size_of_property_spinner);
+                    productSizeSpinner.setAdapter(productSizeAdapter);
+                    productSizeSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
 
-                                    selectedProductSize = (ProductSize)sp_size_of_property.getSelectedItem();
-                                    System.out.println(selectedProductSize.getTitle());
+                                    selectedProductSize = (ProductSize)productSizeSpinner.getSelectedItem();
                                 }
 
                                 @Override
                                 public void onNothingSelected(AdapterView<?> arg0) {
                                     // TODO Auto-generated method stub
-
                                 }
-
                             }
                     );
-
                     fetchProductTypeList();
                 }
                 else
@@ -218,12 +230,13 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         fetchProductSizeList();
                     }
                 }
-
             }
         });
-
     }
 
+    /***
+     * this method will fetch product type list from the server
+     * */
     public void fetchProductTypeList()
     {
         String sessionId = session.getSessionId();
@@ -236,7 +249,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 ProductTypeList pTypeList = null;
                 String productTypeListString = null;
-                if(msg != null)
+                if(msg != null && msg.obj != null)
                 {
                     productTypeListString = (String) msg.obj;
                 }
@@ -249,24 +262,26 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 {
                     productTypeList = pTypeList.getProductTypes();
 
+                    if(product != null && product.getId() == 0 && productTypeList.size() > 0)
+                    {
+                        product.setProductType(productTypeList.get(0));
+                    }
+
                     productTypeAdapter = new ArrayAdapter<ProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
-                    sp_type_of_property = (Spinner) findViewById(R.id.type_of_property_spinner);
-                    sp_type_of_property.setAdapter(productTypeAdapter);
-                    sp_type_of_property.setOnItemSelectedListener(
+                    productTypeSpinner = (Spinner) findViewById(R.id.type_of_property_spinner);
+                    productTypeSpinner.setAdapter(productTypeAdapter);
+                    productTypeSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
-                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
-
-                                    selectedProductType = (ProductType)sp_type_of_property.getSelectedItem();
-                                    System.out.println(selectedProductType.getTitle());
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedProductType = (ProductType)productTypeSpinner.getSelectedItem();
                                 }
 
                                 @Override
                                 public void onNothingSelected(AdapterView<?> arg0) {
                                     // TODO Auto-generated method stub
-
                                 }
-
                             }
                     );
                 }
@@ -278,10 +293,8 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         fetchProductTypeList();
                     }
                 }
-
             }
         });
-
     }
 
 
@@ -305,16 +318,36 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step1_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
+
                         //setting a default image for the time being
                         product.setImg("a.jpg");
-                        create_advert_step1_forward_arrow_intent.putExtra("product",product);
+
+                        if(selectedProductCategory != null)
+                        {
+                            product.setProductCategory(selectedProductCategory);
+                        }
+                        if(selectedProductSize != null)
+                        {
+                            product.setProductSize(selectedProductSize);
+                        }
+                        if(selectedProductType != null)
+                        {
+                            product.setProductType(selectedProductType);
+                        }
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+
+                        create_advert_step1_forward_arrow_intent.putExtra("productString",productString);
+
                         startActivity(create_advert_step1_forward_arrow_intent);
                     }
                 }
         );
     }
 
-    public void iHaveForRentSpinner(){
+    /*public void iHaveForRentSpinner(){
         sp_i_have_for_rent = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
         i_have_for_rent_adapter = ArrayAdapter.createFromResource(this,R.array.i_have_for_rent_spinner_options,android.R.layout.simple_spinner_item);
         i_have_for_rent_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -364,7 +397,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
 
             }
         });
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
@@ -403,8 +436,9 @@ public class CreateAdvertStep1 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        navigationManager.navigateTo(id);
 
-        if (id == R.id.nav_dashboard) {
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -431,7 +465,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

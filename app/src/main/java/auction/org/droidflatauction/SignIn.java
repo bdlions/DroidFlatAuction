@@ -82,7 +82,7 @@ public class SignIn extends AppCompatActivity {
                             public void handleMessage(Message msg) {
                                 SignInResponse signInResponse = null;
                                 String stringSignInResponse = null;
-                                if(msg != null)
+                                if(msg != null && msg.obj != null)
                                 {
                                     stringSignInResponse = (String)msg.obj;
                                 }

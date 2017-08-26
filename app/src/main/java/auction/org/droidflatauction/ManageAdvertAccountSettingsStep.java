@@ -35,6 +35,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
     public EditText etSettingDefaultBidPerClick, etSettingDailyBudget;
     public AccountSettingFA accountSettingFA;
     SessionManager session;
+    NavigationManager navigationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +46,8 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
+
         accountSettingFA = new AccountSettingFA();
 
         etSettingDefaultBidPerClick = (EditText) findViewById(R.id.et_setting_default_bid_per_click);
@@ -204,8 +207,9 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        navigationManager.navigateTo(id);
 
-        if (id == R.id.nav_dashboard) {
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -232,7 +236,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

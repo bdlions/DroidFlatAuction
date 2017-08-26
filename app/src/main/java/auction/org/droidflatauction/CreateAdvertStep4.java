@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -19,15 +21,54 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.auction.dto.Occupation;
+import com.auction.dto.OccupationList;
+import com.auction.dto.Pet;
+import com.auction.dto.PetList;
 import com.auction.dto.Product;
+import com.auction.dto.ProductCategory;
+import com.auction.dto.ProductCategoryList;
+import com.auction.dto.ProductSize;
+import com.auction.dto.ProductType;
+import com.auction.dto.Smoking;
+import com.auction.dto.SmokingList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateAdvertStep4 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
+
     private static Spinner sp_smoking,sp_occupation,sp_pets;
+    private static Spinner smokingSpinner,petSpinner, occupationSpinner;
+
     ArrayAdapter<CharSequence> smoking_adapter,occupation_adapter,pets_adapter;
     Product product;
     SessionManager session;
+    NavigationManager navigationManager;
+
+    ArrayAdapter<Smoking> smokingAdapter;
+    ArrayAdapter<Pet> petAdapter;
+    ArrayAdapter<Occupation> occupationAdapter;
+
+    public List<Smoking> smokingList = new ArrayList<>();
+    public List<Pet> petList = new ArrayList<>();
+    public List<Occupation> occupationList = new ArrayList<>();
+
+    Smoking selectedSmoking;
+    Pet selectedPet;
+    Occupation selectedOccupation;
+
+    public int fetchSmokingCounter = 0;
+    public int fetchPetCounter = 0;
+    public int fetchOccupationCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +79,27 @@ public class CreateAdvertStep4 extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
 
-        product = (Product)getIntent().getExtras().get("product");
+        //product = (Product)getIntent().getExtras().get("product");
+        try
+        {
+            //product = (Product)getIntent().getExtras().get("product");
+            String productString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
-        smokingSpinner();
-        occupationSpinner();
-        petsSpinner();
+        //smokingSpinner();
+        //occupationSpinner();
+        //petsSpinner();
+        fetchSmokingList();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -56,6 +110,190 @@ public class CreateAdvertStep4 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void fetchSmokingList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_SMOKING_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                SmokingList pSmokingList = null;
+                String smokingListString = null;
+                if(msg != null && msg.obj != null)
+                {
+                    smokingListString = (String) msg.obj;
+                }
+                if(smokingListString != null)
+                {
+                    Gson gson = new Gson();
+                    pSmokingList = gson.fromJson(smokingListString, SmokingList.class);
+                }
+                if(pSmokingList != null && pSmokingList.isSuccess() && pSmokingList.getSmokings() != null )
+                {
+                    smokingList = pSmokingList.getSmokings();
+
+                    if(product != null && product.getId() == 0 && smokingList.size() > 0)
+                    {
+                        product.setSmoking(smokingList.get(0));
+                    }
+
+                    smokingAdapter = new ArrayAdapter<Smoking>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, smokingList);
+                    smokingSpinner = (Spinner) findViewById(R.id.smoking_spinner);
+                    smokingSpinner.setAdapter(smokingAdapter);
+                    smokingSpinner.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedSmoking = (Smoking)smokingSpinner.getSelectedItem();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+                                }
+                            }
+                    );
+                    fetchOccupationList();
+                }
+                else
+                {
+                    fetchSmokingCounter++;
+                    if (fetchSmokingCounter <= 5)
+                    {
+                        fetchSmokingList();
+                    }
+                }
+            }
+        });
+    }
+
+    public void fetchOccupationList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_OCCUPATION_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                OccupationList pOccupationList = null;
+                String occupationListString = null;
+                if(msg != null && msg.obj != null)
+                {
+                    occupationListString = (String) msg.obj;
+                }
+                if(occupationListString != null)
+                {
+                    Gson gson = new Gson();
+                    pOccupationList = gson.fromJson(occupationListString, OccupationList.class);
+                }
+                if(pOccupationList != null && pOccupationList.isSuccess() && pOccupationList.getOccupations() != null )
+                {
+                    occupationList = pOccupationList.getOccupations();
+                    if(product != null && product.getId() == 0 && occupationList.size() > 0)
+                    {
+                        product.setOccupation(occupationList.get(0));
+                    }
+
+                    occupationAdapter = new ArrayAdapter<Occupation>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, occupationList);
+                    occupationSpinner = (Spinner) findViewById(R.id.occupation_spinner);
+                    occupationSpinner.setAdapter(occupationAdapter);
+                    occupationSpinner.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedOccupation = (Occupation)occupationSpinner.getSelectedItem();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+                                }
+                            }
+                    );
+                    fetchPetList();
+                }
+                else
+                {
+                    fetchOccupationCounter++;
+                    if (fetchOccupationCounter <= 5)
+                    {
+                        fetchOccupationList();
+                    }
+                }
+            }
+        });
+    }
+
+    public void fetchPetList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PET_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                PetList pPetList = null;
+                String petListString = null;
+                if(msg != null && msg.obj != null)
+                {
+                    petListString = (String) msg.obj;
+                }
+                if(petListString != null)
+                {
+                    Gson gson = new Gson();
+                    pPetList = gson.fromJson(petListString, PetList.class);
+                }
+                if(pPetList != null && pPetList.isSuccess() && pPetList.getPets() != null )
+                {
+                    petList = pPetList.getPets();
+
+                    if(product != null && product.getId() == 0 && petList.size() > 0)
+                    {
+                        product.setPet(petList.get(0));
+                    }
+
+                    petAdapter = new ArrayAdapter<Pet>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, petList);
+                    petSpinner = (Spinner) findViewById(R.id.pets_spinner);
+                    petSpinner.setAdapter(petAdapter);
+                    petSpinner.setOnItemSelectedListener(
+                            new AdapterView.OnItemSelectedListener() {
+                                @Override
+                                public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                {
+                                    selectedPet = (Pet)petSpinner.getSelectedItem();
+                                }
+
+                                @Override
+                                public void onNothingSelected(AdapterView<?> arg0) {
+                                    // TODO Auto-generated method stub
+                                }
+                            }
+                    );
+                }
+                else
+                {
+                    fetchPetCounter++;
+                    if (fetchPetCounter <= 5)
+                    {
+                        fetchPetList();
+                    }
+                }
+            }
+        });
+    }
+
+
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step4_back_arrow);
         ib_back_arrow.setOnClickListener(
@@ -76,14 +314,32 @@ public class CreateAdvertStep4 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step4_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
-                        create_advert_step4_forward_arrow_intent.putExtra("product", product);
+
+                        if(selectedSmoking != null)
+                        {
+                            product.setSmoking(selectedSmoking);
+                        }
+                        if(selectedOccupation != null)
+                        {
+                            product.setOccupation(selectedOccupation);
+                        }
+                        if(selectedPet != null)
+                        {
+                            product.setPet(selectedPet);
+                        }
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+
+                        create_advert_step4_forward_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step4_forward_arrow_intent);
                     }
                 }
         );
     }
 
-    public void smokingSpinner(){
+    /*public void smokingSpinner(){
         sp_smoking = (Spinner) findViewById(R.id.smoking_spinner);
         smoking_adapter = ArrayAdapter.createFromResource(this,R.array.smoking_spinner_options,android.R.layout.simple_spinner_item);
         smoking_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -133,7 +389,8 @@ public class CreateAdvertStep4 extends AppCompatActivity
 
             }
         });
-    }
+    }*/
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -171,8 +428,8 @@ public class CreateAdvertStep4 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-        if (id == R.id.nav_dashboard) {
+        navigationManager.navigateTo(id);
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -199,7 +456,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

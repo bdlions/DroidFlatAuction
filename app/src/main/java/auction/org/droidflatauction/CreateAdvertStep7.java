@@ -45,6 +45,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
     Product product;
     String productString;
     SessionManager session;
+    NavigationManager navigationManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +55,19 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
 
-        product = (Product)getIntent().getExtras().get("product");
+        //product = (Product)getIntent().getExtras().get("product");
+        try
+        {
+            String prodString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(prodString, Product.class);
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
 
         onClickButtonBackArrowListener();
         onClickButtonSubmitListener();
@@ -111,38 +123,38 @@ public class CreateAdvertStep7 extends AppCompatActivity
                     public void onClick(View v) {
 
                         //for testing purpose some default fields are set here but it should come from user selection
-                        ProductCategory productCategory = new ProductCategory();
-                        productCategory.setId(1);
-                        product.setProductCategory(productCategory);
+                        //ProductCategory productCategory = new ProductCategory();
+                        //productCategory.setId(1);
+                        //product.setProductCategory(productCategory);
 
-                        ProductSize productSize = new ProductSize();
-                        productSize.setId(1);
-                        product.setProductSize(productSize);
+                        //ProductSize productSize = new ProductSize();
+                        //productSize.setId(1);
+                        //product.setProductSize(productSize);
 
-                        ProductType productType = new ProductType();
-                        productType.setId(1);
-                        product.setProductType(productType);
+                        //ProductType productType = new ProductType();
+                        //productType.setId(1);
+                        //product.setProductType(productType);
 
                         Location location = new Location();
                         location.setId(1);
                         product.setLocation(location);
 
-                        Stay minStay = new Stay();
-                        minStay.setId(1);
-                        Stay maxStay = new Stay();
-                        maxStay.setId(1);
-                        product.setMinStay(minStay);
-                        product.setMaxStay(maxStay);
+                        //Stay minStay = new Stay();
+                        //minStay.setId(1);
+                        //Stay maxStay = new Stay();
+                        //maxStay.setId(1);
+                        //product.setMinStay(minStay);
+                        //product.setMaxStay(maxStay);
 
-                        Smoking smoking = new Smoking();
-                        smoking.setId(1);
-                        Occupation occupation = new Occupation();
-                        occupation.setId(1);
-                        Pet pet = new Pet();
-                        pet.setId(1);
-                        product.setSmoking(smoking);
-                        product.setOccupation(occupation);
-                        product.setPet(pet);
+                        //Smoking smoking = new Smoking();
+                        //smoking.setId(1);
+                        //Occupation occupation = new Occupation();
+                        //occupation.setId(1);
+                        //Pet pet = new Pet();
+                        //pet.setId(1);
+                        //product.setSmoking(smoking);
+                        //product.setOccupation(occupation);
+                        //product.setPet(pet);
 
                         product.setImg("a.jpg");
 
@@ -165,15 +177,23 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         new BackgroundWork().execute(packetHeader, productString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
-                                String stringSignInResponse = (String)msg.obj;
-                                //Toast.makeText(getApplicationContext(), stringSignInResponse, Toast.LENGTH_LONG).show();
-                                //System.out.println(stringSignInResponse);
-                                Gson gson = new Gson();
-                                SignInResponse signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
-                                if(signInResponse.isSuccess())
+                                SignInResponse signInResponse = null;
+                                String stringSignInResponse = null;
+                                if(msg != null && msg.obj != null)
+                                {
+                                    stringSignInResponse = (String)msg.obj;
+                                }
+                                if(stringSignInResponse != null)
+                                {
+                                    Gson gson = new Gson();
+                                    signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                                }
+                                if(signInResponse != null && signInResponse.isSuccess())
                                 {
                                     Toast.makeText(getApplicationContext(), "Ad is created.", Toast.LENGTH_LONG).show();
-
+                                    //show a message that advert is created and go to my ads page
+                                    Intent create_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                                    startActivity(create_advert_submit_button_intent);
                                 }
                                 else
                                 {
@@ -181,11 +201,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
                                 }
                             }
                         });
-                        //show a message that advert is created and go to my ads page
-
-
-                        Intent create_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                        startActivity(create_advert_submit_button_intent);
                     }
                 }
         );
@@ -227,8 +242,9 @@ public class CreateAdvertStep7 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        navigationManager.navigateTo(id);
 
-        if (id == R.id.nav_dashboard) {
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -255,7 +271,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

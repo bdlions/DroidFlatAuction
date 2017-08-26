@@ -46,6 +46,8 @@ public class EditUserProfile extends AppCompatActivity
     private static ImageView iv_profile_photo;
     private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell;
     SessionManager session;
+    NavigationManager navigationManager;
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -94,6 +96,7 @@ public class EditUserProfile extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+        navigationManager = new NavigationManager(getApplicationContext());
 
         btnEditProfileName = (Button) findViewById(R.id.btn_edit_profile_name);
         btnEditProfileEmail = (Button) findViewById(R.id.btn_edit_profile_email);
@@ -369,8 +372,9 @@ public class EditUserProfile extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        navigationManager.navigateTo(id);
 
-        if (id == R.id.nav_dashboard) {
+        /*if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -397,7 +401,7 @@ public class EditUserProfile extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
