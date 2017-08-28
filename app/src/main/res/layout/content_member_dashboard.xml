@@ -36,7 +36,7 @@
                 android:id="@+id/tv_md_user_full_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nazmul Hasan"
+                android:text=""
                 android:layout_gravity="center_vertical"
                 android:textColor="#ff9711"
                 android:textSize="16dp"
@@ -53,7 +53,6 @@
                 android:layout_height="50dp"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="right"
-                android:src="@drawable/user"
                 app:civ_border_width="2dp"
                 app:civ_border_color="#5a5a5a" />
         </LinearLayout>

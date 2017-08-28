@@ -212,9 +212,9 @@ public class CreateAdvertStep2 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        navigationManager.navigateTo(id);
+        //navigationManager.navigateTo(id);
 
-        /*if (id == R.id.nav_dashboard) {
+        if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -241,7 +241,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }*/
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

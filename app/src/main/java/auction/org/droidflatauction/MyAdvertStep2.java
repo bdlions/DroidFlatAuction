@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.auction.dto.Product;
@@ -25,12 +26,14 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 public class MyAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
     private  static ImageButton ib_back_arrow;
     private static TextView tv_view_product_title, tv_view_product_price, tv_view_product_description, tv_property_total_bids;
     private  static Button propperty_content_edit_btn;
+    private static ImageView ivProductDetails;
     private Product product;
     private String productString;
     SessionManager session;
@@ -48,6 +51,7 @@ public class MyAdvertStep2 extends AppCompatActivity
         tv_view_product_title = (TextView) findViewById(R.id.view_product_title);
         tv_view_product_price = (TextView) findViewById(R.id.view_product_price);
         tv_view_product_description = (TextView) findViewById(R.id.view_product_description);
+        ivProductDetails = (ImageView) findViewById(R.id.img_product_details);
 
         try
         {
@@ -58,6 +62,7 @@ public class MyAdvertStep2 extends AppCompatActivity
             tv_view_product_title.setText(product.getTitle());
             tv_view_product_price.setText(product.getBasePrice()+" £");
             tv_view_product_description.setText(product.getDescription());
+            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetails);
         }
         catch(Exception ex)
         {

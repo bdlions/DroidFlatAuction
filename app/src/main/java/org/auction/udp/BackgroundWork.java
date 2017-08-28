@@ -54,6 +54,14 @@ public class BackgroundWork extends AsyncTask<Object, Integer, Void> {
         IServerCallback callback = new IServerCallback() {
             @Override
             public void timeout(String s) {
+                try
+                {
+                    Thread.sleep(5000);
+                }
+                catch(Exception ex)
+                {
+
+                }
                 handler.sendEmptyMessage( 0 );
             }
 
