@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner sp_area;
+    private static EditText etCreateProductPrice;
     ArrayAdapter<CharSequence> area_adapter;
     Product product;
     SessionManager session;
@@ -57,6 +59,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
             System.out.println(ex.toString());
         }
 
+        etCreateProductPrice = (EditText) findViewById(R.id.et_create_product_price);
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -142,6 +145,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        product.setTitle(etCreateProductPrice.getText().toString());
                         Intent create_advert_step2_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
 
                         GsonBuilder gsonBuilder = new GsonBuilder();

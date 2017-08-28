@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,8 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.auction.dto.Product;
@@ -38,9 +42,11 @@ import java.util.List;
 
 public class CreateAdvertStep3 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    ArrayList<String> selectedItems = new ArrayList<>();
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner sp_minimum_stay,sp_maximum_stay;
     ArrayAdapter<CharSequence> minimum_stay_adapter,maximum_stay_adapter;
+    private static EditText etCreateProductAvailableFrom,etCreateProductAvailableTo;
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
@@ -66,15 +72,12 @@ public class CreateAdvertStep3 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
-        try
-        {
+        try {
             //product = (Product)getIntent().getExtras().get("product");
-            String productString = (String)getIntent().getExtras().get("productString");
+            String productString = (String) getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
-        }
-        catch(Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println(ex.toString());
         }
 
@@ -83,6 +86,24 @@ public class CreateAdvertStep3 extends AppCompatActivity
         onClickButtonForwardArrowListener();
         //minimumStaySpinner();
         //maximumStaySpinner();
+
+       // ListView availabilitiesListView = (ListView) findViewById(R.id.availabilities_listView);
+       // availabilitiesListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+      //  String[] availabilities = {"Daily", "Weekly", "Monthly"};
+       // ArrayAdapter<String> availabilitiesAdapter = new ArrayAdapter<String>(this, R.layout.availabilities_row, R.id.txt_lan, availabilities);
+      //  availabilitiesListView.setAdapter(availabilitiesAdapter);
+      //  availabilitiesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        //    @Override
+       //     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+       //         String selectedItem = ((TextView)view).getText().toString();
+        //        if(selectedItems.contains(selectedItem)){
+        //            selectedItems.remove(selectedItem);
+         //       }
+         //       else
+         //           selectedItems.add(selectedItem);
+         //   }
+      //  });
+
 
         fetchStayList();
 
@@ -96,6 +117,39 @@ public class CreateAdvertStep3 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+   // public void showSelectedItems(View view){
+   //     String items = "";
+    //    for(String item:selectedItems){
+    //        items += "-" + items + "\n";
+    //        Toast.makeText(this,"You have selected \n" + items, Toast.LENGTH_SHORT).show();
+    //    }
+   // }
+    public void onStart(){
+        super.onStart();
+        etCreateProductAvailableFrom = (EditText) findViewById(R.id.et_create_product_available_from);
+        etCreateProductAvailableTo= (EditText) findViewById(R.id.et_create_product_available_to);
+        etCreateProductAvailableFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    DateDialog dialog = new DateDialog(v);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    dialog.show(ft,"DatePicker");
+                }
+            }
+        });
+
+        etCreateProductAvailableTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    DateDialog dialog = new DateDialog(v);
+                    FragmentTransaction ft = getFragmentManager().beginTransaction();
+                    dialog.show(ft,"DatePicker");
+                }
+            }
+        });
+    }
     public void fetchStayList()
     {
         String sessionId = session.getSessionId();
@@ -279,9 +333,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
-       //     return true;
-       // }
+        // if (id == R.id.action_settings) {
+        //     return true;
+        // }
 
         return super.onOptionsItemSelected(item);
     }
