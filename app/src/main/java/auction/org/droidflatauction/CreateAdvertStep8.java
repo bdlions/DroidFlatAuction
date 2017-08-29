@@ -1,6 +1,5 @@
 package auction.org.droidflatauction;
 
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,26 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.auction.dto.Image;
 import com.auction.dto.Location;
-import com.auction.dto.Occupation;
-import com.auction.dto.Pet;
 import com.auction.dto.Product;
-import com.auction.dto.ProductCategory;
-import com.auction.dto.ProductSize;
-import com.auction.dto.ProductType;
-import com.auction.dto.Smoking;
-import com.auction.dto.SmokingList;
-import com.auction.dto.Stay;
 import com.auction.dto.response.SignInResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
@@ -44,26 +31,18 @@ import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CreateAdvertStep7 extends AppCompatActivity
+public class CreateAdvertStep8 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static ImageButton ib_back_arrow,ib_forward_arrow;
-    private static EditText etCreateProductBidStartCalendar,etCreateProductBidEndCalendar;
-    private static Spinner bidStartTimer,bidEndTimer;
-    ArrayAdapter<CharSequence> bidStartTimerAdapter,bidEndTimerAdapter;
+    private  static ImageButton ib_back_arrow;
+    private  static Button btn_submit;
     Product product;
     String productString;
     SessionManager session;
     NavigationManager navigationManager;
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_create_advert_step7);
+        setContentView(R.layout.activity_create_advert_step8);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -84,10 +63,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
         }
 
         onClickButtonBackArrowListener();
-        onClickButtonForwardArrowListener();
-
-        fetchBidStartTimerList();
-        fetchBidEndTimerList();
+        onClickButtonSubmitListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -98,67 +74,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    public void fetchBidStartTimerList(){
-        bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
-        bidStartTimerAdapter = ArrayAdapter.createFromResource(this,R.array.bid_timer_spinner_options,android.R.layout.simple_spinner_item);
-        bidStartTimerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bidStartTimer.setAdapter(bidStartTimerAdapter);
-        bidStartTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-    public void fetchBidEndTimerList(){
-        bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
-        bidEndTimerAdapter = ArrayAdapter.createFromResource(this,R.array.bid_timer_spinner_options,android.R.layout.simple_spinner_item);
-        bidEndTimerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bidEndTimer.setAdapter(bidEndTimerAdapter);
-        bidEndTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-    public void onStart(){
-        super.onStart();
-        etCreateProductBidStartCalendar = (EditText) findViewById(R.id.et_create_product_bid_start_calendar);
-        etCreateProductBidStartCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    DateDialog dialog = new DateDialog(v);
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    dialog.show(ft,"DatePicker");
-                }
-            }
-        });
-
-        etCreateProductBidEndCalendar= (EditText) findViewById(R.id.et_create_product_bid_end_calendar);
-        etCreateProductBidEndCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    DateDialog dialog = new DateDialog(v);
-                    FragmentTransaction ft = getFragmentManager().beginTransaction();
-                    dialog.show(ft,"DatePicker");
-                }
-            }
-        });
-    }
-    /*
     public void selectItem( View view){
         boolean checked = ((CheckBox) view).isChecked();
 
@@ -180,40 +95,19 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 break;
         }
     }
-    */
     public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step7_back_arrow);
+        ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step8_back_arrow);
         ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step7_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
-                        create_advert_step7_back_arrow_intent.putExtra("product", product);
-                        startActivity(create_advert_step7_back_arrow_intent);
+                        Intent create_advert_step8_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep7.class);
+                        create_advert_step8_back_arrow_intent.putExtra("product", product);
+                        startActivity(create_advert_step8_back_arrow_intent);
                     }
                 }
         );
     }
-    public void onClickButtonForwardArrowListener(){
-        ib_forward_arrow = (ImageButton) findViewById(R.id.create_advert_step7_forward_arrow);
-        ib_forward_arrow.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        Intent create_advert_step7_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep8.class);
-
-                        //GsonBuilder gsonBuilder = new GsonBuilder();
-                        // Gson gson = gsonBuilder.create();
-                        //String productString = gson.toJson(product);
-
-                        create_advert_step7_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step7_forward_arrow_intent);
-                    }
-                }
-        );
-    }
-    /*
     public void onClickButtonSubmitListener(){
         btn_submit = (Button) findViewById(R.id.create_advert_submit_button);
         btn_submit.setOnClickListener(
@@ -304,7 +198,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 }
         );
     }
-    */
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -318,7 +211,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.create_advert_step7, menu);
+        getMenuInflater().inflate(R.menu.create_advert_step8, menu);
         return true;
     }
 
@@ -330,9 +223,9 @@ public class CreateAdvertStep7 extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        // if (id == R.id.action_settings) {
-        //     return true;
-        // }
+        //if (id == R.id.action_settings) {
+        //    return true;
+        //}
 
         return super.onOptionsItemSelected(item);
     }
@@ -342,7 +235,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        //navigationManager.navigateTo(id);
 
         if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);

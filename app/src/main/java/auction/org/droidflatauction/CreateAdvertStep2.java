@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -25,6 +26,9 @@ import com.auction.dto.Product;
 import com.auction.dto.ProductTypeList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -65,7 +69,30 @@ public class CreateAdvertStep2 extends AppCompatActivity
         onClickButtonForwardArrowListener();
         areaSpinner();
 
+        ListView listViewAmenity = (ListView)findViewById(R.id.amenities_listView);
+        final List<AmenityModel> amenities = new ArrayList<>();
+        amenities.add(new AmenityModel(false,"Parking"));
+        amenities.add(new AmenityModel(false,"Balcony"));
+        amenities.add(new AmenityModel(false,"Garden"));
+        amenities.add(new AmenityModel(false,"Disabled access"));
+        amenities.add(new AmenityModel(false,"Garage"));
 
+        final AmenityAdapter amenityAdapter = new AmenityAdapter(this,amenities);
+        listViewAmenity.setAdapter(amenityAdapter);
+        listViewAmenity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AmenityModel amenityModel = amenities.get(i);
+                if(amenityModel.isSelected())
+                    amenityModel.setSelected(false);
+
+                else
+                    amenityModel.setSelected(true);
+
+                amenities.set(i,amenityModel);
+                amenityAdapter.updateRecords(amenities);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -76,6 +103,8 @@ public class CreateAdvertStep2 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    /*
     public void selectItem( View view){
         boolean checked = ((CheckBox) view).isChecked();
 
@@ -126,6 +155,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 break;
         }
     }
+    */
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step2_back_arrow);
         ib_back_arrow.setOnClickListener(

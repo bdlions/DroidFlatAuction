@@ -42,11 +42,12 @@ import java.util.List;
 
 public class CreateAdvertStep3 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    ArrayList<String> selectedItems = new ArrayList<>();
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner sp_minimum_stay,sp_maximum_stay;
     ArrayAdapter<CharSequence> minimum_stay_adapter,maximum_stay_adapter;
     private static EditText etCreateProductAvailableFrom,etCreateProductAvailableTo;
+
+
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
@@ -87,22 +88,28 @@ public class CreateAdvertStep3 extends AppCompatActivity
         //minimumStaySpinner();
         //maximumStaySpinner();
 
-       // ListView availabilitiesListView = (ListView) findViewById(R.id.availabilities_listView);
-       // availabilitiesListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-      //  String[] availabilities = {"Daily", "Weekly", "Monthly"};
-       // ArrayAdapter<String> availabilitiesAdapter = new ArrayAdapter<String>(this, R.layout.availabilities_row, R.id.txt_lan, availabilities);
-      //  availabilitiesListView.setAdapter(availabilitiesAdapter);
-      //  availabilitiesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        //    @Override
-       //     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-       //         String selectedItem = ((TextView)view).getText().toString();
-        //        if(selectedItems.contains(selectedItem)){
-        //            selectedItems.remove(selectedItem);
-         //       }
-         //       else
-         //           selectedItems.add(selectedItem);
-         //   }
-      //  });
+        ListView listViewAvailablability = (ListView)findViewById(R.id.availabilities_listView);
+        final List<AvailablabilityModel> availablabilities = new ArrayList<>();
+        availablabilities.add(new AvailablabilityModel(false,"Daily"));
+        availablabilities.add(new AvailablabilityModel(false,"Weekly"));
+        availablabilities.add(new AvailablabilityModel(false,"Monthly"));
+
+        final AvailablabilityAdapter availablabilityAdapter = new AvailablabilityAdapter(this,availablabilities);
+        listViewAvailablability.setAdapter(availablabilityAdapter);
+        listViewAvailablability.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AvailablabilityModel availablabilityModel = availablabilities.get(i);
+                if(availablabilityModel.isSelected())
+                    availablabilityModel.setSelected(false);
+
+                else
+                    availablabilityModel.setSelected(true);
+
+                availablabilities.set(i,availablabilityModel);
+                availablabilityAdapter.updateRecords(availablabilities);
+            }
+        });
 
 
         fetchStayList();
@@ -117,13 +124,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-   // public void showSelectedItems(View view){
-   //     String items = "";
-    //    for(String item:selectedItems){
-    //        items += "-" + items + "\n";
-    //        Toast.makeText(this,"You have selected \n" + items, Toast.LENGTH_SHORT).show();
-    //    }
-   // }
+
     public void onStart(){
         super.onStart();
         etCreateProductAvailableFrom = (EditText) findViewById(R.id.et_create_product_available_from);

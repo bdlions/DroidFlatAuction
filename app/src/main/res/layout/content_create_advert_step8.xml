@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="auction.org.droidflatauction.CreateAdvertStep7"
-    tools:showIn="@layout/app_bar_create_advert_step7">
+    tools:context="auction.org.droidflatauction.CreateAdvertStep8"
+    tools:showIn="@layout/app_bar_create_advert_step8">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageButton
-                android:id="@+id/create_advert_step7_back_arrow"
+                android:id="@+id/create_advert_step8_back_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:layout_marginLeft="5dp"
-                android:text="Step 7"
+                android:text="Step 8"
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
                 android:textStyle="normal" />
@@ -45,59 +45,44 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:layout_marginLeft="0dp"
-                android:text="Bid Start"
+                android:layout_marginLeft="8dp"
+                android:text="Daily Email Alerts"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
-            <EditText
-                android:id="@+id/et_create_product_bid_start_calendar"
-                android:layout_width="match_parent"
+            <CheckBox
+                android:id="@+id/daily_email_alerts"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:hint="Select start date"
-                android:textSize="16dp"
-                android:textColor="#5a5a5a"
-                android:textStyle="normal"
-                android:backgroundTint="#ff9711"/>
-            <Spinner
-                android:id="@+id/bid_start_timer_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginLeft="-5dp"
+                android:layout_marginLeft="0dp"
+                android:text="@string/daily_email_alerts"
                 android:textColor="#5a5a5a"
-                android:textStyle="normal" />
+                android:gravity="left|top"
+                android:textSize="16dp"
+                android:textStyle="normal"
+                android:onClick="selectItem"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="50dp"
-                android:layout_marginLeft="0dp"
-                android:text="Bid End"
+                android:layout_marginTop="30dp"
+                android:layout_marginLeft="8dp"
+                android:text="Instant Email Alerts"
                 android:textColor="#2874b9"
                 android:textSize="16dp"
                 android:textStyle="bold" />
-            <EditText
-                android:id="@+id/et_create_product_bid_end_calendar"
-                android:layout_width="match_parent"
+            <CheckBox
+                android:id="@+id/instant_email_alerts"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:inputType="text"
-                android:hint="Select end date"
-                android:textSize="16dp"
+                android:layout_marginLeft="0dp"
+                android:text="@string/instant_email_alerts"
                 android:textColor="#5a5a5a"
+                android:gravity="left|top"
+                android:textSize="16dp"
                 android:textStyle="normal"
-                android:backgroundTint="#ff9711"/>
-            <Spinner
-                android:id="@+id/bid_end_timer_spinner"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="-5dp"
-                android:textColor="#5a5a5a"
-                android:textStyle="normal" />
+                android:onClick="selectItem"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -105,15 +90,18 @@
             android:layout_marginTop="20dp"
             android:gravity="bottom"
             android:orientation="vertical">
-            <ImageButton
-                android:id="@+id/create_advert_step7_forward_arrow"
+            <Button
+                android:id="@+id/create_advert_submit_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_height="35dp"
+                android:layout_marginBottom="40dp"
                 android:layout_gravity="right"
                 android:layout_marginRight="15dp"
-                android:src="@drawable/forward_arrow"
-                android:background="#fff"/>
+                android:textColor="#ffffff"
+                android:textSize="16dp"
+                android:text="Submit"
+                android:textAllCaps="false"
+                android:background="@drawable/custom_round_corner_blue_button"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -126,3 +114,4 @@
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+

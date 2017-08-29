@@ -233,6 +233,10 @@
         <activity
             android:name=".PropertyPlaceBid"
             android:label="@string/title_activity_property_place_bid"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateAdvertStep8"
+            android:label="@string/title_activity_create_advert_step8"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
