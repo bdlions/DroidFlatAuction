@@ -37,7 +37,9 @@ import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class CreateAdvertStep3 extends AppCompatActivity
@@ -240,7 +242,12 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step3_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
-                        create_advert_step3_back_arrow_intent.putExtra("product", product);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        create_advert_step3_back_arrow_intent.putExtra("productString", productString);
+
                         startActivity(create_advert_step3_back_arrow_intent);
                     }
                 }
@@ -253,6 +260,16 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step3_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
+                        String availableFrom = etCreateProductAvailableFrom.getText().toString();
+                        String availableTo = etCreateProductAvailableTo.getText().toString();
+                        if(availableFrom != null && !availableFrom.equals(""))
+                        {
+                            product.setAvailableFrom(availableFrom);
+                        }
+                        if(availableTo != null && !availableTo.equals(""))
+                        {
+                            product.setAvailableTo(availableTo);
+                        }
 
                         if(selectedMinStay != null)
                         {

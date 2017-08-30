@@ -31,6 +31,9 @@ import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 public class CreateAdvertStep8 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
@@ -102,7 +105,10 @@ public class CreateAdvertStep8 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step8_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep7.class);
-                        create_advert_step8_back_arrow_intent.putExtra("product", product);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        create_advert_step8_back_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step8_back_arrow_intent);
                     }
                 }
@@ -128,6 +134,53 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         //productType.setId(1);
                         //product.setProductType(productType);
 
+                        //convert date related fields here
+                        Calendar c = Calendar.getInstance();
+                        SimpleDateFormat df = new SimpleDateFormat("yyyy-MMM-dd");
+                        String currentDate = df.format(c.getTime());
+
+                        String availableFrom = product.getAvailableFrom();
+                        String availableTo = product.getAvailableTo();
+                        if(availableFrom != null && !availableFrom.equals(""))
+                        {
+                            String[] availableFromArray = availableFrom.split("-");
+                            product.setAvailableFrom(availableFromArray[2]+"-"+availableFromArray[1]+"-"+availableFromArray[0]);
+                        }
+                        else
+                        {
+                            product.setAvailableFrom(currentDate);
+                        }
+                        if(availableTo != null && !availableTo.equals(""))
+                        {
+                            String[] availableToArray = availableTo.split("-");
+                            product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
+                        }
+                        else
+                        {
+                            product.setAvailableTo(currentDate);
+                        }
+
+                        String bidStartFrom = product.getBidStartDate();
+                        String bidStartTo = product.getBidEndDate();
+                        if(bidStartFrom != null && !bidStartFrom.equals(""))
+                        {
+                            String[] bidStartFromArray = bidStartFrom.split("-");
+                            product.setBidStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
+                        }
+                        else
+                        {
+                            product.setBidStartDate(currentDate);
+                        }
+                        if(bidStartTo != null && !bidStartTo.equals(""))
+                        {
+                            String[] bidStartToArray = bidStartTo.split("-");
+                            product.setBidEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
+                        }
+                        else
+                        {
+                            product.setBidEndDate(currentDate);
+                        }
+
                         Location location = new Location();
                         location.setId(1);
                         product.setLocation(location);
@@ -151,12 +204,17 @@ public class CreateAdvertStep8 extends AppCompatActivity
 
                         product.setImg("a.jpg");
 
-                        Image image = new Image();
-                        image.setId(1);
-                        image.setTitle("b.jpg");
+                        Image image1 = new Image();
+                        image1.setId(1);
+                        image1.setTitle("a.jpg");
 
-                        Image[] images = new Image[1];
-                        images[0] = image;
+                        Image image2 = new Image();
+                        image2.setId(2);
+                        image2.setTitle("b.jpg");
+
+                        Image[] images = new Image[2];
+                        images[0] = image1;
+                        images[1] = image2;
                         product.setImages(images);
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -185,7 +243,7 @@ public class CreateAdvertStep8 extends AppCompatActivity
                                 {
                                     Toast.makeText(getApplicationContext(), "Ad is created.", Toast.LENGTH_LONG).show();
                                     //show a message that advert is created and go to my ads page
-                                    Intent create_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                                    Intent create_advert_submit_button_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
                                     startActivity(create_advert_submit_button_intent);
                                 }
                                 else

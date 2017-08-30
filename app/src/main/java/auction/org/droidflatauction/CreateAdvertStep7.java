@@ -188,7 +188,10 @@ public class CreateAdvertStep7 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step7_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
-                        create_advert_step7_back_arrow_intent.putExtra("product", product);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        create_advert_step7_back_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step7_back_arrow_intent);
                     }
                 }
@@ -203,9 +206,22 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
                         Intent create_advert_step7_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep8.class);
 
-                        //GsonBuilder gsonBuilder = new GsonBuilder();
-                        // Gson gson = gsonBuilder.create();
-                        //String productString = gson.toJson(product);
+                        String bidStartFrom = etCreateProductBidStartCalendar.getText().toString();
+                        String bidStartTo = etCreateProductBidEndCalendar.getText().toString();
+                        if(bidStartFrom != null && !bidStartFrom.equals(""))
+                        {
+                            product.setBidStartDate(bidStartFrom);
+                        }
+                        if(bidStartTo != null && !bidStartTo.equals(""))
+                        {
+                            product.setBidEndDate(bidStartTo);
+                        }
+                        product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
+                        product.setBidEndTime(bidEndTimer.getSelectedItem().toString());
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
 
                         create_advert_step7_forward_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step7_forward_arrow_intent);

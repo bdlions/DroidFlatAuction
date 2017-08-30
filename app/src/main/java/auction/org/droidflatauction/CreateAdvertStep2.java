@@ -163,7 +163,8 @@ public class CreateAdvertStep2 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step2_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
-                        create_advert_step2_back_arrow_intent.putExtra("product", product);
+                        //set parameters based on what step1 is expecting
+                        //create_advert_step2_back_arrow_intent.putExtra("product", product);
                         startActivity(create_advert_step2_back_arrow_intent);
                     }
                 }
@@ -175,7 +176,15 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        product.setTitle(etCreateProductPrice.getText().toString());
+                        try
+                        {
+                            product.setBasePrice(Double.parseDouble(etCreateProductPrice.getText().toString()));
+                        }
+                        catch(Exception ex)
+                        {
+
+                        }
+
                         Intent create_advert_step2_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
 
                         GsonBuilder gsonBuilder = new GsonBuilder();

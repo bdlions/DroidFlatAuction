@@ -74,7 +74,10 @@ public class CreateAdvertStep5 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step5_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
-
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        create_advert_step5_back_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step5_back_arrow_intent);
                     }
                 }
