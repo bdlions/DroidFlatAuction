@@ -39,6 +39,8 @@ public class SavedAdvertStep1 extends AppCompatActivity
 
     SessionManager session;
 
+    public int fetchProductInfoCounter = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,8 +79,9 @@ public class SavedAdvertStep1 extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 int productId = productIdList.get(position);
+                fetchProductInfo(productId);
 
-                Product product = new Product();
+                /*Product product = new Product();
                 product.setId(productId);
                 GsonBuilder gsonBuilder = new GsonBuilder();
                 Gson gson = gsonBuilder.create();
@@ -112,7 +115,7 @@ public class SavedAdvertStep1 extends AppCompatActivity
                             System.out.println(ex.toString());
                         }
                     }
-                });
+                });*/
             }
         });
 
@@ -124,6 +127,67 @@ public class SavedAdvertStep1 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void fetchProductInfo(final int productId)
+    {
+        Product tempProduct = new Product();
+        tempProduct.setId(productId);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempProductString = gson.toJson(tempProduct);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    Product responseProduct = null;
+                    String productInfoString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        productInfoString = (String) msg.obj;
+                    }
+                    if(productInfoString != null)
+                    {
+                        Gson gson = new Gson();
+                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                    }
+                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson2 = gsonBuilder.create();
+                        String productString = gson2.toJson(responseProduct);
+
+                        Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
+                        saved_advert_property_show_details_intent.putExtra("productString", productString);
+                        startActivity(saved_advert_property_show_details_intent);
+                    }
+                    else
+                    {
+                        fetchProductInfoCounter++;
+                        if (fetchProductInfoCounter <= 5)
+                        {
+                            fetchProductInfo(productId);
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchProductInfoCounter++;
+                    if (fetchProductInfoCounter <= 5)
+                    {
+                        fetchProductInfo(productId);
+                    }
+                }
+            }
+        });
     }
 
     public void onClickButtonBackArrowListener(){

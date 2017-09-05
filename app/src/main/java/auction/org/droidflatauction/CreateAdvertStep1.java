@@ -211,15 +211,35 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 if(pCategoryList != null && pCategoryList.isSuccess() && pCategoryList.getProductCategories() != null )
                 {
                     productCategoryList = pCategoryList.getProductCategories();
+                    int selectedCategoryPosition = 0;
 
-                    if(product != null && product.getId() == 0 && productCategoryList.size() > 0)
+                    //setting default product category
+                    if(product != null && product.getId() == 0 && product.getProductCategory() == null && productCategoryList.size() > 0)
                     {
                         product.setProductCategory(productCategoryList.get(0));
+                    }
+                    //setting product selected category
+                    else
+                    {
+                        int categoryCounter = productCategoryList.size();
+                        for(int counter = 0; counter < categoryCounter; counter++ )
+                        {
+                            if(productCategoryList.get(counter).getId() == product.getProductCategory().getId())
+                            {
+                                selectedProductCategory = productCategoryList.get(counter);
+                                selectedCategoryPosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     productCategoryAdapter = new ArrayAdapter<ProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
                     productCategorySpinner = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
                     productCategorySpinner.setAdapter(productCategoryAdapter);
+                    if(selectedProductCategory != null)
+                    {
+                        productCategorySpinner.setSelection(selectedCategoryPosition);
+                    }
                     productCategorySpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -275,15 +295,32 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 if(pSizeList != null && pSizeList.isSuccess() && pSizeList.getProductSizes() != null )
                 {
                     productSizeList = pSizeList.getProductSizes();
-
-                    if(product != null && product.getId() == 0 && productSizeList.size() > 0)
+                    int selectedSizePosition = 0;
+                    if(product != null && product.getId() == 0 && product.getProductSize() == null && productSizeList.size() > 0)
                     {
                         product.setProductSize(productSizeList.get(0));
+                    }
+                    else
+                    {
+                        int sizeCounter = productSizeList.size();
+                        for(int counter = 0; counter < sizeCounter; counter++ )
+                        {
+                            if(productSizeList.get(counter).getId() == product.getProductSize().getId())
+                            {
+                                selectedProductSize = productSizeList.get(counter);
+                                selectedSizePosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     productSizeAdapter = new ArrayAdapter<ProductSize>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productSizeList);
                     productSizeSpinner = (Spinner) findViewById(R.id.size_of_property_spinner);
                     productSizeSpinner.setAdapter(productSizeAdapter);
+                    if(selectedProductSize != null)
+                    {
+                        productSizeSpinner.setSelection(selectedSizePosition);
+                    }
                     productSizeSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -339,15 +376,32 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 if(pTypeList != null && pTypeList.isSuccess() && pTypeList.getProductTypes() != null )
                 {
                     productTypeList = pTypeList.getProductTypes();
-
-                    if(product != null && product.getId() == 0 && productTypeList.size() > 0)
+                    int selectedTypePosition = 0;
+                    if(product != null && product.getId() == 0 && product.getProductType() == null && productTypeList.size() > 0)
                     {
                         product.setProductType(productTypeList.get(0));
+                    }
+                    else
+                    {
+                        int typeCounter = productTypeList.size();
+                        for(int counter = 0; counter < typeCounter; counter++ )
+                        {
+                            if(productTypeList.get(counter).getId() == product.getProductType().getId())
+                            {
+                                selectedProductType = productTypeList.get(counter);
+                                selectedTypePosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     productTypeAdapter = new ArrayAdapter<ProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
                     productTypeSpinner = (Spinner) findViewById(R.id.type_of_property_spinner);
                     productTypeSpinner.setAdapter(productTypeAdapter);
+                    if(selectedProductType != null)
+                    {
+                        productTypeSpinner.setSelection(selectedTypePosition);
+                    }
                     productTypeSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
