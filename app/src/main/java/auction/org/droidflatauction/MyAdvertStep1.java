@@ -61,7 +61,7 @@ public class MyAdvertStep1 extends AppCompatActivity
 
         onClickButtonBackArrowListener();
 
-        myAdvertPropertyListView = (ListView) findViewById(R.id.my_advert_property_listview);
+        //myAdvertPropertyListView = (ListView) findViewById(R.id.my_advert_property_listview);
         productIdList = new ArrayList<>();
         property_iamges = new ArrayList<>();
         property_title_list = new ArrayList<>();
@@ -93,7 +93,48 @@ public class MyAdvertStep1 extends AppCompatActivity
         //property_price_list = getPropertyPriceList();
         myAdvertPropertyAdapter = new MyAdvertPropertyAdapter(MyAdvertStep1.this,session.getSessionId(), productIdList, property_iamges, imgList, property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
         myAdvertPropertyListView.setAdapter(myAdvertPropertyAdapter);
+        myAdvertPropertyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int productId = productIdList.get(position);
 
+                Product product = new Product();
+                product.setId(productId);
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                Gson gson = gsonBuilder.create();
+                String productString = gson.toJson(product);
+
+                //String sessionId = session.getSessionId();
+                org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+                packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                packetHeader.setSessionId(session.getSessionId());
+                new BackgroundWork().execute(packetHeader, productString, new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        try
+                        {
+                            String resultString = (String)msg.obj;
+                            Gson gson = new Gson();
+                            Product responseProduct = gson.fromJson(resultString, Product.class);
+                            System.out.println(responseProduct.getTitle());
+
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson2 = gsonBuilder.create();
+                            String productString = gson2.toJson(responseProduct);
+
+                            Intent my_advert_property_intent = new Intent(MyAdvertStep1.this, MyAdvertStep2.class);
+                            my_advert_property_intent.putExtra("productString", productString);
+                            startActivity(my_advert_property_intent);
+                        }
+                        catch(Exception ex)
+                        {
+                            System.out.println(ex.toString());
+                        }
+                    }
+                });
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

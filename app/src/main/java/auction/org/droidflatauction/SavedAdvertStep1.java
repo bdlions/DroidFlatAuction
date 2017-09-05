@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -16,6 +18,14 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+
+import com.auction.dto.Product;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
 
 import java.util.ArrayList;
 
@@ -61,9 +71,50 @@ public class SavedAdvertStep1 extends AppCompatActivity
         property_price_list = (ArrayList<String>)getIntent().getExtras().get("priceList");
 
         savedAdvertPropertyAdapter = new SavedAdvertPropertyAdapter(SavedAdvertStep1.this,session.getSessionId(), productIdList, property_iamges,imgList, property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
-
         savedAdvertPropertyListView.setAdapter(savedAdvertPropertyAdapter);
+        savedAdvertPropertyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                int productId = productIdList.get(position);
 
+                Product product = new Product();
+                product.setId(productId);
+                GsonBuilder gsonBuilder = new GsonBuilder();
+                Gson gson = gsonBuilder.create();
+                String productString = gson.toJson(product);
+
+                //String sessionId = session.getSessionId();
+                org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+                packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+                packetHeader.setSessionId(session.getSessionId());
+                new BackgroundWork().execute(packetHeader, productString, new Handler(){
+                    @Override
+                    public void handleMessage(Message msg) {
+                        try
+                        {
+                            String resultString = (String)msg.obj;
+                            Gson gson = new Gson();
+                            Product responseProduct = gson.fromJson(resultString, Product.class);
+                            System.out.println(responseProduct.getTitle());
+
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson2 = gsonBuilder.create();
+                            String productString = gson2.toJson(responseProduct);
+
+                            Intent saved_advert_property_step2_intent = new Intent(SavedAdvertStep1.this, SavedAdvertStep2.class);
+                            saved_advert_property_step2_intent.putExtra("productString", productString);
+                            startActivity(saved_advert_property_step2_intent);
+                        }
+                        catch(Exception ex)
+                        {
+                            System.out.println(ex.toString());
+                        }
+                    }
+                });
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -88,7 +139,7 @@ public class SavedAdvertStep1 extends AppCompatActivity
         );
     }
 
-    public ArrayList<Integer> getPropertyIamges(){
+    /*public ArrayList<Integer> getPropertyIamges(){
         property_iamges = new ArrayList<>();
         property_iamges.add(R.drawable.property_image_01);
         property_iamges.add(R.drawable.property_image_02);
@@ -132,7 +183,8 @@ public class SavedAdvertStep1 extends AppCompatActivity
         property_price_list.add("$182.40 PW");
         property_price_list.add("$192.40 PW");
         return property_price_list;
-    }
+    }*/
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

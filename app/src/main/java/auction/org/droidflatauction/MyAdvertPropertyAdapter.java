@@ -64,10 +64,9 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
     public View getView(final int position, View convertView, ViewGroup viewGroup) {
         if(convertView == null){
             convertView = View.inflate(context,R.layout.my_advert_property_row, null);
-            convertView.setOnClickListener(new View.OnClickListener() {
+            /*convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     int productId = productIdList.get(position);
 
                     Product product = new Product();
@@ -109,7 +108,7 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
 
 
                 }
-            });
+            });*/
         }
         ImageView property_images = (ImageView) convertView.findViewById(R.id.my_advert_property_image);
 

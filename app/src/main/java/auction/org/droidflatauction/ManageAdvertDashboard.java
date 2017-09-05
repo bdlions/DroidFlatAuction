@@ -21,6 +21,7 @@ import com.auction.dto.ProductList;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 
@@ -66,6 +67,10 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(new Product());
+                        create_advert_intent.putExtra("productString", productString);
                         startActivity(create_advert_intent);
                     }
                 }

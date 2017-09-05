@@ -63,6 +63,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
     ProductSize selectedProductSize;
     ProductCategory selectedProductCategory;
 
+    public int fetchProductInfoCounter = 0;
     public int fetchProductTypeCounter = 0;
     public int fetchProductSizeCounter = 0;
     public int fetchProductCategoryCounter = 0;
@@ -78,10 +79,28 @@ public class CreateAdvertStep1 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getBaseContext());
 
+        product = new Product();
         //-------------if this activity is called by product id then handle it ----------------------------------
         //-------------if this activity is called from back arrow of step2 then handle it -----------------------
-
-        product = new Product();
+        try
+        {
+            //product = (Product)getIntent().getExtras().get("product");
+            String productString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+            if(product.getId() > 0)
+            {
+                fetchProductInfo();
+            }
+            else
+            {
+                fetchProductCategoryList();
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex.toString());
+        }
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -89,7 +108,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
         //sizeOfPropertySpinner();
         //typeOfPropertySpinner();
 
-        fetchProductCategoryList();
+
         //fetchProductSizeList();
         //fetchProductTypeList();
 
@@ -104,6 +123,65 @@ public class CreateAdvertStep1 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    /***
+     * this method will fetch product info from the server
+     * */
+    public void fetchProductInfo()
+    {
+        Product tempProduct = new Product();
+        tempProduct.setId(product.getId());
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempProductString = gson.toJson(tempProduct);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    Product responseProduct = null;
+                    String productInfoString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        productInfoString = (String) msg.obj;
+                    }
+                    if(productInfoString != null)
+                    {
+                        Gson gson = new Gson();
+                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                    }
+                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    {
+                        product = responseProduct;
+                        fetchProductCategoryList();
+                    }
+                    else
+                    {
+                        fetchProductInfoCounter++;
+                        if (fetchProductInfoCounter <= 5)
+                        {
+                            fetchProductInfo();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchProductInfoCounter++;
+                    if (fetchProductInfoCounter <= 5)
+                    {
+                        fetchProductInfo();
+                    }
+                }
+            }
+        });
     }
 
     /***

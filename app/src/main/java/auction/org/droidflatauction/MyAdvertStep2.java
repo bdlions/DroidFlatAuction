@@ -121,7 +121,8 @@ public class MyAdvertStep2 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent my_advert_prpperty_edit_button_intent = new Intent(getBaseContext(), MyAdvertStep3.class);
+                        Intent my_advert_prpperty_edit_button_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
+                        my_advert_prpperty_edit_button_intent.putExtra("productString", productString);
                         startActivity(my_advert_prpperty_edit_button_intent);
                     }
                 }

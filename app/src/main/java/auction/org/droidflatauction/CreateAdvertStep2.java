@@ -163,8 +163,10 @@ public class CreateAdvertStep2 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step2_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
-                        //set parameters based on what step1 is expecting
-                        //create_advert_step2_back_arrow_intent.putExtra("product", product);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        create_advert_step2_back_arrow_intent.putExtra("productString", productString);
                         startActivity(create_advert_step2_back_arrow_intent);
                     }
                 }
