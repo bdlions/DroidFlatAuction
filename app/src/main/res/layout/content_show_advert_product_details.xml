@@ -232,6 +232,125 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="This property is marketed by"
+                            android:textColor="#2874b9"
+                            android:textSize="14dp"
+                            android:textStyle="bold" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="5dp"
+                            android:background="#ff9711" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:text="Agent Logo"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                        <ImageView
+                            android:id="@+id/property_agent_logo"
+                            android:layout_width="match_parent"
+                            android:layout_height="125dp"
+                            android:gravity="left"
+                            android:src="@drawable/agent_logo"
+                            android:adjustViewBounds="true"
+                            android:scaleType="fitXY"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="left"
+                            android:text="Company Name"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/property_company_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="left"
+                            android:text="RoomAuction"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="left"
+                            android:text="Business Name"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/property_business_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="left"
+                            android:text="Cadogan"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="left"
+                            android:text="Company Address"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/property_company_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="left"
+                            android:text="London"
+                            android:textColor="#5a5a5a"
+                            android:textSize="14dp"
+                            android:textStyle="normal"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:text="Availability"
                             android:textColor="#2874b9"
                             android:textSize="14dp"
