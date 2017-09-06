@@ -103,9 +103,9 @@ public class SavedAdvertStep1 extends AppCompatActivity
                             Gson gson2 = gsonBuilder.create();
                             String productString = gson2.toJson(responseProduct);
 
-                            Intent saved_advert_property_step2_intent = new Intent(SavedAdvertStep1.this, SavedAdvertStep2.class);
-                            saved_advert_property_step2_intent.putExtra("productString", productString);
-                            startActivity(saved_advert_property_step2_intent);
+                            Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
+                            saved_advert_property_show_details_intent.putExtra("productString", productString);
+                            startActivity(saved_advert_property_show_details_intent);
                         }
                         catch(Exception ex)
                         {

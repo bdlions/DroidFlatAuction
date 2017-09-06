@@ -237,6 +237,10 @@
         <activity
             android:name=".CreateAdvertStep8"
             android:label="@string/title_activity_create_advert_step8"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ShowAdvertProductDetails"
+            android:label="@string/title_activity_show_advert_product_details"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
