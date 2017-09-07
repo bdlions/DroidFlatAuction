@@ -24,6 +24,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class MyAdvertStep1 extends AppCompatActivity
     public static MyAdvertPropertyAdapter myAdvertPropertyAdapter;
     SessionManager session;
     public int fetchProductInfoCounter = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,7 @@ public class MyAdvertStep1 extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int productId = productIdList.get(position);
                 fetchProductInfo(productId);
+
 
                 /*Product product = new Product();
                 product.setId(productId);
@@ -185,6 +188,7 @@ public class MyAdvertStep1 extends AppCompatActivity
 
                         Intent my_advert_property_show_details_intent = new Intent(MyAdvertStep1.this, ShowAdvertProductDetails.class);
                         my_advert_property_show_details_intent.putExtra("productString", productString);
+                        my_advert_property_show_details_intent.putExtra("myAdvertButtonDisplayInteger", 1);
                         startActivity(my_advert_property_show_details_intent);
                     }
                     else

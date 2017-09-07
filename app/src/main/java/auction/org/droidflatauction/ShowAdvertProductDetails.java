@@ -16,7 +16,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.auction.dto.Product;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -35,6 +37,8 @@ public class ShowAdvertProductDetails extends AppCompatActivity
     private Product product;
     private String productString;
     SessionManager session;
+    public static RelativeLayout myAdvertBtnRow,savedAdvertBtnRow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,9 +72,23 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
         onClickButtonBackArrowListener();
         onClickShowTotalBiddersListener();
-        //onClickButtonEditListener();
+        onClickButtonEditListener();
         onClickPropertyPlaceBidButtonListener();
         onClickPropertyContactButtonListener();
+
+        Intent myAdvertButtonDisplayIntent = getIntent();
+        int myAdvertButtonDisplayIntegerValue = myAdvertButtonDisplayIntent.getIntExtra("myAdvertButtonDisplayInteger", 0);
+        myAdvertBtnRow = (RelativeLayout)findViewById(R.id.my_advert_button_row);
+        savedAdvertBtnRow = (RelativeLayout)findViewById(R.id.saved_advert_button_row);
+        if(myAdvertButtonDisplayIntegerValue == 1){
+            myAdvertBtnRow.setVisibility(View.VISIBLE);
+            savedAdvertBtnRow.setVisibility(View.GONE);
+        }
+        else {
+            myAdvertBtnRow.setVisibility(View.GONE);
+            savedAdvertBtnRow.setVisibility(View.VISIBLE);
+        }
+
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -106,7 +124,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                 }
         );
     }
-   /* public void onClickButtonEditListener(){
+    public void onClickButtonEditListener(){
         proppertyContentEditBtn = (Button)findViewById(R.id.show_advert_product_details_edit_button);
         proppertyContentEditBtn.setOnClickListener(
                 new View.OnClickListener() {
@@ -118,7 +136,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                     }
                 }
         );
-    }*/
+    }
     public void onClickPropertyPlaceBidButtonListener(){
         proppertyPlaceBidBtn = (Button)findViewById(R.id.show_advert_product_details_place_bid_button);
         proppertyPlaceBidBtn.setOnClickListener(new View.OnClickListener() {
