@@ -71,12 +71,24 @@ public class CreateAdvertStep7 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
+        etCreateProductBidStartCalendar = (EditText) findViewById(R.id.et_create_product_bid_start_calendar);
+        etCreateProductBidEndCalendar= (EditText) findViewById(R.id.et_create_product_bid_end_calendar);
+
         //product = (Product)getIntent().getExtras().get("product");
         try
         {
             String prodString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(prodString, Product.class);
+
+            if(product.getBidStartDate() != null)
+            {
+                etCreateProductBidStartCalendar.setText(product.getBidStartDate());
+            }
+            if(product.getBidEndDate() != null)
+            {
+                etCreateProductBidEndCalendar.setText(product.getBidEndDate());
+            }
         }
         catch(Exception ex)
         {
@@ -134,7 +146,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
     }
     public void onStart(){
         super.onStart();
-        etCreateProductBidStartCalendar = (EditText) findViewById(R.id.et_create_product_bid_start_calendar);
+
         etCreateProductBidStartCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -146,7 +158,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
             }
         });
 
-        etCreateProductBidEndCalendar= (EditText) findViewById(R.id.et_create_product_bid_end_calendar);
+
         etCreateProductBidEndCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

@@ -23,7 +23,7 @@ import com.google.gson.GsonBuilder;
 public class CreateAdvertStep5 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
-    private static EditText etCreateProductTitle, etCreateProductDescription;
+    private static EditText etManageProductTitle, etManageProductDescription, etManageProductName, etManageProductCompany, etManageProductPhone;
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
@@ -39,6 +39,12 @@ public class CreateAdvertStep5 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
+        etManageProductTitle = (EditText) findViewById(R.id.et_create_product_title);
+        etManageProductDescription = (EditText) findViewById(R.id.et_create_product_description);
+        etManageProductName = (EditText) findViewById(R.id.et_manage_product_name);
+        etManageProductCompany = (EditText) findViewById(R.id.et_manage_product_company);
+        etManageProductPhone = (EditText) findViewById(R.id.et_manage_product_phone);
+
         //product = (Product)getIntent().getExtras().get("product");
         try
         {
@@ -46,14 +52,34 @@ public class CreateAdvertStep5 extends AppCompatActivity
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
+
+            if(product.getTitle() != null)
+            {
+                etManageProductTitle.setText(product.getTitle());
+            }
+            if(product.getDescription() != null)
+            {
+                etManageProductDescription.setText(product.getDescription());
+            }
+            if(product.getFirstName() != null && product.getLastName() != null)
+            {
+                etManageProductName.setText(product.getFirstName() + product.getLastName());
+            }
+            if(product.getCompanyName() != null)
+            {
+                etManageProductCompany.setText(product.getCompanyName());
+            }
+            if(product.getPhone() != null)
+            {
+                etManageProductPhone.setText(product.getPhone());
+            }
         }
         catch(Exception ex)
         {
             System.out.println(ex.toString());
         }
 
-        etCreateProductTitle = (EditText) findViewById(R.id.et_create_product_title);
-        etCreateProductDescription = (EditText) findViewById(R.id.et_create_product_description);
+
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -89,8 +115,12 @@ public class CreateAdvertStep5 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        product.setTitle(etCreateProductTitle.getText().toString());
-                        product.setDescription(etCreateProductDescription.getText().toString());
+                        product.setTitle(etManageProductTitle.getText().toString());
+                        product.setDescription(etManageProductDescription.getText().toString());
+                        product.setFirstName(etManageProductName.getText().toString());
+                        product.setCompanyName(etManageProductCompany.getText().toString());
+                        product.setPhone(etManageProductPhone.getText().toString());
+
                         Intent create_advert_step5_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
 
                         GsonBuilder gsonBuilder = new GsonBuilder();

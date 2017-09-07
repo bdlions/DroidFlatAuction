@@ -75,11 +75,24 @@ public class CreateAdvertStep3 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
+        etCreateProductAvailableFrom = (EditText) findViewById(R.id.et_create_product_available_from);
+        etCreateProductAvailableTo= (EditText) findViewById(R.id.et_create_product_available_to);
+
+
         try {
             //product = (Product)getIntent().getExtras().get("product");
             String productString = (String) getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
+
+            if(product.getAvailableFrom() != null)
+            {
+                etCreateProductAvailableFrom.setText(product.getAvailableFrom());
+            }
+            if(product.getAvailableTo() != null)
+            {
+                etCreateProductAvailableTo.setText(product.getAvailableTo());
+            }
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
@@ -129,8 +142,6 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
     public void onStart(){
         super.onStart();
-        etCreateProductAvailableFrom = (EditText) findViewById(R.id.et_create_product_available_from);
-        etCreateProductAvailableTo= (EditText) findViewById(R.id.et_create_product_available_to);
         etCreateProductAvailableFrom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {

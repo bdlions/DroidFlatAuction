@@ -34,7 +34,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner sp_area;
-    private static EditText etCreateProductPrice;
+    private static EditText etManageProductPrice;
     ArrayAdapter<CharSequence> area_adapter;
     Product product;
     SessionManager session;
@@ -51,19 +51,22 @@ public class CreateAdvertStep2 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
+        etManageProductPrice = (EditText) findViewById(R.id.et_manage_product_price);
+
         try
         {
             //product = (Product)getIntent().getExtras().get("product");
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
+            etManageProductPrice.setText(product.getBasePrice()+"");
         }
         catch(Exception ex)
         {
             System.out.println(ex.toString());
         }
 
-        etCreateProductPrice = (EditText) findViewById(R.id.et_create_product_price);
+
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -180,7 +183,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
                     public void onClick(View v) {
                         try
                         {
-                            product.setBasePrice(Double.parseDouble(etCreateProductPrice.getText().toString()));
+                            product.setBasePrice(Double.parseDouble(etManageProductPrice.getText().toString()));
                         }
                         catch(Exception ex)
                         {

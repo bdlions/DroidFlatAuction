@@ -39,7 +39,9 @@ import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class CreateAdvertStep1 extends AppCompatActivity
@@ -160,6 +162,34 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
                     {
                         product = responseProduct;
+
+                        //formatting date to user display format
+                        String availableFrom = product.getAvailableFrom();
+                        String availableTo = product.getAvailableTo();
+                        if(availableFrom != null && !availableFrom.equals(""))
+                        {
+                            String[] availableFromArray = availableFrom.split("-");
+                            product.setAvailableFrom(availableFromArray[2]+"-"+availableFromArray[1]+"-"+availableFromArray[0]);
+                        }
+                        if(availableTo != null && !availableTo.equals(""))
+                        {
+                            String[] availableToArray = availableTo.split("-");
+                            product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
+                        }
+
+                        String bidStartFrom = product.getBidStartDate();
+                        String bidStartTo = product.getBidEndDate();
+                        if(bidStartFrom != null && !bidStartFrom.equals(""))
+                        {
+                            String[] bidStartFromArray = bidStartFrom.split("-");
+                            product.setBidStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
+                        }
+                        if(bidStartTo != null && !bidStartTo.equals(""))
+                        {
+                            String[] bidStartToArray = bidStartTo.split("-");
+                            product.setBidEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
+                        }
+
                         fetchProductCategoryList();
                     }
                     else
@@ -450,9 +480,6 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent create_advert_step1_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
-
-                        //setting a default image for the time being
-                        product.setImg("a.jpg");
 
                         if(selectedProductCategory != null)
                         {

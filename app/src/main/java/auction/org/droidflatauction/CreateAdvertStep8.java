@@ -202,27 +202,40 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         //product.setOccupation(occupation);
                         //product.setPet(pet);
 
-                        product.setImg("a.jpg");
+                        //setting some dummy image while creating a product
+                        if(product.getId() == 0)
+                        {
+                            product.setImg("a.jpg");
 
-                        Image image1 = new Image();
-                        image1.setId(1);
-                        image1.setTitle("a.jpg");
+                            Image image1 = new Image();
+                            image1.setId(1);
+                            image1.setTitle("a.jpg");
 
-                        Image image2 = new Image();
-                        image2.setId(2);
-                        image2.setTitle("b.jpg");
+                            Image image2 = new Image();
+                            image2.setId(2);
+                            image2.setTitle("b.jpg");
 
-                        Image[] images = new Image[2];
-                        images[0] = image1;
-                        images[1] = image2;
-                        product.setImages(images);
+                            Image[] images = new Image[2];
+                            images[0] = image1;
+                            images[1] = image2;
+                            product.setImages(images);
+                        }
+
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
                         productString = gson.toJson(product);
 
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                        packetHeader.setAction(ACTION.ADD_PRODUCT);
+                        if(product.getId() == 0)
+                        {
+                            packetHeader.setAction(ACTION.ADD_PRODUCT);
+                        }
+                        else
+                        {
+                            packetHeader.setAction(ACTION.UPDATE_PRODUCT_INFO);
+                        }
+
                         packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
                         packetHeader.setSessionId(session.getSessionId());
                         new BackgroundWork().execute(packetHeader, productString, new Handler(){

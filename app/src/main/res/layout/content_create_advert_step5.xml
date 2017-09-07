@@ -80,8 +80,8 @@
             android:textColor="#2874b9"
             android:textSize="16dp"
             android:textStyle="bold" />
-        <TextView
-            android:id="@+id/et_user_name"
+        <EditText
+            android:id="@+id/et_manage_product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
@@ -106,7 +106,7 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <EditText
-            android:id="@+id/et_company_name"
+            android:id="@+id/et_manage_product_company"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
@@ -121,7 +121,7 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <EditText
-            android:id="@+id/et_telephone"
+            android:id="@+id/et_manage_product_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"

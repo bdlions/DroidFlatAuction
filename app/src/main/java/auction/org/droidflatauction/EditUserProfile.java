@@ -27,9 +27,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.auction.dto.User;
+import com.auction.dto.response.GeneralResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundUploader;
@@ -47,6 +49,10 @@ public class EditUserProfile extends AppCompatActivity
     private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell;
     SessionManager session;
     NavigationManager navigationManager;
+
+    public User user;
+
+    public int fetchProfileCounter = 0;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
@@ -121,10 +127,10 @@ public class EditUserProfile extends AppCompatActivity
 
         iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
         //Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/logo.png").into(iv_profile_photo);
-        this.initUserProfile();
+        this.fetchUserProfile();
     }
 
-    public void initUserProfile()
+    public void fetchUserProfile()
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
@@ -134,21 +140,91 @@ public class EditUserProfile extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                String userString = (String) msg.obj;
-                System.out.println(userString);
-                Gson gson = new Gson();
-                User user = gson.fromJson(userString, User.class);
-                if(user.isSuccess())
+                try
                 {
-                    btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
-                    btnEditProfileEmail.setText(user.getEmail());
-                    btnEditProfilePassword.setText(user.getPassword());
-                    btnEditProfileCell.setText(user.getCellNo());
-                    Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/profile/"+user.getImg()).into(iv_profile_photo);
+                    String userString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        userString = (String) msg.obj;
+                    }
+                    if(userString != null)
+                    {
+                        Gson gson = new Gson();
+                        user = gson.fromJson(userString, User.class);
+                    }
+                    if(user != null && user.isSuccess())
+                    {
+                        btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
+                        btnEditProfileEmail.setText(user.getEmail());
+                        btnEditProfilePassword.setText(user.getPassword());
+                        btnEditProfileCell.setText(user.getCellNo());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                    }
+                    else
+                    {
+                        fetchProfileCounter++;
+                        if (fetchProfileCounter <= 5)
+                        {
+                            fetchUserProfile();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    fetchProfileCounter++;
+                    if (fetchProfileCounter <= 5)
+                    {
+                        fetchUserProfile();
+                    }
                 }
             }
         });
 
+    }
+
+    public void updateUserProfile()
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String userString = gson.toJson(user);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.UPDATE_USER_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    GeneralResponse response = null;
+                    String responseString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        responseString = (String) msg.obj;
+                    }
+                    if(responseString != null)
+                    {
+                        Gson gson = new Gson();
+                        response = gson.fromJson(responseString, GeneralResponse.class);
+                    }
+                    if(response != null && response.isSuccess())
+                    {
+                        btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
+                        btnEditProfileEmail.setText(user.getEmail());
+                        btnEditProfilePassword.setText(user.getPassword());
+                        btnEditProfileCell.setText(user.getCellNo());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                        Toast.makeText(EditUserProfile.this, "Profile is updated successfull!",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(Exception ex)
+                {
+
+                }
+            }
+        });
     }
 
 
@@ -192,31 +268,34 @@ public class EditUserProfile extends AppCompatActivity
         });
     }
     public void onClickEditUserNameEditListener(){
-
         btnEditProfileName.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
+            final Dialog dialog = new Dialog(EditUserProfile.this);
+            dialog.setContentView(R.layout.edit_user_name_popup);
+            dialog.setTitle("Change Your Name");
 
-                final Dialog dialog = new Dialog(EditUserProfile.this);
-
-                dialog.setContentView(R.layout.edit_user_name_popup);
-
-              dialog.setTitle("Change Your Name");
-
-                EditText first_name = (EditText) dialog.findViewById(R.id.user_first_name);
-                first_name.setText("Nazmul");
-                EditText last_name = (EditText) dialog.findViewById(R.id.user_last_name);
-                last_name.setText("Hasan");
-              //  ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-               // image.setImageResource(R.drawable.dashboard);
+                final EditText etFirstName = (EditText) dialog.findViewById(R.id.user_first_name);
+                final EditText etLastName = (EditText) dialog.findViewById(R.id.user_last_name);
+                if(user != null && user.getFirstName() != null)
+                {
+                    etFirstName.setText(user.getFirstName());
+                }
+                if(user != null && user.getLastName() != null)
+                {
+                    etLastName.setText(user.getLastName());
+                }
 
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_name_edit_submit_button);
                 submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Toast.makeText(EditUserProfile.this, "Edit is successfull!",Toast.LENGTH_SHORT).show();
+                    user.setFirstName(etFirstName.getText().toString());
+                    user.setLastName(etLastName.getText().toString());
+                    updateUserProfile();
+                    dialog.dismiss();
                     }
                 });
                 Button declineButton = (Button) dialog.findViewById(R.id.user_name_edit_cancel_button);
@@ -372,9 +451,9 @@ public class EditUserProfile extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        navigationManager.navigateTo(id);
+        //navigationManager.navigateTo(id);
 
-        /*if (id == R.id.nav_dashboard) {
+        if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -401,7 +480,7 @@ public class EditUserProfile extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }*/
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

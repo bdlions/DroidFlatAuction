@@ -24,6 +24,7 @@ import com.auction.dto.response.SignInResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
 import org.bdlions.client.reqeust.threads.IServerCallback;
@@ -34,6 +35,8 @@ public class UserProfile extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     SessionManager session;
     public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone;
+
+    public int fetchProfileCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +63,11 @@ public class UserProfile extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //retrieve user profile from the database
-        initUserProfile();
+        fetchUserProfile();
     }
 
-    public void initUserProfile()
+    public void fetchUserProfile()
     {
-        tvProfileFullName.setText("Hello World");
-
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_USER_INFO);
@@ -75,32 +76,44 @@ public class UserProfile extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                String userString = (String) msg.obj;
-                System.out.println(userString);
-                Gson gson = new Gson();
-                User user = gson.fromJson(userString, User.class);
-                if(user.isSuccess())
+                try
                 {
-                    tvProfileFullName.setText("Nazmul Hasan");
-                    tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
-                    tvProfileEmail.setText(user.getEmail());
-                    tvProfileTelephone.setText(user.getCellNo());
-//                    set user profile info into design
+                    User user = null;
+                    String userString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        userString = (String) msg.obj;
+                    }
+                    if(userString != null)
+                    {
+                        Gson gson = new Gson();
+                        user = gson.fromJson(userString, User.class);
+                    }
+                    if(user != null && user.isSuccess())
+                    {
+                        tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
+                        tvProfileEmail.setText(user.getEmail());
+                        tvProfileTelephone.setText(user.getCellNo());
+                    }
+                    else
+                    {
+                        fetchProfileCounter++;
+                        if (fetchProfileCounter <= 5)
+                        {
+                            fetchUserProfile();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    fetchProfileCounter++;
+                    if (fetchProfileCounter <= 5)
+                    {
+                        fetchUserProfile();
+                    }
                 }
             }
         });
-
-//        new BackgroundWork().execute(packetHeader, "{}", new IServerCallback() {
-//            @Override
-//            public void timeout(String s) {
-//                System.out.println(s);
-//            }
-//
-//            @Override
-//            public void resultHandler(IPacketHeader iPacketHeader, String userString) {
-//
-//            }
-//        });
     }
 
     public void onClickButtonBackArrowListener(){
