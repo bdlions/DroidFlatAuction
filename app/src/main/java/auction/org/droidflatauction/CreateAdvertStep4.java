@@ -135,15 +135,33 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 if(pSmokingList != null && pSmokingList.isSuccess() && pSmokingList.getSmokings() != null )
                 {
                     smokingList = pSmokingList.getSmokings();
+                    int selectedSmokingPosition = 0;
 
-                    if(product != null && product.getId() == 0 && smokingList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getSmoking() == null && smokingList.size() > 0)
                     {
                         product.setSmoking(smokingList.get(0));
+                    }
+                    else
+                    {
+                        int smokingCounter = smokingList.size();
+                        for(int counter = 0; counter < smokingCounter; counter++ )
+                        {
+                            if(smokingList.get(counter).getId() == product.getSmoking().getId())
+                            {
+                                selectedSmoking = smokingList.get(counter);
+                                selectedSmokingPosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     smokingAdapter = new ArrayAdapter<Smoking>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, smokingList);
                     smokingSpinner = (Spinner) findViewById(R.id.smoking_spinner);
                     smokingSpinner.setAdapter(smokingAdapter);
+                    if(selectedSmoking != null)
+                    {
+                        smokingSpinner.setSelection(selectedSmokingPosition);
+                    }
                     smokingSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -196,14 +214,32 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 if(pOccupationList != null && pOccupationList.isSuccess() && pOccupationList.getOccupations() != null )
                 {
                     occupationList = pOccupationList.getOccupations();
-                    if(product != null && product.getId() == 0 && occupationList.size() > 0)
+                    int selectedOccupationPosition = 0;
+                    if(product != null && product.getId() == 0 && product.getOccupation() == null && occupationList.size() > 0)
                     {
                         product.setOccupation(occupationList.get(0));
+                    }
+                    else
+                    {
+                        int occupationCounter = occupationList.size();
+                        for(int counter = 0; counter < occupationCounter; counter++ )
+                        {
+                            if(occupationList.get(counter).getId() == product.getOccupation().getId())
+                            {
+                                selectedOccupation = occupationList.get(counter);
+                                selectedOccupationPosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     occupationAdapter = new ArrayAdapter<Occupation>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, occupationList);
                     occupationSpinner = (Spinner) findViewById(R.id.occupation_spinner);
                     occupationSpinner.setAdapter(occupationAdapter);
+                    if(selectedOccupation != null)
+                    {
+                        occupationSpinner.setSelection(selectedOccupationPosition);
+                    }
                     occupationSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -256,15 +292,32 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 if(pPetList != null && pPetList.isSuccess() && pPetList.getPets() != null )
                 {
                     petList = pPetList.getPets();
-
-                    if(product != null && product.getId() == 0 && petList.size() > 0)
+                    int selectedPetPosition = 0;
+                    if(product != null && product.getId() == 0 && product.getPet() == null&& petList.size() > 0)
                     {
                         product.setPet(petList.get(0));
+                    }
+                    else
+                    {
+                        int petCounter = petList.size();
+                        for(int counter = 0; counter < petCounter; counter++ )
+                        {
+                            if(petList.get(counter).getId() == product.getPet().getId())
+                            {
+                                selectedPet = petList.get(counter);
+                                selectedPetPosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     petAdapter = new ArrayAdapter<Pet>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, petList);
                     petSpinner = (Spinner) findViewById(R.id.pets_spinner);
                     petSpinner.setAdapter(petAdapter);
+                    if(selectedPet != null)
+                    {
+                        petSpinner.setSelection(selectedPetPosition);
+                    }
                     petSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
