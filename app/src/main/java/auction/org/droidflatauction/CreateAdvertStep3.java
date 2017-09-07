@@ -177,17 +177,50 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 if(pStayList != null && pStayList.isSuccess() && pStayList.getStays() != null )
                 {
                     stayList = pStayList.getStays();
-
-                    if(product != null && product.getId() == 0 && stayList.size() > 0)
+                    int selectedMinStayPosition = 0;
+                    if(product != null && product.getId() == 0 && product.getMinStay() == null && stayList.size() > 0)
                     {
                         product.setMinStay(stayList.get(0));
+                    }
+                    else
+                    {
+                        int minStayCounter = stayList.size();
+                        for(int counter = 0; counter < minStayCounter; counter++ )
+                        {
+                            if(stayList.get(counter).getId() == product.getMinStay().getId())
+                            {
+                                selectedMinStay = stayList.get(counter);
+                                selectedMinStayPosition = counter;
+                                break;
+                            }
+                        }
+                    }
+                    int selectedMaxStayPosition = 0;
+                    if(product != null && product.getId() == 0 && product.getMaxStay() == null && stayList.size() > 0)
+                    {
                         product.setMaxStay(stayList.get(0));
+                    }
+                    else
+                    {
+                        int maxStayCounter = stayList.size();
+                        for(int counter = 0; counter < maxStayCounter; counter++ )
+                        {
+                            if(stayList.get(counter).getId() == product.getMaxStay().getId())
+                            {
+                                selectedMaxStay = stayList.get(counter);
+                                selectedMaxStayPosition = counter;
+                                break;
+                            }
+                        }
                     }
 
                     stayAdapter = new ArrayAdapter<Stay>( CreateAdvertStep3.this, android.R.layout.simple_spinner_item, stayList);
-
                     minStaySpinner = (Spinner) findViewById(R.id.minimum_stay_spinner);
                     minStaySpinner.setAdapter(stayAdapter);
+                    if(selectedMinStay != null)
+                    {
+                        minStaySpinner.setSelection(selectedMinStayPosition);
+                    }
                     minStaySpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -203,9 +236,11 @@ public class CreateAdvertStep3 extends AppCompatActivity
                                 }
                             }
                     );
-
                     maxStaySpinner = (Spinner) findViewById(R.id.maximum_stay_spinner);
                     maxStaySpinner.setAdapter(stayAdapter);
+                    if(selectedMaxStay != null){
+                        maxStaySpinner.setSelection(selectedMaxStayPosition);
+                    }
                     maxStaySpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
