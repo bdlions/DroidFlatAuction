@@ -218,15 +218,198 @@ public class EditUserProfile extends AppCompatActivity
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
                         Toast.makeText(EditUserProfile.this, "Profile is updated successfull!",Toast.LENGTH_SHORT).show();
                     }
+                    else
+                    {
+                        Toast.makeText(EditUserProfile.this, "Unable to update profile. Please try again later.",Toast.LENGTH_SHORT).show();
+                    }
                 }
                 catch(Exception ex)
                 {
-
+                    Toast.makeText(EditUserProfile.this, "Unable to update profile. Please try again later.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
+    public void onClickEditUserNameEditListener(){
+        btnEditProfileName.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.edit_user_name_popup);
+                dialog.setTitle("Change Your Name");
+
+                final EditText etFirstName = (EditText) dialog.findViewById(R.id.user_first_name);
+                final EditText etLastName = (EditText) dialog.findViewById(R.id.user_last_name);
+                if(user != null && user.getFirstName() != null)
+                {
+                    etFirstName.setText(user.getFirstName());
+                }
+                if(user != null && user.getLastName() != null)
+                {
+                    etLastName.setText(user.getLastName());
+                }
+
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.user_name_edit_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String firstName = "", lastName = "";
+                        firstName = etFirstName.getText().toString();
+                        lastName = etLastName.getText().toString();
+                        if(firstName.equals("") && lastName.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign valid name.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            user.setFirstName(firstName);
+                            user.setLastName(lastName);
+                            updateUserProfile();
+                            dialog.dismiss();
+                        }
+
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.user_name_edit_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+        });
+    }
+
+    public void onClickEditUserCellNumberEditListener()
+    {
+        btnEditProfileCell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.edit_user_cell_number_popup);
+                dialog.setTitle("Change Your Cell Number");
+                final EditText etCellNo = (EditText) dialog.findViewById(R.id.user_cell);
+                if(user != null && user.getCellNo()!= null)
+                {
+                    etCellNo.setText(user.getCellNo());
+                }
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.user_cell_edit_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String cellNo = etCellNo.getText().toString();
+                        if(cellNo.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign valid Cell Number.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            user.setCellNo(cellNo);
+                            updateUserProfile();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.user_cell_edit_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
+    public void onClickEditUserPasswordEditListener(){
+        btnEditProfilePassword.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.edit_user_password_popup);
+                dialog.setTitle("Change Your Password");
+                final EditText etPassword = (EditText) dialog.findViewById(R.id.user_password);
+
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.user_password_edit_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String password = etPassword.getText().toString();
+                        if(password.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign valid password.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            user.setPassword(etPassword.getText().toString());
+                            updateUserProfile();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.user_password_edit_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+        });
+    }
+
+    public void onClickEditUserEmailEditListener(){
+        btnEditProfileEmail.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.edit_user_email_popup);
+                dialog.setTitle("Change Your Email");
+                final EditText etEmail = (EditText) dialog.findViewById(R.id.user_email);
+                if(user != null && user.getEmail()!= null)
+                {
+                    etEmail.setText(user.getEmail());
+                }
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.user_email_edit_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String email = etEmail.getText().toString();
+                        if(email.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign valid email.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            user.setEmail(etEmail.getText().toString());
+                            updateUserProfile();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.user_email_edit_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+        });
+    }
 
     public void onClickEditUserProfilePhotoEditListener(){
         iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
@@ -234,17 +417,11 @@ public class EditUserProfile extends AppCompatActivity
 
             @Override
             public void onClick(View arg0) {
-
                 final Dialog dialog = new Dialog(EditUserProfile.this);
-
                 dialog.setContentView(R.layout.upload_user_photo);
-
                 dialog.setTitle("Upload Your Photo");
-
-
-                 ImageView profile_image = (ImageView) dialog.findViewById(R.id.user_profile_image);
+                ImageView profile_image = (ImageView) dialog.findViewById(R.id.user_profile_image);
                 profile_image.setImageResource(R.drawable.user);
-
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_photo_upload_submit_button);
                 submitButton.setOnClickListener(new View.OnClickListener() {
@@ -267,153 +444,7 @@ public class EditUserProfile extends AppCompatActivity
 
         });
     }
-    public void onClickEditUserNameEditListener(){
-        btnEditProfileName.setOnClickListener(new View.OnClickListener() {
 
-            @Override
-            public void onClick(View arg0) {
-            final Dialog dialog = new Dialog(EditUserProfile.this);
-            dialog.setContentView(R.layout.edit_user_name_popup);
-            dialog.setTitle("Change Your Name");
-
-                final EditText etFirstName = (EditText) dialog.findViewById(R.id.user_first_name);
-                final EditText etLastName = (EditText) dialog.findViewById(R.id.user_last_name);
-                if(user != null && user.getFirstName() != null)
-                {
-                    etFirstName.setText(user.getFirstName());
-                }
-                if(user != null && user.getLastName() != null)
-                {
-                    etLastName.setText(user.getLastName());
-                }
-
-                dialog.show();
-                Button submitButton = (Button) dialog.findViewById(R.id.user_name_edit_submit_button);
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                    user.setFirstName(etFirstName.getText().toString());
-                    user.setLastName(etLastName.getText().toString());
-                    updateUserProfile();
-                    dialog.dismiss();
-                    }
-                });
-                Button declineButton = (Button) dialog.findViewById(R.id.user_name_edit_cancel_button);
-                declineButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-            }
-
-        });
-    }
-    public void onClickEditUserEmailEditListener(){
-
-        btnEditProfileEmail.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                final Dialog dialog = new Dialog(EditUserProfile.this);
-
-                dialog.setContentView(R.layout.edit_user_email_popup);
-
-                dialog.setTitle("Change Your Email");
-
-                EditText user_email = (EditText) dialog.findViewById(R.id.user_email);
-                user_email.setText("bdlions@gmail.com");
-
-                dialog.show();
-                Button submitButton = (Button) dialog.findViewById(R.id.user_email_edit_submit_button);
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(EditUserProfile.this, "Edit is successfull!",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Button declineButton = (Button) dialog.findViewById(R.id.user_email_edit_cancel_button);
-                declineButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-            }
-
-        });
-    }
-    public void onClickEditUserPasswordEditListener(){
-
-        btnEditProfilePassword.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                final Dialog dialog = new Dialog(EditUserProfile.this);
-
-                dialog.setContentView(R.layout.edit_user_password_popup);
-
-                dialog.setTitle("Change Your Password");
-
-                EditText user_password = (EditText) dialog.findViewById(R.id.user_password);
-                user_password.setText("password");
-
-                dialog.show();
-                Button submitButton = (Button) dialog.findViewById(R.id.user_password_edit_submit_button);
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(EditUserProfile.this, "Edit is successfull!",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Button declineButton = (Button) dialog.findViewById(R.id.user_password_edit_cancel_button);
-                declineButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-            }
-
-        });
-    }
-    public void onClickEditUserCellNumberEditListener(){
-
-        btnEditProfileCell.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-
-                final Dialog dialog = new Dialog(EditUserProfile.this);
-
-                dialog.setContentView(R.layout.edit_user_cell_number_popup);
-
-                dialog.setTitle("Change Your Cell Number");
-
-                EditText user_cell_number = (EditText) dialog.findViewById(R.id.user_cell);
-                user_cell_number.setText("+8801234512345");
-
-                dialog.show();
-                Button submitButton = (Button) dialog.findViewById(R.id.user_cell_edit_submit_button);
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Toast.makeText(EditUserProfile.this, "Edit is successfull!",Toast.LENGTH_SHORT).show();
-                    }
-                });
-                Button declineButton = (Button) dialog.findViewById(R.id.user_cell_edit_cancel_button);
-                declineButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
-            }
-
-        });
-    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
