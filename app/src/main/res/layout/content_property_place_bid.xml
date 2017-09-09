@@ -51,7 +51,7 @@
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <EditText
-                android:id="@+id/auto_bid"
+                android:id="@+id/et_auto_bid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -67,7 +67,7 @@
                 android:textSize="16dp"
                 android:textStyle="bold" />
             <EditText
-                android:id="@+id/bid_directly"
+                android:id="@+id/et_bid_directly"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="number"
@@ -75,7 +75,7 @@
                 android:textSize="16dp"
                 android:textStyle="normal" />
             <Button
-                android:id="@+id/place_bid_submit_button"
+                android:id="@+id/btn_submit_bid"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_marginTop="20dp"

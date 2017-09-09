@@ -144,6 +144,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent propperty_place_bid_button_intent = new Intent(getBaseContext(), PropertyPlaceBid.class);
+                propperty_place_bid_button_intent.putExtra("productId", product.getId());
                 startActivity(propperty_place_bid_button_intent);
             }
         });
