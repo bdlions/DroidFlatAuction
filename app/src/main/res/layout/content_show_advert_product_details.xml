@@ -27,7 +27,7 @@
                 android:src="@drawable/back_arrow"
                 android:background="#fff"/>
             <TextView
-                android:id="@+id/view_product_title"
+                android:id="@+id/tv_product_details_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -45,7 +45,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <ImageView
-                android:id="@+id/img_product_details"
+                android:id="@+id/iv_product_details_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:layout_marginTop="5dp"
@@ -75,7 +75,7 @@
                     android:layout_marginTop="40dp"
                     android:orientation="vertical">
                     <TextView
-                        android:id="@+id/view_product_price"
+                        android:id="@+id/tv_product_details_price"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:gravity="left"
@@ -149,11 +149,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_total_bids"
+                            android:id="@+id/tv_product_details_total_bids"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="39"
+                            android:text="0"
                             android:textColor="#f06226"
                             android:textSize="14dp"
                             android:textStyle="bold"
@@ -202,7 +202,7 @@
                             android:layout_marginTop="5dp"
                             android:background="#ff9711" />
                         <TextView
-                            android:id="@+id/view_product_description"
+                            android:id="@+id/tv_product_details_description"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:layout_marginTop="10dp"

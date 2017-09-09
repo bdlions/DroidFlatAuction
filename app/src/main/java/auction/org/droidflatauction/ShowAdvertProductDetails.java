@@ -31,9 +31,9 @@ import com.squareup.picasso.Picasso;
 public class ShowAdvertProductDetails extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tv_view_product_title, tv_view_product_price, tv_view_product_description, tv_property_total_bids;
+    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription;
     private  static Button proppertyContentEditBtn, proppertyPlaceBidBtn, proppertyContactBtn;
-    private static ImageView ivProductDetails;
+    private static ImageView ivProductDetailsImage;
     private Product product;
     private String productString;
     SessionManager session;
@@ -50,10 +50,11 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
-        tv_view_product_title = (TextView) findViewById(R.id.view_product_title);
-        tv_view_product_price = (TextView) findViewById(R.id.view_product_price);
-        tv_view_product_description = (TextView) findViewById(R.id.view_product_description);
-        ivProductDetails = (ImageView) findViewById(R.id.img_product_details);
+        tvProductDetailsTitle = (TextView) findViewById(R.id.tv_product_details_title);
+        tvProductDetailsPrice = (TextView) findViewById(R.id.tv_product_details_price);
+        tvProductDetailsDescription = (TextView) findViewById(R.id.tv_product_details_description);
+        ivProductDetailsImage = (ImageView) findViewById(R.id.iv_product_details_image);
+        tvProductDetailsTotalBids = (TextView) findViewById(R.id.tv_product_details_total_bids);
 
         try
         {
@@ -62,10 +63,11 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
             //product = (Product)getIntent().getExtras().get("productInfo");
-            tv_view_product_title.setText(product.getTitle());
-            tv_view_product_price.setText(product.getBasePrice()+" £");
-            tv_view_product_description.setText(product.getDescription());
-            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetails);
+            tvProductDetailsTitle.setText(product.getTitle());
+            tvProductDetailsPrice.setText(product.getBasePrice()+" £");
+            tvProductDetailsDescription.setText(product.getDescription());
+            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetailsImage);
+            tvProductDetailsTotalBids.setText(product.getTotalBids()+"");
         }
         catch(Exception ex)
         {
@@ -113,8 +115,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
     }
 
     public void onClickShowTotalBiddersListener(){
-        tv_property_total_bids = (TextView) findViewById(R.id.property_total_bids);
-        tv_property_total_bids.setOnClickListener(
+        tvProductDetailsTotalBids.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

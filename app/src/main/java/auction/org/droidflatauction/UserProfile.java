@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.auction.dto.User;
@@ -35,7 +36,7 @@ public class UserProfile extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     SessionManager session;
     public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileAddress,tvProfileRole;
-
+    private static ImageView ivProfilePhoto, ivProfileAgentLogo;
     public int fetchProfileCounter = 0;
 
     @Override
@@ -50,6 +51,9 @@ public class UserProfile extends AppCompatActivity
         tvProfileBusinessName = (TextView) findViewById(R.id.tv_profile_business_name);
         tvProfileAddress = (TextView) findViewById(R.id.tv_profile_address);
         tvProfileRole = (TextView) findViewById(R.id.tv_profile_role);
+
+        ivProfilePhoto = (ImageView) findViewById(R.id.iv_profile_photo);
+        ivProfileAgentLogo = (ImageView) findViewById(R.id.iv_profile_agent_logo);
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
@@ -99,6 +103,9 @@ public class UserProfile extends AppCompatActivity
                         tvProfileTelephone.setText(user.getCellNo());
                         tvProfileBusinessName.setText(user.getBusinessName());
                         tvProfileAddress.setText(user.getAddress());
+
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
                     }
                     else
                     {

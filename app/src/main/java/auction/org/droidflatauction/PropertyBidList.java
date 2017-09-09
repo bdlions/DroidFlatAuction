@@ -40,11 +40,12 @@ import com.squareup.picasso.Picasso;
 import org.auction.udp.BackgroundWork;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PropertyBidList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ImageView ivPropertyImage;
-    private static TextView tvPropertyTitle,tvPropertyPrice;
+    private static TextView tvProductTitle,tvProductPrice, tvProductTotalBids;
     String bidder[] = {
             "Nazmul hasan","Alamgir Kabir",
             "Nazmul hasan","Alamgir Kabir",
@@ -74,6 +75,7 @@ public class PropertyBidList extends AppCompatActivity
     public int fetchProductInfoCounter = 0;
     public int fetchBidListCounter = 0;
     Product product;
+    HashMap<Integer, String> userIdNameMap = new HashMap<>();
 
 
     @Override
@@ -86,8 +88,9 @@ public class PropertyBidList extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
         ivPropertyImage = (ImageView)findViewById(R.id.property_image);
-        tvPropertyTitle = (TextView) findViewById(R.id.property_title);
-        tvPropertyPrice = (TextView) findViewById(R.id.property_price);
+        tvProductTitle = (TextView) findViewById(R.id.property_title);
+        tvProductPrice = (TextView) findViewById(R.id.property_price);
+        tvProductTotalBids = (TextView) findViewById(R.id.tv_product_bid_list_total_bids);
         try
         {
             int productId = getIntent().getExtras().getInt("productId");
@@ -102,7 +105,7 @@ public class PropertyBidList extends AppCompatActivity
 
         tl = (TableLayout) findViewById(R.id.bidder_list);
         addHeaders();
-        addData();
+        //addData();
 
 
 
@@ -149,10 +152,10 @@ public class PropertyBidList extends AppCompatActivity
                     {
                         product = responseProduct;
                         //set product info into interface
-                        tvPropertyTitle.setText(product.getTitle());
-                        tvPropertyPrice.setText(product.getBasePrice()+" £");
+                        tvProductTitle.setText(product.getTitle());
+                        tvProductPrice.setText(product.getBasePrice()+" £");
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivPropertyImage);
-
+                        tvProductTotalBids.setText(product.getTotalBids()+"");
 
                         //call server to get bid list
                         fetchBidList();
@@ -211,15 +214,8 @@ public class PropertyBidList extends AppCompatActivity
                     if(productBidList != null && productBidList.isSuccess())
                     {
                         //set bid list
-                        int bidCounter = productBidList.getProductBidList().size();
                         ArrayList<ProductBid> bidList = productBidList.getProductBidList();
-                        Toast.makeText(PropertyBidList.this, "Bid Count: " + bidList,Toast.LENGTH_SHORT).show();
-                        for(int counter = 0; counter < bidCounter; counter++){
-                            ProductBid productBid = bidList.get(counter);
-
-                        }
-                        //System.out.println(productBidList.getProductBidList().size());
-                        //Toast.makeText(PropertyBidList.this, "Hello " + productBidList.getProductBidList().size(),Toast.LENGTH_SHORT).show();
+                        showBidList(bidList);
                     }
                     else
                     {
@@ -315,10 +311,23 @@ public class PropertyBidList extends AppCompatActivity
                 LayoutParams.WRAP_CONTENT));
     }
 
-    /** This function add the data to the table **/
-    public void addData() {
+    public void showBidList(ArrayList<ProductBid> bidList) {
+        int totalBids = bidList.size();
+        for (int i = 0; i < totalBids; i++)
+        {
+            ProductBid bid = bidList.get(i);
+            if(bid.getUser().getFirstName() == null || bid.getUser().getLastName() == null)
+            {
+                continue;
+            }
+            if(bid.getUser().getId() > 0 && !userIdNameMap.containsKey(bid.getUser().getId()))
+            {
+                userIdNameMap.put(bid.getUser().getId(), bid.getUser().getFirstName()+" " + bid.getUser().getLastName());
+            }
+        }
 
-        for (int i = 0; i < bidder.length; i++) {
+        for (int i = 0; i < totalBids; i++) {
+            ProductBid bid = bidList.get(i);
             /** Create a TableRow dynamically **/
             tr = new TableRow(this);
             tr.setLayoutParams(new LayoutParams(
@@ -327,7 +336,15 @@ public class PropertyBidList extends AppCompatActivity
 
             /** Creating a TextView to add to the row **/
             bidder_name = new TextView(this);
-            bidder_name.setText(bidder[i]);
+            if(bid.getUser().getFirstName() != null && bid.getUser().getLastName() != null)
+            {
+                bidder_name.setText(bid.getUser().getFirstName() + " " + bid.getUser().getLastName());
+            }
+            else if(userIdNameMap.containsKey(bid.getUser().getId()))
+            {
+                bidder_name.setText(userIdNameMap.get(bid.getUser().getId()));
+            }
+
             bidder_name.setTextColor(Color.parseColor("#5a5a5a"));
             bidder_name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
             bidder_name.setPadding(5, 5, 5, 5);
@@ -335,13 +352,61 @@ public class PropertyBidList extends AppCompatActivity
 
             /** Creating another textview **/
             price_list = new TextView(this);
+            price_list.setText(bid.getPrice() + " £");
+            price_list.setTextColor(Color.parseColor("#5a5a5a"));
+            price_list.setPadding(5, 5, 5, 5);
+            price_list.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            tr.addView(price_list); // Adding textView to tablerow.
+
+            String bidTime = bid.getCreatedTime();
+            String[] bidTimeArray = bidTime.split(" ");
+            if(bidTimeArray != null && bidTimeArray.length == 3)
+            {
+                String tempDate = bidTimeArray[0];
+                String[] tempDateArray = tempDate.split("-");
+                if(tempDateArray != null && tempDateArray.length == 3 && tempDateArray[0].length() == 4)
+                {
+                    bidTime = tempDateArray[2]+"-"+tempDateArray[1]+"-"+tempDateArray[0]+" "+bidTimeArray[1] + " "+bidTimeArray[2];
+                }
+            }
+            /** Creating another textview **/
+            time_list = new TextView(this);
+            time_list.setText(bidTime);
+            time_list.setTextColor(Color.parseColor("#5a5a5a"));
+            time_list.setPadding(5, 5, 5, 5);
+            time_list.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            tr.addView(time_list); // Adding textView to tablerow.
+
+            // Add the TableRow to the TableLayout
+            tl.addView(tr, new TableLayout.LayoutParams(
+                    LayoutParams.FILL_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+        }
+    }
+
+    /** This function add the data to the table **/
+    /*public void addData() {
+
+        for (int i = 0; i < bidder.length; i++) {
+            tr = new TableRow(this);
+            tr.setLayoutParams(new LayoutParams(
+                    LayoutParams.FILL_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+
+            bidder_name = new TextView(this);
+            bidder_name.setText(bidder[i]);
+            bidder_name.setTextColor(Color.parseColor("#5a5a5a"));
+            bidder_name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+            bidder_name.setPadding(5, 5, 5, 5);
+            tr.addView(bidder_name);  // Adding textView to tablerow.
+
+            price_list = new TextView(this);
             price_list.setText(bid_amount[i]);
             price_list.setTextColor(Color.parseColor("#5a5a5a"));
             price_list.setPadding(5, 5, 5, 5);
             price_list.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
             tr.addView(price_list); // Adding textView to tablerow.
 
-            /** Creating another textview **/
             time_list = new TextView(this);
             time_list.setText(bid_time[i]);
             time_list.setTextColor(Color.parseColor("#5a5a5a"));
@@ -354,7 +419,9 @@ public class PropertyBidList extends AppCompatActivity
                     LayoutParams.FILL_PARENT,
                     LayoutParams.WRAP_CONTENT));
         }
-    }
+    }*/
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

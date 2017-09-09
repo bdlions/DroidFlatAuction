@@ -52,12 +52,11 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <ImageView
-            android:id="@+id/iv_profile_photo"
+            android:id="@+id/iv_edit_profile_photo"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_marginTop="-10dp"
-            android:layout_marginLeft="5dp"
-           android:src="@drawable/user"/>
+            android:layout_marginLeft="5dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -68,12 +67,11 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <ImageView
-            android:id="@+id/iv_agent_logo"
+            android:id="@+id/iv_edit_profile_agent_logo"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:src="@drawable/agent_logo"/>
+            android:layout_marginLeft="5dp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

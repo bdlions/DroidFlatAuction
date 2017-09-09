@@ -49,7 +49,7 @@ import java.util.List;
 public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private final int SELECT_PHOTO = 1;
-    private static ImageView iv_profile_photo;
+    private static ImageView ivEditProfilePhoto, ivEditProfileAgentLogo;
     private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell;
     SessionManager session;
     NavigationManager navigationManager;
@@ -113,6 +113,9 @@ public class EditUserProfile extends AppCompatActivity
         btnEditProfilePassword = (Button) findViewById(R.id.btn_edit_profile_password);
         btnEditProfileCell = (Button) findViewById(R.id.btn_edit_profile_cell);
 
+        ivEditProfilePhoto = (ImageView) findViewById(R.id.iv_edit_profile_photo);
+        ivEditProfileAgentLogo = (ImageView) findViewById(R.id.iv_edit_profile_agent_logo);
+
         onClickEditUserProfilePhotoEditListener();
         onClickEditUserNameEditListener();
         onClickEditUserEmailEditListener();
@@ -151,7 +154,6 @@ public class EditUserProfile extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        iv_profile_photo = (ImageView) findViewById(R.id.iv_profile_photo);
         //Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/logo.png").into(iv_profile_photo);
         this.fetchUserProfile();
     }
@@ -184,7 +186,8 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileEmail.setText(user.getEmail());
                         btnEditProfilePassword.setText(user.getPassword());
                         btnEditProfileCell.setText(user.getCellNo());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
                     }
                     else
                     {
@@ -241,7 +244,8 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileEmail.setText(user.getEmail());
                         btnEditProfilePassword.setText(user.getPassword());
                         btnEditProfileCell.setText(user.getCellNo());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
                         Toast.makeText(EditUserProfile.this, "Profile is updated successfull!",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -438,8 +442,7 @@ public class EditUserProfile extends AppCompatActivity
     }
 
     public void onClickEditUserProfilePhotoEditListener(){
-        iv_profile_photo = (ImageView) findViewById(R.id.iv_profile_photo);
-        iv_profile_photo.setOnClickListener(new View.OnClickListener() {
+        ivEditProfilePhoto.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
@@ -447,7 +450,7 @@ public class EditUserProfile extends AppCompatActivity
                 dialog.setContentView(R.layout.upload_user_photo);
                 dialog.setTitle("Upload Your Photo");
                 ImageView profile_image = (ImageView) dialog.findViewById(R.id.user_profile_image);
-                profile_image.setImageResource(R.drawable.user);
+                //profile_image.setImageResource(R.drawable.user);
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_photo_upload_submit_button);
                 submitButton.setOnClickListener(new View.OnClickListener() {
