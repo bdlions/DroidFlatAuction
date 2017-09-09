@@ -27,7 +27,6 @@
                 android:src="@drawable/back_arrow"
                 android:background="#fff"/>
             <TextView
-                android:id="@+id/profile_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
@@ -61,7 +60,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:text="Nazmul Hasan"
+                android:text=""
                 android:textColor="#5a5a5a"
                 android:textSize="14dp"
                 android:textStyle="normal"

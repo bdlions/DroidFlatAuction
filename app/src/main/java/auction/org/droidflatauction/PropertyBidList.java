@@ -17,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -25,8 +26,10 @@ import android.widget.TextView;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.widget.TableRow.LayoutParams;
+import android.widget.Toast;
 
 import com.auction.dto.Product;
+import com.auction.dto.ProductBid;
 import com.auction.dto.ProductBidList;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
@@ -36,8 +39,12 @@ import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
 
+import java.util.ArrayList;
+
 public class PropertyBidList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private static ImageView ivPropertyImage;
+    private static TextView tvPropertyTitle,tvPropertyPrice;
     String bidder[] = {
             "Nazmul hasan","Alamgir Kabir",
             "Nazmul hasan","Alamgir Kabir",
@@ -78,7 +85,9 @@ public class PropertyBidList extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
-
+        ivPropertyImage = (ImageView)findViewById(R.id.property_image);
+        tvPropertyTitle = (TextView) findViewById(R.id.property_title);
+        tvPropertyPrice = (TextView) findViewById(R.id.property_price);
         try
         {
             int productId = getIntent().getExtras().getInt("productId");
@@ -140,6 +149,10 @@ public class PropertyBidList extends AppCompatActivity
                     {
                         product = responseProduct;
                         //set product info into interface
+                        tvPropertyTitle.setText(product.getTitle());
+                        tvPropertyPrice.setText(product.getBasePrice()+" £");
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivPropertyImage);
+
 
                         //call server to get bid list
                         fetchBidList();
@@ -198,7 +211,15 @@ public class PropertyBidList extends AppCompatActivity
                     if(productBidList != null && productBidList.isSuccess())
                     {
                         //set bid list
-                        System.out.println(productBidList.getProductBidList().size());
+                        int bidCounter = productBidList.getProductBidList().size();
+                        ArrayList<ProductBid> bidList = productBidList.getProductBidList();
+                        Toast.makeText(PropertyBidList.this, "Bid Count: " + bidList,Toast.LENGTH_SHORT).show();
+                        for(int counter = 0; counter < bidCounter; counter++){
+                            ProductBid productBid = bidList.get(counter);
+
+                        }
+                        //System.out.println(productBidList.getProductBidList().size());
+                        //Toast.makeText(PropertyBidList.this, "Hello " + productBidList.getProductBidList().size(),Toast.LENGTH_SHORT).show();
                     }
                     else
                     {

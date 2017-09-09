@@ -43,11 +43,10 @@
             android:padding="10dp">
             <ImageView
                 android:id="@+id/property_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/property_image_01"
                 android:background="#fff"/>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -55,11 +54,12 @@
                 android:layout_marginLeft="5dp"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/property_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:layout_marginLeft="5dp"
-                    android:text="10 Trinity Square, London EC3N 4AJ, UK"
+                    android:text=""
                     android:scrollHorizontally="true"
                     android:ellipsize="end"
                     android:maxLines="2"
@@ -67,11 +67,12 @@
                     android:textSize="16dp"
                     android:textStyle="bold" />
                 <TextView
+                    android:id="@+id/property_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
                     android:layout_marginLeft="5dp"
-                    android:text="129,90 €"
+                    android:text=""
                     android:textColor="#f06226"
                     android:textSize="18dp"
                     android:textStyle="bold" />

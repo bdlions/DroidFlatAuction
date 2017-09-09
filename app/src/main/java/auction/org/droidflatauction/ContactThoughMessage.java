@@ -15,16 +15,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.auction.dto.Message;
 import com.auction.dto.MessageText;
 import com.auction.dto.Product;
+import com.auction.dto.User;
 import com.auction.dto.response.GeneralResponse;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
 
@@ -33,6 +38,8 @@ import java.util.ArrayList;
 public class ContactThoughMessage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
+    private static TextView tvPropertyOwner, tvMessageSubject;
+    private EditText etMessageText;
     private  static Button btnMessageSend;
     SessionManager session;
     NavigationManager navigationManager;
@@ -48,6 +55,11 @@ public class ContactThoughMessage extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
+        tvPropertyOwner = (TextView)findViewById(R.id.property_owner);
+        tvMessageSubject = (TextView)findViewById(R.id.message_subject);
+        btnMessageSend = (Button)findViewById(R.id.btn_send_message);
+        etMessageText = (EditText) findViewById(R.id.message_text);
+
 
         try
         {
@@ -56,6 +68,9 @@ public class ContactThoughMessage extends AppCompatActivity
             product = gson.fromJson(productString, Product.class);
 
             //-------------------------set user name and subject
+
+            tvPropertyOwner.setText(product.getFirstName() + " " + product.getLastName());
+            tvMessageSubject.setText(product.getTitle());
         }
         catch(Exception ex)
         {
@@ -87,14 +102,13 @@ public class ContactThoughMessage extends AppCompatActivity
         );
     }
     public void onClickButtonMessageSendListener(){
-        btnMessageSend = (Button)findViewById(R.id.btn_send_message);
         btnMessageSend.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         MessageText messageText = new MessageText();
                         //------------------------set message text
-                        messageText.setBody("");
+                        messageText.setBody(etMessageText.getText().toString());
 
                         Message message = new Message();
                         message.setProduct(product);
