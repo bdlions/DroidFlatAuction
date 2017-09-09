@@ -155,8 +155,9 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent propperty_contact_button_intent = new Intent(getBaseContext(), ContactThoughMessage.class);
-                        startActivity(propperty_contact_button_intent);
+                        Intent intentContactProperty = new Intent(getBaseContext(), ContactThoughMessage.class);
+                        intentContactProperty.putExtra("productString", productString);
+                        startActivity(intentContactProperty);
                     }
                 }
         );

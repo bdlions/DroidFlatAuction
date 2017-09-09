@@ -2,6 +2,7 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -16,12 +17,26 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.auction.dto.Message;
+import com.auction.dto.MessageText;
+import com.auction.dto.Product;
+import com.auction.dto.response.GeneralResponse;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
+
+import java.util.ArrayList;
+
 public class ContactThoughMessage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private  static Button btn_message_send;
+    private  static Button btnMessageSend;
     SessionManager session;
     NavigationManager navigationManager;
+    Product product;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +48,19 @@ public class ContactThoughMessage extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
+
+        try
+        {
+            String productString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
+
+            //-------------------------set user name and subject
+        }
+        catch(Exception ex)
+        {
+            //handle exception
+        }
 
         onClickButtonBackArrowListener();
         onClickButtonMessageSendListener();
@@ -52,20 +80,76 @@ public class ContactThoughMessage extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent send_message_back_arrow_intent = new Intent(getBaseContext(), SavedAdvertStep2.class);
-                        startActivity(send_message_back_arrow_intent);
+                        //Intent send_message_back_arrow_intent = new Intent(getBaseContext(), SavedAdvertStep2.class);
+                        //startActivity(send_message_back_arrow_intent);
                     }
                 }
         );
     }
     public void onClickButtonMessageSendListener(){
-        btn_message_send = (Button)findViewById(R.id.message_send_button);
-        btn_message_send.setOnClickListener(
+        btnMessageSend = (Button)findViewById(R.id.btn_send_message);
+        btnMessageSend.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent message_send_button_intent = new Intent(getBaseContext(), SavedAdvertStep2.class);
-                        startActivity(message_send_button_intent);
+                        MessageText messageText = new MessageText();
+                        //------------------------set message text
+                        messageText.setBody("");
+
+                        Message message = new Message();
+                        message.setProduct(product);
+                        message.setSubject("Re : "+product.getTitle());
+                        message.setMessageTextList(new ArrayList<MessageText>());
+                        message.getMessageTextList().add(messageText);
+
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String tempMessageString = gson.toJson(message);
+
+                        String sessionId = session.getSessionId();
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.ADD_MESSAGE_INFO);
+                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+                        packetHeader.setSessionId(sessionId);
+                        new BackgroundWork().execute(packetHeader, tempMessageString, new Handler(){
+                            @Override
+                            public void handleMessage(android.os.Message msg) {
+                                try
+                                {
+                                    GeneralResponse response = null;
+                                    String responseString = null;
+                                    if(msg != null && msg.obj != null)
+                                    {
+                                        responseString = (String) msg.obj;
+                                    }
+                                    if(responseString != null)
+                                    {
+                                        Gson gson = new Gson();
+                                        response = gson.fromJson(responseString, GeneralResponse.class);
+                                    }
+                                    if(response != null)
+                                    {
+                                        //show success message and reset input fields
+                                        if(response.isSuccess())
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            //show error message
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //show error message
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    //show error message
+                                }
+                            }
+                        });
                     }
                 }
         );
@@ -107,9 +191,9 @@ public class ContactThoughMessage extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        navigationManager.navigateTo(id);
+        //navigationManager.navigateTo(id);
 
-        /*if (id == R.id.nav_dashboard) {
+        if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);
         } else if (id == R.id.nav_manage_advert) {
@@ -138,7 +222,7 @@ public class ContactThoughMessage extends AppCompatActivity
 
         } else if (id == R.id.nav_phone) {
 
-        }*/
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

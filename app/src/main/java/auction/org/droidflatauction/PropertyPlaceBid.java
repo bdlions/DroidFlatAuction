@@ -75,7 +75,7 @@ public class PropertyPlaceBid extends AppCompatActivity
     {
         ProductBid productBid = new ProductBid();
         productBid.setProduct(product);
-        //set bid directly price
+        //------------------------------set bid directly price
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
