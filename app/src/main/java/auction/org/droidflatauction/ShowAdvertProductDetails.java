@@ -143,9 +143,10 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         proppertyPlaceBidBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent propperty_place_bid_button_intent = new Intent(getBaseContext(), PropertyPlaceBid.class);
-                propperty_place_bid_button_intent.putExtra("productId", product.getId());
-                startActivity(propperty_place_bid_button_intent);
+                Intent intentPlaceProductBid = new Intent(getBaseContext(), PropertyPlaceBid.class);
+                intentPlaceProductBid.putExtra("productString", productString);
+                intentPlaceProductBid.putExtra("adIdentity", adIdentity);
+                startActivity(intentPlaceProductBid);
             }
         });
     }

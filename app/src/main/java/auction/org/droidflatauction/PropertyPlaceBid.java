@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Property;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.Product;
 import com.auction.dto.ProductBid;
@@ -36,6 +38,9 @@ public class PropertyPlaceBid extends AppCompatActivity
     private static Button btnPostBid;
     private static EditText etBidDirectly;
     public Product product;
+    int adIdentity;
+    String productString;
+    public int addProductBidCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +52,22 @@ public class PropertyPlaceBid extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
+        etBidDirectly = (EditText) findViewById(R.id.et_bid_directly);
+        btnPostBid = (Button)findViewById(R.id.btn_submit_bid);
+
         try
         {
-            int productId = getIntent().getExtras().getInt("productId");
-            product = new Product();
-            product.setId(productId);
+            adIdentity = getIntent().getExtras().getInt("adIdentity");
+            productString = (String)getIntent().getExtras().get("productString");
+            Gson gson = new Gson();
+            product = gson.fromJson(productString, Product.class);
         }
         catch(Exception ex)
         {
             //handle exception
         }
 
-
+        onClickButtonPostBidListener();
         onClickButtonBackArrowListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -71,11 +80,47 @@ public class PropertyPlaceBid extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    public void placeBid()
+    public void onClickButtonPostBidListener(){
+        btnPostBid.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try
+                        {
+                            Double bidAmount = Double.parseDouble(etBidDirectly.getText().toString());
+                            if(bidAmount <= 0)
+                            {
+                                Toast.makeText(PropertyPlaceBid.this, "Please add valid bid amount!",Toast.LENGTH_SHORT).show();
+                                return;
+                            }
+                            placeDirectBid();
+                        }
+                        catch(Exception ex)
+                        {
+                            Toast.makeText(PropertyPlaceBid.this, "Please add valid bid amount!",Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
+        );
+    }
+
+    public void placeDirectBid()
     {
         ProductBid productBid = new ProductBid();
-        productBid.setProduct(product);
-        //------------------------------set bid directly price
+        Product tempProduct = new Product();
+        tempProduct.setId(product.getId());
+        productBid.setProduct(tempProduct);
+        //set bid directly price
+        try
+        {
+            Double bidAmount = Double.parseDouble(etBidDirectly.getText().toString());
+            productBid.setPrice(bidAmount);
+        }
+        catch(Exception ex)
+        {
+
+        }
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -104,24 +149,37 @@ public class PropertyPlaceBid extends AppCompatActivity
                     }
                     if(response != null)
                     {
-                        //show success message and reset input fields
                         if(response.isSuccess())
                         {
-
+                            Toast.makeText(PropertyPlaceBid.this, response.getMessage(),Toast.LENGTH_SHORT).show();
+                            //redirect to product details page
+                            Intent productDetailsIntent = new Intent(PropertyPlaceBid.this, ShowAdvertProductDetails.class);
+                            productDetailsIntent.putExtra("productString", productString);
+                            productDetailsIntent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
+                            startActivity(productDetailsIntent);
                         }
                         else
                         {
-                            //show error message
+                            Toast.makeText(PropertyPlaceBid.this, response.getMessage(),Toast.LENGTH_SHORT).show();
+                            return;
                         }
                     }
                     else
                     {
-                        //show error message
+                        addProductBidCounter++;
+                        if (addProductBidCounter <= 5)
+                        {
+                            placeDirectBid();
+                        }
                     }
                 }
                 catch(Exception ex)
                 {
-                    //show error message
+                    addProductBidCounter++;
+                    if (addProductBidCounter <= 5)
+                    {
+                        placeDirectBid();
+                    }
                 }
             }
         });
