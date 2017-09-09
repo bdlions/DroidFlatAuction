@@ -3,6 +3,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -23,6 +25,16 @@ import android.widget.TextView;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.widget.TableRow.LayoutParams;
+
+import com.auction.dto.Product;
+import com.auction.dto.ProductBidList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
+
+import org.auction.udp.BackgroundWork;
 
 public class PropertyBidList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +64,11 @@ public class PropertyBidList extends AppCompatActivity
     TextView bidder_name,price_list, time_list;
     SessionManager session;
 
+    public int fetchProductInfoCounter = 0;
+    public int fetchBidListCounter = 0;
+    Product product;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +78,18 @@ public class PropertyBidList extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
+
+        try
+        {
+            int productId = getIntent().getExtras().getInt("productId");
+            product = new Product();
+            product.setId(productId);
+            fetchProductInfo();
+        }
+        catch(Exception ex)
+        {
+            //handle exception
+        }
 
         tl = (TableLayout) findViewById(R.id.bidder_list);
         addHeaders();
@@ -77,6 +106,122 @@ public class PropertyBidList extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void fetchProductInfo()
+    {
+        Product tempProduct = new Product();
+        tempProduct.setId(product.getId());
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempProductString = gson.toJson(tempProduct);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    Product responseProduct = null;
+                    String productInfoString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        productInfoString = (String) msg.obj;
+                    }
+                    if(productInfoString != null)
+                    {
+                        Gson gson = new Gson();
+                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                    }
+                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    {
+                        product = responseProduct;
+                        //set product info into interface
+
+                        //call server to get bid list
+                        fetchBidList();
+                    }
+                    else
+                    {
+                        fetchProductInfoCounter++;
+                        if (fetchProductInfoCounter <= 5)
+                        {
+                            fetchProductInfo();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchProductInfoCounter++;
+                    if (fetchProductInfoCounter <= 5)
+                    {
+                        fetchProductInfo();
+                    }
+                }
+            }
+        });
+    }
+
+    public void fetchBidList()
+    {
+        Product tempProduct = new Product();
+        tempProduct.setId(product.getId());
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempProductString = gson.toJson(tempProduct);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_BID_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    ProductBidList productBidList = null;
+                    String bidListString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        bidListString = (String) msg.obj;
+                    }
+                    if(bidListString != null)
+                    {
+                        Gson gson = new Gson();
+                        productBidList = gson.fromJson(bidListString, ProductBidList.class);
+                    }
+                    if(productBidList != null && productBidList.isSuccess())
+                    {
+                        //set bid list
+                        System.out.println(productBidList.getProductBidList().size());
+                    }
+                    else
+                    {
+                        fetchBidListCounter++;
+                        if (fetchBidListCounter <= 5)
+                        {
+                            fetchBidList();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchBidListCounter++;
+                    if (fetchBidListCounter <= 5)
+                    {
+                        fetchBidList();
+                    }
+                }
+            }
+        });
+    }
+
     /** This function add the headers to the table **/
     public void addHeaders(){
 
