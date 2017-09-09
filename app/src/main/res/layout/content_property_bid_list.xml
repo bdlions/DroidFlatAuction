@@ -109,7 +109,7 @@
                     android:textStyle="normal"
                     android:layout_weight="5"/>
                 <TextView
-                    android:id="@+id/property_time"
+                    android:id="@+id/tv_product_bid_list_bid_time_left"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="left"

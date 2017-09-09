@@ -58,7 +58,14 @@ public class MemberPropertySearch extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
-        items = (String[])getIntent().getExtras().get("items");
+        try
+        {
+            items = (String[])getIntent().getExtras().get("items");
+        }
+        catch(Exception ex)
+        {
+
+        }
 
         listView = (ListView) findViewById(R.id.listview);
         editText = (EditText) findViewById(R.id.txtsearch);

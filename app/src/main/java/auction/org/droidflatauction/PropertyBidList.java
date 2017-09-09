@@ -45,7 +45,7 @@ import java.util.HashMap;
 public class PropertyBidList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ImageView ivPropertyImage;
-    private static TextView tvProductTitle,tvProductPrice, tvProductTotalBids;
+    private static TextView tvProductTitle,tvProductPrice, tvProductTotalBids, tvProductBidListBidTimeLeft;
     String bidder[] = {
             "Nazmul hasan","Alamgir Kabir",
             "Nazmul hasan","Alamgir Kabir",
@@ -91,6 +91,7 @@ public class PropertyBidList extends AppCompatActivity
         tvProductTitle = (TextView) findViewById(R.id.property_title);
         tvProductPrice = (TextView) findViewById(R.id.property_price);
         tvProductTotalBids = (TextView) findViewById(R.id.tv_product_bid_list_total_bids);
+        tvProductBidListBidTimeLeft = (TextView) findViewById(R.id.tv_product_bid_list_bid_time_left);
         try
         {
             int productId = getIntent().getExtras().getInt("productId");
@@ -117,6 +118,54 @@ public class PropertyBidList extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        executeTimer();
+    }
+
+    public void executeTimer()
+    {
+        new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                long tempTime = product.getTime();
+                                String timeLeft = "";
+                                if (tempTime > 0)
+                                {
+                                    if (tempTime >= 86400)
+                                    {
+                                        timeLeft = timeLeft + (int)Math.floor(tempTime/86400) + " days ";
+                                        tempTime = tempTime % 86400;
+                                    }
+                                    if (tempTime >= 3600)
+                                    {
+                                        timeLeft = timeLeft + (int)(int)Math.floor(tempTime/3600) + " hours ";
+                                        tempTime = tempTime % 3600;
+                                    }
+                                    if (tempTime >= 60)
+                                    {
+                                        timeLeft = timeLeft + (int)Math.floor(tempTime/60) + " mins ";
+                                        tempTime = tempTime % 60;
+                                    }
+                                    if (tempTime < 60)
+                                    {
+                                        timeLeft = timeLeft + tempTime + " secs ";
+                                    }
+                                    product.setTime(product.getTime() - 1);
+                                    tvProductBidListBidTimeLeft.setText(timeLeft);
+                                }
+                            }
+                        });
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
     }
 
     public void fetchProductInfo()

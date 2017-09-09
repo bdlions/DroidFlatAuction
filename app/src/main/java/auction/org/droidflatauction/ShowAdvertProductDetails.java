@@ -31,7 +31,7 @@ import com.squareup.picasso.Picasso;
 public class ShowAdvertProductDetails extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription;
+    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft;
     private  static Button proppertyContentEditBtn, proppertyPlaceBidBtn, proppertyContactBtn;
     private static ImageView ivProductDetailsImage;
     private Product product;
@@ -55,6 +55,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         tvProductDetailsDescription = (TextView) findViewById(R.id.tv_product_details_description);
         ivProductDetailsImage = (ImageView) findViewById(R.id.iv_product_details_image);
         tvProductDetailsTotalBids = (TextView) findViewById(R.id.tv_product_details_total_bids);
+        tvProductDetailsBidTimeLeft = (TextView) findViewById(R.id.tv_product_details_bid_time_left);
 
         try
         {
@@ -68,6 +69,8 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             tvProductDetailsDescription.setText(product.getDescription());
             Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetailsImage);
             tvProductDetailsTotalBids.setText(product.getTotalBids()+"");
+            //tvProductDetailsBidTimeLeft.setText("7 Hours 24 Mins 12 Seconds");
+
         }
         catch(Exception ex)
         {
@@ -100,7 +103,92 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        executeTimer();
     }
+
+    public void executeTimer()
+    {
+        new Thread() {
+            public void run() {
+                while (true) {
+                    try {
+                        runOnUiThread(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                long tempTime = product.getTime();
+                                String timeLeft = "";
+                                if (tempTime > 0)
+                                {
+                                    if (tempTime >= 86400)
+                                    {
+                                        timeLeft = timeLeft + (int)Math.floor(tempTime/86400) + " days ";
+                                        tempTime = tempTime % 86400;
+                                    }
+                                    if (tempTime >= 3600)
+                                    {
+                                        timeLeft = timeLeft + (int)(int)Math.floor(tempTime/3600) + " hours ";
+                                        tempTime = tempTime % 3600;
+                                    }
+                                    if (tempTime >= 60)
+                                    {
+                                        timeLeft = timeLeft + (int)Math.floor(tempTime/60) + " mins ";
+                                        tempTime = tempTime % 60;
+                                    }
+                                    if (tempTime < 60)
+                                    {
+                                        timeLeft = timeLeft + tempTime + " secs ";
+                                    }
+                                    product.setTime(product.getTime() - 1);
+                                    tvProductDetailsBidTimeLeft.setText(timeLeft);
+                                }
+                            }
+                        });
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }.start();
+
+
+        /*try {
+            while(true) {
+                long tempTime = product.getTime();
+                String timeLeft = "";
+                if (tempTime > 0)
+                {
+                    if (tempTime >= 86400)
+                    {
+                        timeLeft = timeLeft + Math.floor(tempTime/86400) + " days ";
+                        tempTime = tempTime % 86400;
+                    }
+                    if (tempTime >= 3600)
+                    {
+                        timeLeft = timeLeft + Math.floor(tempTime/3600) + " hours ";
+                        tempTime = tempTime % 3600;
+                    }
+                    if (tempTime >= 60)
+                    {
+                        timeLeft = timeLeft + Math.floor(tempTime/60) + " mins ";
+                        tempTime = tempTime % 60;
+                    }
+                    if (tempTime < 60)
+                    {
+                        timeLeft = timeLeft + tempTime + " secs ";
+                    }
+                    product.setTime(product.getTime() - 1);
+                    tvProductDetailsBidTimeLeft.setText(timeLeft);
+                }
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+    }
+
     public void onMapReady(GoogleMap googleMap) {
         // Add a marker in Sydney, Australia,
         // and move the map's camera to the same location.

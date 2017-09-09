@@ -58,13 +58,13 @@
                 android:layout_marginTop="180dp"
                 android:orientation="horizontal">
                 <TextView
-                    android:id="@+id/property_time_left"
+                    android:id="@+id/tv_product_details_bid_time_left"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:padding="5dp"
                     android:background="#eaa066"
-                    android:text="7 Hours 24 Mins 12 Seconds"
+                    android:text=""
                     android:textColor="#fff"
                     android:textSize="20dp"
                     android:textStyle="normal" />
