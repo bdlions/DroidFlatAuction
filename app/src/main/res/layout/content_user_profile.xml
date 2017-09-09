@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#fff"
+    android:fillViewport="true"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="auction.org.droidflatauction.UserProfile"
     tools:showIn="@layout/app_bar_user_profile">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#fff">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -42,7 +46,39 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="5dp"
-            android:text="Name"
+            android:text="Profile Photo"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_profile_photo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/profile"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:text="Agent Logo"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_agent_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/agent_logo"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:text="User"
             android:textColor="#2874b9"
             android:textSize="16dp"
             android:textStyle="bold" />
@@ -99,6 +135,63 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="5dp"
+            android:text="Business Name"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_profile_business_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:text=""
+            android:textColor="#5a5a5a"
+            android:textSize="14dp"
+            android:textStyle="normal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:text="Address"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_profile_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:text=""
+            android:textColor="#5a5a5a"
+            android:textSize="14dp"
+            android:textStyle="normal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:text="Role"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tv_profile_role"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:text=""
+            android:textColor="#5a5a5a"
+            android:textSize="14dp"
+            android:textStyle="normal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
             android:text="Profile Verification"
             android:textColor="#2874b9"
             android:textSize="16dp"
@@ -111,4 +204,5 @@
             android:layout_marginLeft="5dp"
             android:src="@drawable/success"/>
     </LinearLayout>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

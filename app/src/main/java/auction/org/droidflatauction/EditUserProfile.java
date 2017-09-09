@@ -20,9 +20,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,8 @@ import org.bdlions.client.reqeust.uploads.UploadService;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -115,6 +119,28 @@ public class EditUserProfile extends AppCompatActivity
         onClickEditUserPasswordEditListener();
         onClickEditUserCellNumberEditListener();
 
+        ListView listViewRole = (ListView)findViewById(R.id.roles_listView);
+        final List<RoleModel> roles = new ArrayList<>();
+        roles.add(new RoleModel(false,"Landlord"));
+        roles.add(new RoleModel(false,"Tanent"));
+        roles.add(new RoleModel(false,"Agent"));
+
+        final RoleAdapter roleAdapter = new RoleAdapter(this,roles);
+        listViewRole.setAdapter(roleAdapter);
+        listViewRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                RoleModel roleModel = roles.get(i);
+                if(roleModel.isSelected())
+                    roleModel.setSelected(false);
+
+                else
+                    roleModel.setSelected(true);
+
+                roles.set(i,roleModel);
+                roleAdapter.updateRecords(roles);
+            }
+        });
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,7 +151,7 @@ public class EditUserProfile extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
+        iv_profile_photo = (ImageView) findViewById(R.id.iv_profile_photo);
         //Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/logo.png").into(iv_profile_photo);
         this.fetchUserProfile();
     }
@@ -412,7 +438,7 @@ public class EditUserProfile extends AppCompatActivity
     }
 
     public void onClickEditUserProfilePhotoEditListener(){
-        iv_profile_photo = (ImageView) findViewById(R.id.user_photo);
+        iv_profile_photo = (ImageView) findViewById(R.id.iv_profile_photo);
         iv_profile_photo.setOnClickListener(new View.OnClickListener() {
 
             @Override

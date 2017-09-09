@@ -34,7 +34,7 @@ public class UserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     SessionManager session;
-    public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone;
+    public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileAddress,tvProfileRole;
 
     public int fetchProfileCounter = 0;
 
@@ -47,6 +47,9 @@ public class UserProfile extends AppCompatActivity
         tvProfileFullName = (TextView) findViewById(R.id.tv_profile_full_name);
         tvProfileEmail = (TextView) findViewById(R.id.tv_profile_email);
         tvProfileTelephone = (TextView) findViewById(R.id.tv_profile_telephone);
+        tvProfileBusinessName = (TextView) findViewById(R.id.tv_profile_business_name);
+        tvProfileAddress = (TextView) findViewById(R.id.tv_profile_address);
+        tvProfileRole = (TextView) findViewById(R.id.tv_profile_role);
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
@@ -94,6 +97,8 @@ public class UserProfile extends AppCompatActivity
                         tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
                         tvProfileEmail.setText(user.getEmail());
                         tvProfileTelephone.setText(user.getCellNo());
+                        tvProfileBusinessName.setText(user.getBusinessName());
+                        tvProfileAddress.setText(user.getAddress());
                     }
                     else
                     {
