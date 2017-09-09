@@ -166,6 +166,7 @@ public class SavedAdvertStep1 extends AppCompatActivity
 
                         Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
                         saved_advert_property_show_details_intent.putExtra("productString", productString);
+                        saved_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
                         startActivity(saved_advert_property_show_details_intent);
                     }
                     else

@@ -38,6 +38,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
     private String productString;
     SessionManager session;
     public static RelativeLayout myAdvertBtnRow,savedAdvertBtnRow;
+    public int adIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +57,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
         try
         {
+            adIdentity = getIntent().getExtras().getInt("adIdentity");
             productString = getIntent().getExtras().getString("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -76,11 +78,9 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         onClickPropertyPlaceBidButtonListener();
         onClickPropertyContactButtonListener();
 
-        Intent myAdvertButtonDisplayIntent = getIntent();
-        int myAdvertButtonDisplayIntegerValue = myAdvertButtonDisplayIntent.getIntExtra("myAdvertButtonDisplayInteger", 0);
         myAdvertBtnRow = (RelativeLayout)findViewById(R.id.my_advert_button_row);
         savedAdvertBtnRow = (RelativeLayout)findViewById(R.id.saved_advert_button_row);
-        if(myAdvertButtonDisplayIntegerValue == 1){
+        if(adIdentity == Constants.MY_AD_IDENTITY){
             myAdvertBtnRow.setVisibility(View.VISIBLE);
             savedAdvertBtnRow.setVisibility(View.GONE);
         }
@@ -157,6 +157,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                     public void onClick(View v) {
                         Intent intentContactProperty = new Intent(getBaseContext(), ContactThoughMessage.class);
                         intentContactProperty.putExtra("productString", productString);
+                        intentContactProperty.putExtra("adIdentity", adIdentity);
                         startActivity(intentContactProperty);
                     }
                 }

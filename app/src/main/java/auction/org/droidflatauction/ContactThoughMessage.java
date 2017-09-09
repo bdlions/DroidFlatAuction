@@ -44,6 +44,9 @@ public class ContactThoughMessage extends AppCompatActivity
     SessionManager session;
     NavigationManager navigationManager;
     Product product;
+    String productString;
+    int adIdentity;
+    public int sendContactMessageCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +66,14 @@ public class ContactThoughMessage extends AppCompatActivity
 
         try
         {
-            String productString = (String)getIntent().getExtras().get("productString");
+            adIdentity = getIntent().getExtras().getInt("adIdentity");
+            productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
 
             //-------------------------set user name and subject
-
-            tvPropertyOwner.setText(product.getFirstName() + " " + product.getLastName());
-            tvMessageSubject.setText(product.getTitle());
+            tvPropertyOwner.setText(product.getUser().getFirstName() + " " + product.getUser().getLastName());
+            tvMessageSubject.setText("Re : "+product.getTitle());
         }
         catch(Exception ex)
         {
@@ -106,68 +109,100 @@ public class ContactThoughMessage extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MessageText messageText = new MessageText();
-                        //------------------------set message text
-                        messageText.setBody(etMessageText.getText().toString());
-
-                        Message message = new Message();
-                        message.setProduct(product);
-                        message.setSubject("Re : "+product.getTitle());
-                        message.setMessageTextList(new ArrayList<MessageText>());
-                        message.getMessageTextList().add(messageText);
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String tempMessageString = gson.toJson(message);
-
-                        String sessionId = session.getSessionId();
-                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                        packetHeader.setAction(ACTION.ADD_MESSAGE_INFO);
-                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
-                        packetHeader.setSessionId(sessionId);
-                        new BackgroundWork().execute(packetHeader, tempMessageString, new Handler(){
-                            @Override
-                            public void handleMessage(android.os.Message msg) {
-                                try
-                                {
-                                    GeneralResponse response = null;
-                                    String responseString = null;
-                                    if(msg != null && msg.obj != null)
-                                    {
-                                        responseString = (String) msg.obj;
-                                    }
-                                    if(responseString != null)
-                                    {
-                                        Gson gson = new Gson();
-                                        response = gson.fromJson(responseString, GeneralResponse.class);
-                                    }
-                                    if(response != null)
-                                    {
-                                        //show success message and reset input fields
-                                        if(response.isSuccess())
-                                        {
-
-                                        }
-                                        else
-                                        {
-                                            //show error message
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //show error message
-                                    }
-                                }
-                                catch(Exception ex)
-                                {
-                                    //show error message
-                                }
-                            }
-                        });
+                        String body = etMessageText.getText().toString();
+                        if(body.equals(""))
+                        {
+                            Toast.makeText(ContactThoughMessage.this, "Please add message!",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        sendContactMessage();
                     }
                 }
         );
     }
+
+    public void sendContactMessage()
+    {
+        String body = etMessageText.getText().toString();
+        MessageText messageText = new MessageText();
+        //set message text
+        messageText.setBody(body);
+
+        Message message = new Message();
+        Product tempProduct = new Product();
+        tempProduct.setUser(new User());
+        tempProduct.setId(product.getId());
+        tempProduct.getUser().setId(product.getUser().getId());
+        message.setProduct(tempProduct);
+        message.setSubject("Re : "+product.getTitle());
+        message.setMessageTextList(new ArrayList<MessageText>());
+        message.getMessageTextList().add(messageText);
+
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempMessageString = gson.toJson(message);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.ADD_MESSAGE_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempMessageString, new Handler(){
+            @Override
+            public void handleMessage(android.os.Message msg) {
+                try
+                {
+                    GeneralResponse response = null;
+                    String responseString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        responseString = (String) msg.obj;
+                    }
+                    if(responseString != null)
+                    {
+                        Gson gson = new Gson();
+                        response = gson.fromJson(responseString, GeneralResponse.class);
+                    }
+                    if(response != null)
+                    {
+                        //show success message and reset input fields
+                        if(response.isSuccess())
+                        {
+                            Toast.makeText(ContactThoughMessage.this, response.getMessage(),Toast.LENGTH_SHORT).show();
+                            //redirect to product details page
+                            Intent productDetailsIntent = new Intent(ContactThoughMessage.this, ShowAdvertProductDetails.class);
+                            productDetailsIntent.putExtra("productString", productString);
+                            productDetailsIntent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
+                            startActivity(productDetailsIntent);
+                        }
+                        else
+                        {
+                            //show error message
+                            Toast.makeText(ContactThoughMessage.this, response.getMessage(),Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        sendContactMessageCounter++;
+                        if (sendContactMessageCounter <= 5)
+                        {
+                            sendContactMessage();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    sendContactMessageCounter++;
+                    if (sendContactMessageCounter <= 5)
+                    {
+                        sendContactMessage();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

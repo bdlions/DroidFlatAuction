@@ -11,4 +11,7 @@ public class Constants {
 
     public static String productImagePath_103_87 = "resources/images/product/103_87/";
     public static String productImagePath_328_212 = "resources/images/product/328_212/";
+
+    public static int MY_AD_IDENTITY = 1;
+    public static int OTHER_AD_IDENTITY = 2;
 }

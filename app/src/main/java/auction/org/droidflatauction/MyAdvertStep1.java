@@ -188,7 +188,7 @@ public class MyAdvertStep1 extends AppCompatActivity
 
                         Intent my_advert_property_show_details_intent = new Intent(MyAdvertStep1.this, ShowAdvertProductDetails.class);
                         my_advert_property_show_details_intent.putExtra("productString", productString);
-                        my_advert_property_show_details_intent.putExtra("myAdvertButtonDisplayInteger", 1);
+                        my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
                         startActivity(my_advert_property_show_details_intent);
                     }
                     else
