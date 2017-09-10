@@ -49,7 +49,7 @@ public class PropertyBidList extends AppCompatActivity
     public static ImageButton ib_back_arrow;
     private static ImageView ivPropertyImage;
     private static TextView tvProductTitle,tvProductPrice, tvProductTotalBids, tvProductBidListBidTimeLeft;
-    String bidder[] = {
+    /*String bidder[] = {
             "Nazmul hasan","Alamgir Kabir",
             "Nazmul hasan","Alamgir Kabir",
             "Nazmul hasan","Alamgir Kabir",
@@ -68,7 +68,7 @@ public class PropertyBidList extends AppCompatActivity
             "25 Apr 2017 9:38:35AM","26 Apr 2017 9:38:35AM",
             "27 Apr 2017 9:38:35AM","28 Apr 2017 9:38:35AM",
             "29 Apr 2017 9:38:35AM","30 Apr 2017 9:38:35AM",
-    };
+    };*/
 
     TableLayout tl;
     TableRow tr;
@@ -78,6 +78,7 @@ public class PropertyBidList extends AppCompatActivity
     public int fetchProductInfoCounter = 0;
     public int fetchBidListCounter = 0;
     Product product;
+    public int adIdentity;
     HashMap<Integer, String> userIdNameMap = new HashMap<>();
 
 
@@ -98,6 +99,7 @@ public class PropertyBidList extends AppCompatActivity
 
         try
         {
+            adIdentity = getIntent().getExtras().getInt("adIdentity");
             int productId = getIntent().getExtras().getInt("productId");
             product = new Product();
             product.setId(productId);
@@ -137,6 +139,7 @@ public class PropertyBidList extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         my_advert_step1_back_arrow_intent.putExtra("productString", productString);
+                        my_advert_step1_back_arrow_intent.putExtra("adIdentity", adIdentity);
                         startActivity(my_advert_step1_back_arrow_intent);
                     }
                 }
@@ -153,6 +156,7 @@ public class PropertyBidList extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         show_product_details_intent.putExtra("productString", productString);
+                        show_product_details_intent.putExtra("adIdentity", adIdentity);
                         startActivity(show_product_details_intent);
                     }
                 }
@@ -169,6 +173,7 @@ public class PropertyBidList extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         show_product_details_intent.putExtra("productString", productString);
+                        show_product_details_intent.putExtra("adIdentity", adIdentity);
                         startActivity(show_product_details_intent);
                     }
                 }
