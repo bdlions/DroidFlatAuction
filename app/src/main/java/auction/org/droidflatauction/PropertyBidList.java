@@ -17,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TableLayout;
@@ -44,6 +46,7 @@ import java.util.HashMap;
 
 public class PropertyBidList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static ImageButton ib_back_arrow;
     private static ImageView ivPropertyImage;
     private static TextView tvProductTitle,tvProductPrice, tvProductTotalBids, tvProductBidListBidTimeLeft;
     String bidder[] = {
@@ -92,6 +95,7 @@ public class PropertyBidList extends AppCompatActivity
         tvProductPrice = (TextView) findViewById(R.id.property_price);
         tvProductTotalBids = (TextView) findViewById(R.id.tv_product_bid_list_total_bids);
         tvProductBidListBidTimeLeft = (TextView) findViewById(R.id.tv_product_bid_list_bid_time_left);
+
         try
         {
             int productId = getIntent().getExtras().getInt("productId");
@@ -103,7 +107,9 @@ public class PropertyBidList extends AppCompatActivity
         {
             //handle exception
         }
-
+        onClickButtonBackArrowListener();
+        onClickButtonPropertyImageListener();
+        onClickButtonPropertyTitleListener();
         tl = (TableLayout) findViewById(R.id.bidder_list);
         addHeaders();
         //addData();
@@ -119,6 +125,54 @@ public class PropertyBidList extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         executeTimer();
+    }
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton)findViewById(R.id.property_bid_list_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent my_advert_step1_back_arrow_intent = new Intent(getBaseContext(), ShowAdvertProductDetails.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        my_advert_step1_back_arrow_intent.putExtra("productString", productString);
+                        startActivity(my_advert_step1_back_arrow_intent);
+                    }
+                }
+        );
+    }
+    public void onClickButtonPropertyImageListener(){
+        ivPropertyImage = (ImageView) findViewById(R.id.property_image);
+        ivPropertyImage.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent show_product_details_intent = new Intent(getBaseContext(), ShowAdvertProductDetails.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        show_product_details_intent.putExtra("productString", productString);
+                        startActivity(show_product_details_intent);
+                    }
+                }
+        );
+    }
+    public void onClickButtonPropertyTitleListener(){
+        tvProductTitle = (TextView) findViewById(R.id.property_title);
+        tvProductTitle.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent show_product_details_intent = new Intent(getBaseContext(), ShowAdvertProductDetails.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        show_product_details_intent.putExtra("productString", productString);
+                        startActivity(show_product_details_intent);
+                    }
+                }
+        );
     }
 
     public void executeTimer()

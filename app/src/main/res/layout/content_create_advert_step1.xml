@@ -18,19 +18,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ImageButton
+            <!-- <ImageButton
                 android:id="@+id/create_advert_step1_back_arrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:layout_marginLeft="5dp"
                 android:src="@drawable/back_arrow"
-                android:background="#fff"/>
+                android:background="#fff"/> -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="20dp"
                 android:text="Step 1"
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
@@ -127,6 +127,15 @@
             android:layout_marginTop="20dp"
             android:gravity="bottom"
             android:orientation="vertical">
+            <ImageButton
+                android:id="@+id/create_advert_step1_back_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-25dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/bold_back_arrow"
+                android:background="#fff"/>
             <ImageButton
                 android:id="@+id/create_advert_step1_forward_arrow"
                 android:layout_width="wrap_content"

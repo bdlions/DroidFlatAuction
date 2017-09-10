@@ -18,141 +18,141 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <ImageButton
-                android:id="@+id/create_advert_step2_back_arrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginLeft="5dp"
-                android:src="@drawable/back_arrow"
-                android:background="#fff"/>
+            <!--<ImageButton
+               android:id="@+id/create_advert_step2_back_arrow"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="12dp"
+               android:layout_marginLeft="5dp"
+               android:src="@drawable/back_arrow"
+               android:background="#fff"/>-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="20dp"
                 android:text="Step 2"
                 android:textColor="#5a5a5a"
                 android:textSize="16dp"
                 android:textStyle="normal" />
-        </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="25dp">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="5dp"
-            android:text="Price (£)"
-            android:textColor="#2874b9"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-        <EditText
-            android:id="@+id/et_manage_product_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="text"
-            android:backgroundTint="#ff9711"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="5dp"
-            android:text="Area"
-            android:textColor="#2874b9"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-        <Spinner
-            android:id="@+id/area_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="-5dp"
-            android:textColor="#5a5a5a"
-            android:textStyle="normal" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="0dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="2dp"
-            android:background="#ff9711" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="5dp"
-            android:text="Amenities"
-            android:textColor="#2874b9"
-            android:textSize="16dp"
-            android:textStyle="bold" />
-        <ListView
-            android:id="@+id/amenities_listView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:textColor="#5a5a5a"
-            android:textSize="16dp"
-            android:textStyle="normal"/>
-       <!-- <CheckBox
-            android:id="@+id/amenities_parking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="5dp"
-            android:text="@string/parking"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:textStyle="normal"
-            android:onClick="selectItem"/>
-        <CheckBox
-            android:id="@+id/amenities_balcony_patio"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:text="@string/balcony_patio"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:textStyle="normal"
-            android:onClick="selectItem"/>
-        <CheckBox
-            android:id="@+id/amenities_garden_rootTerrace"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:text="@string/garden_rootTerrace"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:textStyle="normal"
-            android:onClick="selectItem"/>
-        <CheckBox
-            android:id="@+id/amenities_disabled_access"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:text="@string/disabled_access"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:textStyle="normal"
-            android:onClick="selectItem"/>
-        <CheckBox
-            android:id="@+id/amenities_garage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:text="@string/garage"
-            android:textColor="#5a5a5a"
-            android:textSize="14dp"
-            android:textStyle="normal"
-            android:onClick="selectItem"/> -->
+       </LinearLayout>
+   <LinearLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:orientation="vertical"
+       android:padding="25dp">
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="0dp"
+           android:layout_marginLeft="5dp"
+           android:text="Price (£)"
+           android:textColor="#2874b9"
+           android:textSize="16dp"
+           android:textStyle="bold" />
+       <EditText
+           android:id="@+id/et_manage_product_price"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:inputType="text"
+           android:backgroundTint="#ff9711"/>
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="30dp"
+           android:layout_marginLeft="5dp"
+           android:text="Area"
+           android:textColor="#2874b9"
+           android:textSize="16dp"
+           android:textStyle="bold" />
+       <Spinner
+           android:id="@+id/area_spinner"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:textSize="16dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="-5dp"
+           android:textColor="#5a5a5a"
+           android:textStyle="normal" />
+       <View
+           android:layout_width="match_parent"
+           android:layout_height="1dp"
+           android:layout_marginTop="0dp"
+           android:layout_marginLeft="6dp"
+           android:layout_marginRight="2dp"
+           android:background="#ff9711" />
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="30dp"
+           android:layout_marginLeft="5dp"
+           android:text="Amenities"
+           android:textColor="#2874b9"
+           android:textSize="16dp"
+           android:textStyle="bold" />
+       <ListView
+           android:id="@+id/amenities_listView"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginLeft="5dp"
+           android:textColor="#5a5a5a"
+           android:textSize="16dp"
+           android:textStyle="normal"/>
+      <!-- <CheckBox
+           android:id="@+id/amenities_parking"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="30dp"
+           android:layout_marginLeft="5dp"
+           android:text="@string/parking"
+           android:textColor="#5a5a5a"
+           android:textSize="14dp"
+           android:textStyle="normal"
+           android:onClick="selectItem"/>
+       <CheckBox
+           android:id="@+id/amenities_balcony_patio"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="5dp"
+           android:text="@string/balcony_patio"
+           android:textColor="#5a5a5a"
+           android:textSize="14dp"
+           android:textStyle="normal"
+           android:onClick="selectItem"/>
+       <CheckBox
+           android:id="@+id/amenities_garden_rootTerrace"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="5dp"
+           android:text="@string/garden_rootTerrace"
+           android:textColor="#5a5a5a"
+           android:textSize="14dp"
+           android:textStyle="normal"
+           android:onClick="selectItem"/>
+       <CheckBox
+           android:id="@+id/amenities_disabled_access"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="5dp"
+           android:text="@string/disabled_access"
+           android:textColor="#5a5a5a"
+           android:textSize="14dp"
+           android:textStyle="normal"
+           android:onClick="selectItem"/>
+       <CheckBox
+           android:id="@+id/amenities_garage"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+           android:layout_marginLeft="5dp"
+           android:text="@string/garage"
+           android:textColor="#5a5a5a"
+           android:textSize="14dp"
+           android:textStyle="normal"
+           android:onClick="selectItem"/> -->
         </LinearLayout>
 
         <LinearLayout
@@ -161,7 +161,15 @@
             android:layout_marginTop="20dp"
             android:gravity="bottom"
             android:orientation="vertical">
-
+            <ImageButton
+                android:id="@+id/create_advert_step2_back_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="-25dp"
+                android:layout_gravity="left"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/bold_back_arrow"
+                android:background="#fff"/>
             <ImageButton
                 android:id="@+id/create_advert_step2_forward_arrow"
                 android:layout_width="wrap_content"

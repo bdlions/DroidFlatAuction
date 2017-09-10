@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -48,9 +49,10 @@ import java.util.List;
 
 public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    private  static ImageButton ib_back_arrow;
     private final int SELECT_PHOTO = 1;
     private static ImageView ivEditProfilePhoto, ivEditProfileAgentLogo;
-    private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell;
+    private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell,btnEditProfileBusinessName,btnEditProfileAddress;
     SessionManager session;
     NavigationManager navigationManager;
 
@@ -112,15 +114,22 @@ public class EditUserProfile extends AppCompatActivity
         btnEditProfileEmail = (Button) findViewById(R.id.btn_edit_profile_email);
         btnEditProfilePassword = (Button) findViewById(R.id.btn_edit_profile_password);
         btnEditProfileCell = (Button) findViewById(R.id.btn_edit_profile_cell);
+        btnEditProfileBusinessName = (Button)findViewById(R.id.btn_edit_profile_business_name);
+        btnEditProfileAddress = (Button)findViewById(R.id.btn_edit_profile_address);
+
 
         ivEditProfilePhoto = (ImageView) findViewById(R.id.iv_edit_profile_photo);
         ivEditProfileAgentLogo = (ImageView) findViewById(R.id.iv_edit_profile_agent_logo);
 
+        onClickButtonBackArrowListener();
         onClickEditUserProfilePhotoEditListener();
+        onClickEditUserAgentLogoEditListener();
         onClickEditUserNameEditListener();
         onClickEditUserEmailEditListener();
         onClickEditUserPasswordEditListener();
         onClickEditUserCellNumberEditListener();
+        onClickEditUserBusinessNameEditListener();
+        onClickEditUserAddressEditListener();
 
         ListView listViewRole = (ListView)findViewById(R.id.roles_listView);
         final List<RoleModel> roles = new ArrayList<>();
@@ -186,6 +195,8 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileEmail.setText(user.getEmail());
                         btnEditProfilePassword.setText(user.getPassword());
                         btnEditProfileCell.setText(user.getCellNo());
+                        btnEditProfileBusinessName.setText(user.getBusinessName());
+                        btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
                     }
@@ -244,6 +255,8 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileEmail.setText(user.getEmail());
                         btnEditProfilePassword.setText(user.getPassword());
                         btnEditProfileCell.setText(user.getCellNo());
+                        btnEditProfileBusinessName.setText(user.getBusinessName());
+                        btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
                         Toast.makeText(EditUserProfile.this, "Profile is updated successfull!",Toast.LENGTH_SHORT).show();
@@ -441,6 +454,88 @@ public class EditUserProfile extends AppCompatActivity
         });
     }
 
+    public void onClickEditUserBusinessNameEditListener(){
+        btnEditProfileBusinessName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.edit_user_business_name_popup);
+                dialog.setTitle("Change Your Business Name");
+                final EditText etBusinessName = (EditText) dialog.findViewById(R.id.user_business_name);
+                if(user != null && user.getEmail()!= null)
+                {
+                    etBusinessName.setText(user.getBusinessName());
+                }
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.user_business_name_edit_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String businessName = etBusinessName.getText().toString();
+                        if(businessName.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign business name.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            user.setBusinessName(etBusinessName.getText().toString());
+                            updateUserProfile();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.user_business_name_edit_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
+    public void onClickEditUserAddressEditListener(){
+        btnEditProfileAddress.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.edit_user_address_popup);
+                dialog.setTitle("Change Your Address");
+                final EditText etAddress = (EditText) dialog.findViewById(R.id.user_address);
+                if(user != null && user.getAddress()!= null)
+                {
+                    etAddress.setText(user.getAddress());
+                }
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.user_address_edit_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String address = etAddress.getText().toString();
+                        if(address.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign address.",Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            user.setAddress(etAddress.getText().toString());
+                            updateUserProfile();
+                            dialog.dismiss();
+                        }
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.user_address_edit_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
     public void onClickEditUserProfilePhotoEditListener(){
         ivEditProfilePhoto.setOnClickListener(new View.OnClickListener() {
 
@@ -472,6 +567,49 @@ public class EditUserProfile extends AppCompatActivity
             }
 
         });
+    }
+    public void onClickEditUserAgentLogoEditListener(){
+        ivEditProfileAgentLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                final Dialog dialog = new Dialog(EditUserProfile.this);
+                dialog.setContentView(R.layout.upload_agent_logo);
+                dialog.setTitle("Upload Agent Logo");
+                ImageView agent_logo = (ImageView) dialog.findViewById(R.id.agent_logo);
+                //profile_image.setImageResource(R.drawable.user);
+                dialog.show();
+                Button submitButton = (Button) dialog.findViewById(R.id.agent_logo_upload_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                        photoPickerIntent.setType("image/*");
+                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                    }
+                });
+                Button declineButton = (Button) dialog.findViewById(R.id.agent_logo_upload_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+
+        });
+    }
+    public void onClickButtonBackArrowListener(){
+        ib_back_arrow = (ImageButton)findViewById(R.id.user_edit_profile_back_arrow);
+        ib_back_arrow.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent user_edit_profile_back_arrow_intent = new Intent(getBaseContext(), ProfileDashboard.class);
+                        startActivity(user_edit_profile_back_arrow_intent);
+                    }
+                }
+        );
     }
 
     @Override

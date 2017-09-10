@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 public class ShowAdvertProductDetails extends AppCompatActivity
@@ -86,6 +87,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         myAdvertBtnRow = (RelativeLayout)findViewById(R.id.my_advert_button_row);
         savedAdvertBtnRow = (RelativeLayout)findViewById(R.id.saved_advert_button_row);
         if(adIdentity == Constants.MY_AD_IDENTITY){
+
             myAdvertBtnRow.setVisibility(View.VISIBLE);
             savedAdvertBtnRow.setVisibility(View.GONE);
         }
@@ -259,8 +261,15 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent my_advert_step2_back_arrow_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                        startActivity(my_advert_step2_back_arrow_intent);
+                        if(adIdentity == Constants.MY_AD_IDENTITY){
+                            Intent show_advert_product_details_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
+                            startActivity(show_advert_product_details_intent);
+                        }
+                        else {
+                            Intent show_advert_product_details_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
+                            startActivity(show_advert_product_details_intent);
+                        }
+
                     }
                 }
         );
@@ -290,9 +299,9 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
+        // if (id == R.id.action_settings) {
         //    return true;
-       // }
+        // }
 
         return super.onOptionsItemSelected(item);
     }

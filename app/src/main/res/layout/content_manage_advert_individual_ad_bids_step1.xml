@@ -18,6 +18,7 @@
             android:id="@+id/top_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:orientation="horizontal">
             <ImageButton
                 android:id="@+id/individual_ad_bids_back_arrow"
@@ -57,7 +58,7 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_gravity="right"
             android:layout_marginRight="15dp"
             android:textColor="#ffffff"
