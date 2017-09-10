@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.auction.dto.Role;
 import com.auction.dto.User;
 import com.auction.dto.response.SignInResponse;
 import com.auction.util.ACTION;
@@ -30,6 +31,8 @@ import com.squareup.picasso.Picasso;
 import org.auction.udp.BackgroundWork;
 import org.bdlions.client.reqeust.threads.IServerCallback;
 import org.bdlions.transport.packet.IPacketHeader;
+
+import java.util.List;
 
 public class UserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -98,11 +101,29 @@ public class UserProfile extends AppCompatActivity
                     }
                     if(user != null && user.isSuccess())
                     {
+                        String roleString = "";
+                        List<Role> roleList = user.getRoleList();
+                        if(roleList != null && roleList.size() > 0)
+                        {
+                            for(int counter = 0; counter < roleList.size(); counter++)
+                            {
+                                if(counter == 0)
+                                {
+                                    roleString = roleList.get(counter).getDescription();
+                                }
+                                else
+                                {
+                                    roleString = roleString + ", " +roleList.get(counter).getDescription();
+                                }
+                            }
+                        }
+
                         tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
                         tvProfileEmail.setText(user.getEmail());
                         tvProfileTelephone.setText(user.getCellNo());
                         tvProfileBusinessName.setText(user.getBusinessName());
                         tvProfileAddress.setText(user.getAddress());
+                        tvProfileRole.setText(roleString);
 
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
