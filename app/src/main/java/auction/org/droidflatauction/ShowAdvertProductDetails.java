@@ -85,6 +85,28 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
 
+            boolean isAgent = false;
+            List<Role> roleList = product.getUser().getRoleList();
+            if(roleList != null && roleList.size() > 0)
+            {
+                for(int counter = 0; counter < roleList.size(); counter++)
+                {
+                    Role role = roleList.get(counter);
+                    if(role.getId() == Constants.USER_TYPE_ID_AGENT)
+                    {
+                        isAgent = true;
+                    }
+                }
+            }
+            if(isAgent)
+            {
+                //show agent logo, business name and address
+            }
+            else
+            {
+                //show company name
+            }
+
             //formatting date to user display format
             String availableFrom = product.getAvailableFrom();
             String availableTo = product.getAvailableTo();

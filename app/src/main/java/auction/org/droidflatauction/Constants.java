@@ -20,4 +20,6 @@ public class Constants {
     public static int IMG_UPLOAD_TYPE_AGENT_LOGO = 2;
 
     public static int MAX_REPEAT_SERVER_REQUEST = 5;
+
+    public static int USER_TYPE_ID_AGENT = 4;
 }
