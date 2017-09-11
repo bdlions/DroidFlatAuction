@@ -20,7 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auction.dto.Amenity;
+import com.auction.dto.Availability;
 import com.auction.dto.Product;
+import com.auction.dto.Role;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -29,10 +32,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
+import java.util.List;
+
 public class ShowAdvertProductDetails extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft;
+    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft, tvProductDetailsAvailableFrom, tvProductDetailsAvailableTo, tvProductDetailsAvailability, tvProductDetailsMinTerm, tvProductDetailsMaxTerm, tvProductDetailsOccupation, tvProductDetailsPets, tvProductDetailsSmoking, tvProductDetailsAmenityParking, tvProductDetailsAmenityBalcony, tvProductDetailsAmenityGarden, tvProductDetailsAmenityDisabledAccess, tvProductDetailsAmenityGarage;
     private  static Button proppertyContentEditBtn, proppertyPlaceBidBtn, proppertyContactBtn;
     private static ImageView ivProductDetailsImage;
     private Product product;
@@ -57,6 +62,21 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         ivProductDetailsImage = (ImageView) findViewById(R.id.iv_product_details_image);
         tvProductDetailsTotalBids = (TextView) findViewById(R.id.tv_product_details_total_bids);
         tvProductDetailsBidTimeLeft = (TextView) findViewById(R.id.tv_product_details_bid_time_left);
+        tvProductDetailsAvailableFrom = (TextView) findViewById(R.id.tv_product_details_available_from);
+        tvProductDetailsAvailableTo = (TextView) findViewById(R.id.tv_product_details_available_to);
+        tvProductDetailsAvailability = (TextView) findViewById(R.id.tv_product_details_availability);
+        tvProductDetailsMinTerm = (TextView) findViewById(R.id.tv_product_details_min_term);
+        tvProductDetailsMaxTerm = (TextView) findViewById(R.id.tv_product_details_max_term);
+
+        tvProductDetailsAmenityParking = (TextView) findViewById(R.id.tv_product_details_amenity_parking);
+        tvProductDetailsAmenityBalcony = (TextView) findViewById(R.id.tv_product_details_amenity_balcony);
+        tvProductDetailsAmenityGarden = (TextView) findViewById(R.id.tv_product_details_amenity_garden);
+        tvProductDetailsAmenityDisabledAccess = (TextView) findViewById(R.id.tv_product_details_amenity_disabled_access);
+        tvProductDetailsAmenityGarage = (TextView) findViewById(R.id.tv_product_details_amenity_garage);
+
+        tvProductDetailsSmoking = (TextView) findViewById(R.id.tv_product_details_smoking);
+        tvProductDetailsPets = (TextView) findViewById(R.id.tv_product_details_pets);
+        tvProductDetailsOccupation = (TextView) findViewById(R.id.tv_product_details_occupation);
 
         try
         {
@@ -64,6 +84,21 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             productString = getIntent().getExtras().getString("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
+
+            //formatting date to user display format
+            String availableFrom = product.getAvailableFrom();
+            String availableTo = product.getAvailableTo();
+            if(availableFrom != null && !availableFrom.equals(""))
+            {
+                String[] availableFromArray = availableFrom.split("-");
+                product.setAvailableFrom(availableFromArray[2]+"-"+availableFromArray[1]+"-"+availableFromArray[0]);
+            }
+            if(availableTo != null && !availableTo.equals(""))
+            {
+                String[] availableToArray = availableTo.split("-");
+                product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
+            }
+
             //product = (Product)getIntent().getExtras().get("productInfo");
             tvProductDetailsTitle.setText(product.getTitle());
             tvProductDetailsPrice.setText(product.getBasePrice()+" £");
@@ -71,7 +106,60 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetailsImage);
             tvProductDetailsTotalBids.setText(product.getTotalBids()+"");
             //tvProductDetailsBidTimeLeft.setText("7 Hours 24 Mins 12 Seconds");
+            tvProductDetailsAvailableFrom.setText(product.getAvailableFrom());
+            tvProductDetailsAvailableTo.setText(product.getAvailableTo());
+            String availabilityString = "";
+            List<Availability> availabilityList = product.getAvailabilities();
+            if(availabilityList != null && availabilityList.size() > 0)
+            {
+                for(int counter = 0; counter < availabilityList.size(); counter++)
+                {
+                    if(counter == 0)
+                    {
+                        availabilityString = availabilityList.get(counter).getTitle();
+                    }
+                    else
+                    {
+                        availabilityString = availabilityString + ", " +availabilityList.get(counter).getTitle();
+                    }
+                }
+            }
+            tvProductDetailsAvailability.setText(availabilityString);
+            tvProductDetailsMinTerm.setText(product.getMinStay().getTitle());
+            tvProductDetailsMaxTerm.setText(product.getMaxStay().getTitle());
+            tvProductDetailsSmoking.setText(product.getSmoking().getTitle());
 
+            List<Amenity> amenityList = product.getAmenities();
+            if(amenityList != null && amenityList.size() > 0)
+            {
+                for(int counter = 0; counter < amenityList.size(); counter++)
+                {
+                    Amenity amenity = amenityList.get(counter);
+                    if(amenity.getId()  == 1)
+                    {
+                        tvProductDetailsAmenityParking.setText("Yes");
+                    }
+                    if(amenity.getId()  == 2)
+                    {
+                        tvProductDetailsAmenityBalcony.setText("Yes");
+                    }
+                    if(amenity.getId()  == 3)
+                    {
+                        tvProductDetailsAmenityGarden.setText("Yes");
+                    }
+                    if(amenity.getId()  == 4)
+                    {
+                        tvProductDetailsAmenityDisabledAccess.setText("Yes");
+                    }
+                    if(amenity.getId()  == 5)
+                    {
+                        tvProductDetailsAmenityGarage.setText("Yes");
+                    }
+                }
+            }
+
+            tvProductDetailsPets.setText(product.getPet().getTitle());
+            tvProductDetailsOccupation.setText(product.getOccupation().getTitle());
         }
         catch(Exception ex)
         {

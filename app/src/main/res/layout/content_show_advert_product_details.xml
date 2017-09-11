@@ -83,7 +83,7 @@
                         android:textColor="#ff9000"
                         android:textSize="32dp"
                         android:textStyle="bold"/>
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -133,7 +133,7 @@
                             android:textSize="14dp"
                             android:textStyle="normal"
                             android:layout_weight="1"/>
-                    </LinearLayout>
+                    </LinearLayout>-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -159,7 +159,7 @@
                             android:textStyle="bold"
                             android:layout_weight="1"/>
                     </LinearLayout>
-                    <LinearLayout
+                    <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
@@ -183,7 +183,7 @@
                             android:textSize="14dp"
                             android:textStyle="normal"
                             android:layout_weight="1"/>
-                    </LinearLayout>
+                    </LinearLayout>-->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -377,11 +377,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_available_from"
+                            android:id="@+id/tv_product_details_available_from"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="10-08-2017"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -402,11 +402,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_available_to"
+                            android:id="@+id/tv_product_details_available_to"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="27-08-2017"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -427,11 +427,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_availablility"
+                            android:id="@+id/tv_product_details_availability"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="Daily"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -452,11 +452,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_mimimum_term"
+                            android:id="@+id/tv_product_details_min_term"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="No Limit"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -477,11 +477,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_maximum_term"
+                            android:id="@+id/tv_product_details_max_term"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="No Limit"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -567,11 +567,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_parking"
+                            android:id="@+id/tv_product_details_amenity_parking"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="Furnished"
+                            android:text="No"
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -592,7 +592,7 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_balcony"
+                            android:id="@+id/tv_product_details_amenity_balcony"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
@@ -617,7 +617,7 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_garden"
+                            android:id="@+id/tv_product_details_amenity_garden"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
@@ -642,7 +642,7 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_disabled_access"
+                            android:id="@+id/tv_product_details_amenity_disabled_access"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
@@ -667,7 +667,7 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_garage"
+                            android:id="@+id/tv_product_details_amenity_garage"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
@@ -712,11 +712,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_smoking"
+                            android:id="@+id/tv_product_details_smoking"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="Yes"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -737,11 +737,11 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_pets"
+                            android:id="@+id/tv_product_details_pets"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="No"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
@@ -762,12 +762,12 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_occupation"
+                            android:id="@+id/tv_product_details_occupation"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:layout_marginBottom="50dp"
                             android:gravity="left"
-                            android:text="No preference"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
