@@ -15,4 +15,9 @@ public class Constants {
 
     public static int MY_AD_IDENTITY = 1;
     public static int OTHER_AD_IDENTITY = 2;
+
+    public static int IMG_UPLOAD_TYPE_PROFILE_PICTURE = 1;
+    public static int IMG_UPLOAD_TYPE_AGENT_LOGO = 2;
+
+    public static int MAX_REPEAT_SERVER_REQUEST = 5;
 }

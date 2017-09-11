@@ -34,6 +34,7 @@ public class SessionManager {
     // Email address (make variable public to access from outside)
     public static final String KEY_IDENTITY = "identity";
     public static final String KEY_SESSION_ID = "sessionId";
+    public static final String KEY_USER_ID = "userId";
     //public static final String KEY_USER_ID = "userId";
 
     // Constructor
@@ -131,5 +132,17 @@ public class SessionManager {
     public String getSessionId()
     {
         return pref.getString(KEY_SESSION_ID, null);
+    }
+
+    public int getUserId()
+    {
+        return pref.getInt(KEY_USER_ID, 0);
+    }
+
+    public void setUserId(int userId)
+    {
+        editor.putInt(KEY_USER_ID, userId);
+        // commit changes
+        editor.commit();
     }
 }

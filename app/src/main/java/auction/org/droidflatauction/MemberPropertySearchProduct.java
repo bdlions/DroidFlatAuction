@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -17,17 +19,27 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
+import com.auction.dto.Product;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
+
 import java.util.ArrayList;
 
 public class MemberPropertySearchProduct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    ListView member_property_search_product_listview;
+    ListView propertySearchProductListview;
     ArrayList<Integer> property_iamges, productIdList;
     ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list, imgList;
-    SavedAdvertPropertyAdapter member_property_search_product_adapter;
+    SavedAdvertPropertyAdapter propertySearchProductAdapter;
 
     SessionManager session;
+
+    public int fetchProductInfoCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +69,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         property_price_list = (ArrayList<String>)getIntent().getExtras().get("priceList");
 
 
-        member_property_search_product_listview = (ListView) findViewById(R.id.member_property_search_product_listview);
+        propertySearchProductListview = (ListView) findViewById(R.id.member_property_search_product_listview);
         //property_iamges = new ArrayList<>();
         //property_title_list = new ArrayList<>();
         //property_iamges = getPropertyIamges();
@@ -67,10 +79,15 @@ public class MemberPropertySearchProduct extends AppCompatActivity
         //property_bathroom_list = getPropertyBathroomList();
         //property_price_list = getPropertyPriceList();
         //member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
-        member_property_search_product_adapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,imgList, property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
-
-        member_property_search_product_listview.setAdapter(member_property_search_product_adapter);
-
+        propertySearchProductAdapter = new SavedAdvertPropertyAdapter(MemberPropertySearchProduct.this,session.getSessionId(), productIdList,property_iamges,imgList, property_title_list,property_bedroom_list,property_bathroom_list,property_price_list);
+        propertySearchProductListview.setAdapter(propertySearchProductAdapter);
+        propertySearchProductListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int productId = productIdList.get(position);
+                fetchProductInfo(productId);
+            }
+        });
         /*member_property_search_product_listview.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -94,6 +111,76 @@ public class MemberPropertySearchProduct extends AppCompatActivity
 
         //onClickButtonBackArrowListener();
     }
+
+    public void fetchProductInfo(final int productId)
+    {
+        Product tempProduct = new Product();
+        tempProduct.setId(productId);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempProductString = gson.toJson(tempProduct);
+
+        final String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    Product responseProduct = null;
+                    String productInfoString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        productInfoString = (String) msg.obj;
+                    }
+                    if(productInfoString != null)
+                    {
+                        Gson gson = new Gson();
+                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                    }
+                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson2 = gsonBuilder.create();
+                        String productString = gson2.toJson(responseProduct);
+
+                        Intent my_advert_property_show_details_intent = new Intent(MemberPropertySearchProduct.this, ShowAdvertProductDetails.class);
+                        my_advert_property_show_details_intent.putExtra("productString", productString);
+                        if(session.getUserId() == responseProduct.getUser().getId())
+                        {
+                            my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
+                        }
+                        else
+                        {
+                            my_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
+                        }
+                        startActivity(my_advert_property_show_details_intent);
+                    }
+                    else
+                    {
+                        fetchProductInfoCounter++;
+                        if (fetchProductInfoCounter <= 5)
+                        {
+                            fetchProductInfo(productId);
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchProductInfoCounter++;
+                    if (fetchProductInfoCounter <= 5)
+                    {
+                        fetchProductInfo(productId);
+                    }
+                }
+            }
+        });
+    }
+
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step1_back_arrow);
         ib_back_arrow.setOnClickListener(

@@ -29,9 +29,11 @@ import android.widget.Toast;
 
 import com.auction.dto.Product;
 import com.auction.dto.ProductList;
+import com.auction.dto.SearchParams;
 import com.auction.util.ACTION;
 import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 
@@ -48,6 +50,8 @@ public class MemberPropertySearch extends AppCompatActivity
     ListView listView;
     EditText editText;
     SessionManager session;
+    SearchParams searchParams = new SearchParams();
+    public int fetchProductListCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,66 +123,76 @@ public void initList(){
     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            //retrieve product list from the server
-            //Toast.makeText(getApplicationContext(), items[position]+" : Item clicked", Toast.LENGTH_LONG).show();
-            String sessionId = session.getSessionId();
-            org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-            packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
-            packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-            packetHeader.setSessionId(sessionId);
-            new BackgroundWork().execute(packetHeader, "{}", new Handler(){
-                @Override
-                public void handleMessage(Message msg) {
-                    try
-                    {
-                        String resultString = (String)msg.obj;
-                        Gson gson = new Gson();
-                        ProductList response = gson.fromJson(resultString, ProductList.class);
-                        System.out.println(response);
-                        ArrayList<Product> productList = response.getProducts();
-                        ArrayList<Integer> imageList = new ArrayList<Integer>();
-                        ArrayList<String> imgList = new ArrayList<String>();
-                        ArrayList<Integer> productIdList = new ArrayList<Integer>();
-                        ArrayList<String> titleList = new ArrayList<String>();
-                        ArrayList<String> bedroomList = new ArrayList<String>();
-                        ArrayList<String> bathroomList = new ArrayList<String>();
-                        ArrayList<String> priceList = new ArrayList<String>();
-                        if(productList != null)
-                        {
-                            int totalProducts = productList.size();
-                            for(int productCounter = 0; productCounter < totalProducts; productCounter++)
-                            {
-                                Product product = productList.get(productCounter);
-                                productIdList.add(product.getId());
-                                imgList.add(product.getImg());
-                                imageList.add(R.drawable.property_image_01);
-                                titleList.add(product.getTitle());
-                                bedroomList.add("");
-                                bathroomList.add("");
-                                priceList.add("");
-                            }
-                        }
-                        Intent adverts_intent = new Intent(getBaseContext(), MemberPropertySearchProduct.class);
-                        //Intent adverts_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
-                        adverts_intent.putExtra("imageList", imageList);
-                        adverts_intent.putExtra("imgList", imgList);
-                        adverts_intent.putExtra("productIdList", productIdList);
-                        adverts_intent.putExtra("titleList", titleList);
-                        adverts_intent.putExtra("bedroomList", bedroomList);
-                        adverts_intent.putExtra("bathroomList", bathroomList);
-                        adverts_intent.putExtra("priceList", priceList);
-                        startActivity(adverts_intent);
-                    }
-                    catch(Exception ex)
-                    {
-                        System.out.println(ex.toString());
-                    }
-                }
-            });
+            fetchProductList();
         }
     });
 }
 
+    public void fetchProductList()
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String searchParamsString = gson.toJson(searchParams);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, searchParamsString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                    System.out.println(response);
+                    ArrayList<Product> productList = response.getProducts();
+                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                    ArrayList<String> imgList = new ArrayList<String>();
+                    ArrayList<Integer> productIdList = new ArrayList<Integer>();
+                    ArrayList<String> titleList = new ArrayList<String>();
+                    ArrayList<String> bedroomList = new ArrayList<String>();
+                    ArrayList<String> bathroomList = new ArrayList<String>();
+                    ArrayList<String> priceList = new ArrayList<String>();
+                    if(productList != null)
+                    {
+                        int totalProducts = productList.size();
+                        for(int productCounter = 0; productCounter < totalProducts; productCounter++)
+                        {
+                            Product product = productList.get(productCounter);
+                            productIdList.add(product.getId());
+                            imgList.add(product.getImg());
+                            imageList.add(R.drawable.property_image_01);
+                            titleList.add(product.getTitle());
+                            bedroomList.add("");
+                            bathroomList.add("");
+                            priceList.add("");
+                        }
+                    }
+                    Intent adverts_intent = new Intent(getBaseContext(), MemberPropertySearchProduct.class);
+                    //Intent adverts_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
+                    adverts_intent.putExtra("imageList", imageList);
+                    adverts_intent.putExtra("imgList", imgList);
+                    adverts_intent.putExtra("productIdList", productIdList);
+                    adverts_intent.putExtra("titleList", titleList);
+                    adverts_intent.putExtra("bedroomList", bedroomList);
+                    adverts_intent.putExtra("bathroomList", bathroomList);
+                    adverts_intent.putExtra("priceList", priceList);
+                    startActivity(adverts_intent);
+                }
+                catch(Exception ex)
+                {
+                    fetchProductListCounter++;
+                    if (fetchProductListCounter <= Constants.MAX_REPEAT_SERVER_REQUEST)
+                    {
+                        fetchProductList();
+                    }
+                }
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {

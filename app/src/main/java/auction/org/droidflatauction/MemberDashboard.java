@@ -99,6 +99,10 @@ public class MemberDashboard extends AppCompatActivity
                 }
                 if(user != null && user.isSuccess())
                 {
+                    if(session.getUserId() == 0)
+                    {
+                        session.setUserId(user.getId());
+                    }
                     tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
                     Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
                 }
