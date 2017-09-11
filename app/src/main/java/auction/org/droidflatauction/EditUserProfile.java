@@ -1,6 +1,7 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -61,7 +62,7 @@ public class EditUserProfile extends AppCompatActivity
     public int fetchProfileCounter = 0;
     public int imgUploadType;
 
-    public Dialog imageUploadDialog;
+    public Dialog imageUploadDialog, progressBarDialog;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, final Intent imageReturnedIntent) {
@@ -181,6 +182,10 @@ public class EditUserProfile extends AppCompatActivity
 
     public void fetchUserProfile()
     {
+        progressBarDialog = new Dialog(EditUserProfile.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_USER_INFO);
@@ -211,6 +216,7 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
+                        progressBarDialog.dismiss();
                     }
                     else
                     {
@@ -218,6 +224,10 @@ public class EditUserProfile extends AppCompatActivity
                         if (fetchProfileCounter <= 5)
                         {
                             fetchUserProfile();
+                        }
+                        else
+                        {
+                            progressBarDialog.dismiss();
                         }
                     }
                 }
@@ -227,6 +237,10 @@ public class EditUserProfile extends AppCompatActivity
                     if (fetchProfileCounter <= 5)
                     {
                         fetchUserProfile();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
                     }
                 }
             }
