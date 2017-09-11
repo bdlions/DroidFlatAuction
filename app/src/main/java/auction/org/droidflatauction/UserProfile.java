@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.auction.dto.Role;
 import com.auction.dto.User;
@@ -38,8 +39,8 @@ public class UserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     SessionManager session;
-    public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileAddress,tvProfileRole;
-    private static ImageView ivProfilePhoto, ivProfileAgentLogo;
+    public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileBusinessNameHeader,tvProfileAddress,tvProfileAddressHeader,tvProfileRole;
+    private static ImageView ivProfilePhoto, ivProfileAgentLogo,tvProfileAgentLogoHeader;
     public int fetchProfileCounter = 0;
 
     @Override
@@ -102,7 +103,9 @@ public class UserProfile extends AppCompatActivity
                     if(user != null && user.isSuccess())
                     {
                         String roleString = "";
+                        String agentString = "";
                         List<Role> roleList = user.getRoleList();
+
                         if(roleList != null && roleList.size() > 0)
                         {
                             for(int counter = 0; counter < roleList.size(); counter++)
@@ -114,19 +117,50 @@ public class UserProfile extends AppCompatActivity
                                 else
                                 {
                                     roleString = roleString + ", " +roleList.get(counter).getDescription();
+                                   /* if((roleList.get(counter).getDescription()).equals("Agent")){
+                                        agentString = roleList.get(counter).getDescription();
+                                        Toast.makeText(UserProfile.this, "This: " + agentString,Toast.LENGTH_SHORT).show();
+                                        tvProfileBusinessNameHeader = (TextView) findViewById(R.id.tv_profile_business_name_header);
+                                        tvProfileBusinessNameHeader.setVisibility(View.GONE);
+                                        tvProfileBusinessName.setVisibility(View.GONE);
+
+                                        tvProfileAddressHeader = (TextView) findViewById(R.id.tv_profile_address_header);
+                                        tvProfileAddressHeader.setVisibility(View.GONE);
+                                        tvProfileAddress.setVisibility(View.GONE);
+
+                                        tvProfileAgentLogoHeader = (ImageView) findViewById(R.id.tv_profile_agent_logo_header);
+                                        tvProfileAgentLogoHeader.setVisibility(View.GONE);
+                                    }
+                                    else {
+                                        tvProfileBusinessName.setText(user.getBusinessName());
+                                        tvProfileAddress.setText(user.getAddress());
+                                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
+
+                                    }*/
+
                                 }
+
+
+
+
+
+
+
                             }
+
                         }
 
+                        tvProfileBusinessName.setText(user.getBusinessName());
+                        tvProfileAddress.setText(user.getAddress());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
+                        
                         tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
                         tvProfileEmail.setText(user.getEmail());
                         tvProfileTelephone.setText(user.getCellNo());
-                        tvProfileBusinessName.setText(user.getBusinessName());
-                        tvProfileAddress.setText(user.getAddress());
                         tvProfileRole.setText(roleString);
 
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivProfilePhoto);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
+
                     }
                     else
                     {
