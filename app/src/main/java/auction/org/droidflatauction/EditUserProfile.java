@@ -59,9 +59,12 @@ public class EditUserProfile extends AppCompatActivity
     public User user;
 
     public int fetchProfileCounter = 0;
+    public int imgUploadType;
+
+    public Dialog imageUploadDialog;
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+    protected void onActivityResult(int requestCode, int resultCode, final Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
 
         switch(requestCode) {
@@ -78,24 +81,33 @@ public class EditUserProfile extends AppCompatActivity
                         int columnIndex = cursor.getColumnIndex(projection[0]);
                         String picturePath = cursor.getString(columnIndex); // returns null
                         cursor.close();
-                        System.out.println("Path---------:" + picturePath);
-//                        if (imageUri != null) {
-//                            String path = imageUri.toString();
-//                            if (path.toLowerCase().startsWith("file://")) {
-//                                path = (new File(URI.create(path))).getAbsolutePath();
-//                            }
-//                            System.out.println("Path---------: " + path);
-//                        }
                         new BackgroundUploader().execute(picturePath, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
-                                Toast.makeText(getApplicationContext(), (String)msg.obj, Toast.LENGTH_LONG).show();
+                                imageUploadDialog.dismiss();
+                                try
+                                {
+                                    String img = (String)msg.obj;
+                                    if(imgUploadType == Constants.IMG_UPLOAD_TYPE_PROFILE_PICTURE)
+                                    {
+                                        user.setImg(img);
+                                        updateUserProfilePicture();
+                                    }
+                                    else if(imgUploadType == Constants.IMG_UPLOAD_TYPE_AGENT_LOGO)
+                                    {
+                                        user.setAgentLogo(img);
+                                        updateUserAgentLogo();
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    Toast.makeText(getApplicationContext(), "Unable to upload image. Please try again later.", Toast.LENGTH_LONG).show();
+                                }
                             }
                         });
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
                 }
         }
     }
@@ -259,7 +271,7 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
-                        Toast.makeText(EditUserProfile.this, "Profile is updated successfull!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditUserProfile.this, "Profile is updated successfully!",Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
@@ -269,6 +281,96 @@ public class EditUserProfile extends AppCompatActivity
                 catch(Exception ex)
                 {
                     Toast.makeText(EditUserProfile.this, "Unable to update profile. Please try again later.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void updateUserProfilePicture()
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String userString = gson.toJson(user);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.UPDATE_USER_PROFILE_PICTURE);
+        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    GeneralResponse response = null;
+                    String responseString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        responseString = (String) msg.obj;
+                    }
+                    if(responseString != null)
+                    {
+                        Gson gson = new Gson();
+                        response = gson.fromJson(responseString, GeneralResponse.class);
+                    }
+                    if(response != null && response.isSuccess())
+                    {
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
+                        Toast.makeText(EditUserProfile.this, "Profile picture is uploaded successfully!",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(EditUserProfile.this, "Unable to upload profile picture. Please try again later.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Toast.makeText(EditUserProfile.this, "Unable to upload profile picture. Please try again later.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void updateUserAgentLogo()
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String userString = gson.toJson(user);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.UPDATE_USER_LOGO);
+        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    GeneralResponse response = null;
+                    String responseString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        responseString = (String) msg.obj;
+                    }
+                    if(responseString != null)
+                    {
+                        Gson gson = new Gson();
+                        response = gson.fromJson(responseString, GeneralResponse.class);
+                    }
+                    if(response != null && response.isSuccess())
+                    {
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
+                        Toast.makeText(EditUserProfile.this, "Agent logo is uploaded successfully!",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(EditUserProfile.this, "Unable to upload agent logo. Please try again later.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Toast.makeText(EditUserProfile.this, "Unable to upload agent logo. Please try again later.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -541,27 +643,28 @@ public class EditUserProfile extends AppCompatActivity
 
             @Override
             public void onClick(View arg0) {
-                final Dialog dialog = new Dialog(EditUserProfile.this);
-                dialog.setContentView(R.layout.upload_user_photo);
-                dialog.setTitle("Upload Your Photo");
-                ImageView profile_image = (ImageView) dialog.findViewById(R.id.user_profile_image);
+                imageUploadDialog = new Dialog(EditUserProfile.this);
+                imageUploadDialog.setContentView(R.layout.upload_user_photo);
+                imageUploadDialog.setTitle("Upload Your Photo");
+                ImageView profile_image = (ImageView) imageUploadDialog.findViewById(R.id.user_profile_image);
                 //profile_image.setImageResource(R.drawable.user);
-                dialog.show();
-                Button submitButton = (Button) dialog.findViewById(R.id.user_photo_upload_submit_button);
+                imageUploadDialog.show();
+                Button submitButton = (Button) imageUploadDialog.findViewById(R.id.user_photo_upload_submit_button);
                 submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        imgUploadType = Constants.IMG_UPLOAD_TYPE_PROFILE_PICTURE;
                         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                         photoPickerIntent.setType("image/*");
                         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
                     }
                 });
-                Button declineButton = (Button) dialog.findViewById(R.id.user_photo_upload_cancel_button);
+                Button declineButton = (Button) imageUploadDialog.findViewById(R.id.user_photo_upload_cancel_button);
                 declineButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        imageUploadDialog.dismiss();
                     }
                 });
             }
@@ -572,27 +675,28 @@ public class EditUserProfile extends AppCompatActivity
         ivEditProfileAgentLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                final Dialog dialog = new Dialog(EditUserProfile.this);
-                dialog.setContentView(R.layout.upload_agent_logo);
-                dialog.setTitle("Upload Agent Logo");
-                ImageView agent_logo = (ImageView) dialog.findViewById(R.id.agent_logo);
+                imageUploadDialog = new Dialog(EditUserProfile.this);
+                imageUploadDialog.setContentView(R.layout.upload_agent_logo);
+                imageUploadDialog.setTitle("Upload Agent Logo");
+                ImageView agent_logo = (ImageView) imageUploadDialog.findViewById(R.id.agent_logo);
                 //profile_image.setImageResource(R.drawable.user);
-                dialog.show();
-                Button submitButton = (Button) dialog.findViewById(R.id.agent_logo_upload_submit_button);
+                imageUploadDialog.show();
+                Button submitButton = (Button) imageUploadDialog.findViewById(R.id.agent_logo_upload_submit_button);
                 submitButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        imgUploadType = Constants.IMG_UPLOAD_TYPE_AGENT_LOGO;
                         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                         photoPickerIntent.setType("image/*");
                         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
                     }
                 });
-                Button declineButton = (Button) dialog.findViewById(R.id.agent_logo_upload_cancel_button);
+                Button declineButton = (Button) imageUploadDialog.findViewById(R.id.agent_logo_upload_cancel_button);
                 declineButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        dialog.dismiss();
+                        imageUploadDialog.dismiss();
                     }
                 });
             }
