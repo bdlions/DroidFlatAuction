@@ -63,6 +63,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
     Stay selectedMinStay, selectedMaxStay;
 
     public int fetchStayCounter = 0;
+    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
         try {
             //product = (Product)getIntent().getExtras().get("product");
+            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
+            // Toast.makeText(CreateAdvertStep3.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
+
             String productString = (String) getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -293,7 +297,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step3_back_arrow_intent.putExtra("productString", productString);
-
+                        create_advert_step3_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step3_back_arrow_intent);
                     }
                 }
@@ -331,6 +335,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step3_forward_arrow_intent.putExtra("productString", productString);
+                        create_advert_step3_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step3_forward_arrow_intent);
                     }
                 }

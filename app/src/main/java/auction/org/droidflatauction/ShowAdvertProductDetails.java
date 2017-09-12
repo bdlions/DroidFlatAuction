@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,14 +38,15 @@ import java.util.List;
 public class ShowAdvertProductDetails extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft, tvProductDetailsAvailableFrom, tvProductDetailsAvailableTo, tvProductDetailsAvailability, tvProductDetailsMinTerm, tvProductDetailsMaxTerm, tvProductDetailsOccupation, tvProductDetailsPets, tvProductDetailsSmoking, tvProductDetailsAmenityParking, tvProductDetailsAmenityBalcony, tvProductDetailsAmenityGarden, tvProductDetailsAmenityDisabledAccess, tvProductDetailsAmenityGarage;
+    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft, tvProductDetailsAvailableFrom, tvProductDetailsAvailableTo, tvProductDetailsAvailability, tvProductDetailsMinTerm, tvProductDetailsMaxTerm, tvProductDetailsOccupation, tvProductDetailsPets, tvProductDetailsSmoking, tvProductDetailsAmenityParking, tvProductDetailsAmenityBalcony, tvProductDetailsAmenityGarden, tvProductDetailsAmenityDisabledAccess, tvProductDetailsAmenityGarage,tvProductBusinessName,tvProductAddress,tvProductCompanyName;
     private  static Button proppertyContentEditBtn, proppertyPlaceBidBtn, proppertyContactBtn;
-    private static ImageView ivProductDetailsImage;
+    private static ImageView ivProductDetailsImage,ivProductAgentLogo;
+    private static LinearLayout llProductAgent,llProductCompanyName;
     private Product product;
     private String productString;
     SessionManager session;
     public static RelativeLayout myAdvertBtnRow,savedAdvertBtnRow;
-    public int adIdentity;
+    public int adIdentity,adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,15 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         tvProductDetailsPrice = (TextView) findViewById(R.id.tv_product_details_price);
         tvProductDetailsDescription = (TextView) findViewById(R.id.tv_product_details_description);
         ivProductDetailsImage = (ImageView) findViewById(R.id.iv_product_details_image);
+
+        llProductAgent = (LinearLayout)findViewById(R.id.ll_product_agent);
+        llProductCompanyName = (LinearLayout)findViewById(R.id.ll_product_company_name);
+
+        ivProductAgentLogo = (ImageView) findViewById(R.id.iv_product_agent_logo);
+        tvProductBusinessName = (TextView) findViewById(R.id.tv_product_business_name);
+        tvProductAddress = (TextView) findViewById(R.id.tv_product_address);
+        tvProductCompanyName = (TextView) findViewById(R.id.tv_product_company_name);
+
         tvProductDetailsTotalBids = (TextView) findViewById(R.id.tv_product_details_total_bids);
         tvProductDetailsBidTimeLeft = (TextView) findViewById(R.id.tv_product_details_bid_time_left);
         tvProductDetailsAvailableFrom = (TextView) findViewById(R.id.tv_product_details_available_from);
@@ -98,14 +109,26 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                     }
                 }
             }
+
+            //isAgent = true;
             if(isAgent)
             {
                 //show agent logo, business name and address
-            }
-            else
+                //Toast.makeText(ShowAdvertProductDetails.this, "Agent: " + isAgent,Toast.LENGTH_LONG).show();
+                Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+product.getUser().getAgentLogo()).into(ivProductAgentLogo);
+                tvProductBusinessName.setText(product.getUser().getBusinessName());
+                tvProductAddress.setText(product.getUser().getAddress());
+                llProductAgent.setVisibility(View.VISIBLE);
+                llProductCompanyName.setVisibility(View.GONE);
+            } else
             {
                 //show company name
+                //Toast.makeText(ShowAdvertProductDetails.this, "NonAgent: " + isAgent,Toast.LENGTH_LONG).show();
+                tvProductCompanyName.setText(product.getCompanyName());
+                llProductAgent.setVisibility(View.GONE);
+                llProductCompanyName.setVisibility(View.VISIBLE);
             }
+
 
             //formatting date to user display format
             String availableFrom = product.getAvailableFrom();
@@ -197,7 +220,6 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         myAdvertBtnRow = (RelativeLayout)findViewById(R.id.my_advert_button_row);
         savedAdvertBtnRow = (RelativeLayout)findViewById(R.id.saved_advert_button_row);
         if(adIdentity == Constants.MY_AD_IDENTITY){
-
             myAdvertBtnRow.setVisibility(View.VISIBLE);
             savedAdvertBtnRow.setVisibility(View.GONE);
         }
@@ -205,7 +227,6 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             myAdvertBtnRow.setVisibility(View.GONE);
             savedAdvertBtnRow.setVisibility(View.VISIBLE);
         }
-
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -335,6 +356,8 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                     public void onClick(View v) {
                         Intent my_advert_prpperty_edit_button_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
                         my_advert_prpperty_edit_button_intent.putExtra("productString", productString);
+                        my_advert_prpperty_edit_button_intent.putExtra("adIdentity", adIdentity);
+                        my_advert_prpperty_edit_button_intent.putExtra("adCreateIdentity", Constants.MY_AD_EDIT_IDENTITY);
                         startActivity(my_advert_prpperty_edit_button_intent);
                     }
                 }

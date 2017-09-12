@@ -204,8 +204,9 @@
                         <TextView
                             android:id="@+id/tv_product_details_description"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
                             android:gravity="left"
                             android:text=""
                             android:textColor="#5a5a5a"
@@ -221,8 +222,7 @@
                             class="com.google.android.gms.maps.SupportMapFragment"
                             android:layout_width="match_parent"
                             android:layout_height="200dp"
-                            tools:context="auction.org.droidflatauction.MyAdvertStep2"
-                            />
+                            tools:context="auction.org.droidflatauction.MyAdvertStep2" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -243,31 +243,88 @@
                             android:background="#ff9711" />
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/ll_product_agent"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-                        <TextView
+                        android:orientation="vertical">
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="left"
-                            android:text="Agent Logo"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                        <ImageView
-                            android:id="@+id/property_agent_logo"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="left"
+                                android:text="Agent Logo"
+                                android:textColor="#5a5a5a"
+                                android:textSize="14dp"
+                                android:textStyle="normal"
+                                android:layout_weight="1"/>
+                            <ImageView
+                                android:id="@+id/iv_product_agent_logo"
+                                android:layout_width="match_parent"
+                                android:layout_height="125dp"
+                                android:gravity="left"
+                                android:adjustViewBounds="true"
+                                android:scaleType="fitXY"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="125dp"
-                            android:gravity="left"
-                            android:src="@drawable/agent_logo"
-                            android:adjustViewBounds="true"
-                            android:scaleType="fitXY"
-                            android:layout_weight="1"/>
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:gravity="left"
+                                android:text="Business Name"
+                                android:textColor="#5a5a5a"
+                                android:textSize="14dp"
+                                android:textStyle="normal"
+                                android:layout_weight="1"/>
+                            <TextView
+                                android:id="@+id/tv_product_business_name"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:gravity="left"
+                                android:text=""
+                                android:textColor="#5a5a5a"
+                                android:textSize="14dp"
+                                android:textStyle="normal"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:gravity="left"
+                                android:text="Address"
+                                android:textColor="#5a5a5a"
+                                android:textSize="14dp"
+                                android:textStyle="normal"
+                                android:layout_weight="1"/>
+                            <TextView
+                                android:id="@+id/tv_product_address"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:gravity="left"
+                                android:text=""
+                                android:textColor="#5a5a5a"
+                                android:textSize="14dp"
+                                android:textStyle="normal"
+                                android:layout_weight="1" />
+                        </LinearLayout>
                     </LinearLayout>
                     <LinearLayout
+                        android:id="@+id/ll_product_company_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
@@ -283,65 +340,15 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                         <TextView
-                            android:id="@+id/property_company_name"
+                            android:id="@+id/tv_product_company_name"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:gravity="left"
-                            android:text="RoomAuction"
+                            android:text=""
                             android:textColor="#5a5a5a"
                             android:textSize="14dp"
                             android:textStyle="normal"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="Business Name"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                        <TextView
-                            android:id="@+id/property_business_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="Cadogan"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="Company Address"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                        <TextView
-                            android:id="@+id/property_company_address"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="London"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -532,7 +539,6 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                     </LinearLayout> -->
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -773,59 +779,58 @@
                             android:textStyle="normal"
                             android:layout_weight="1"/>
                     </LinearLayout>
-                 <!--   <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="DSS"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                        <TextView
-                            android:id="@+id/property_dds"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="No"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="References?"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                        <TextView
-                            android:id="@+id/property_references"
-                            android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:gravity="left"
-                            android:text="No"
-                            android:textColor="#5a5a5a"
-                            android:textSize="14dp"
-                            android:textStyle="normal"
-                            android:layout_weight="1"/>
-                    </LinearLayout> -->
+                    <!--   <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:orientation="horizontal"
+                           android:weightSum="2">
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="40dp"
+                               android:gravity="left"
+                               android:text="DSS"
+                               android:textColor="#5a5a5a"
+                               android:textSize="14dp"
+                               android:textStyle="normal"
+                               android:layout_weight="1"/>
+                           <TextView
+                               android:id="@+id/property_dds"
+                               android:layout_width="match_parent"
+                               android:layout_height="40dp"
+                               android:gravity="left"
+                               android:text="No"
+                               android:textColor="#5a5a5a"
+                               android:textSize="14dp"
+                               android:textStyle="normal"
+                               android:layout_weight="1"/>
+                       </LinearLayout>
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:layout_height="wrap_content"
+                           android:orientation="horizontal"
+                           android:weightSum="2">
+                           <TextView
+                               android:layout_width="match_parent"
+                               android:layout_height="40dp"
+                               android:gravity="left"
+                               android:text="References?"
+                               android:textColor="#5a5a5a"
+                               android:textSize="14dp"
+                               android:textStyle="normal"
+                               android:layout_weight="1"/>
+                           <TextView
+                               android:id="@+id/property_references"
+                               android:layout_width="match_parent"
+                               android:layout_height="40dp"
+                               android:gravity="left"
+                               android:text="No"
+                               android:textColor="#5a5a5a"
+                               android:textSize="14dp"
+                               android:textStyle="normal"
+                               android:layout_weight="1"/>
+                       </LinearLayout> -->
                 </LinearLayout>
-
-              <RelativeLayout
+                <RelativeLayout
                     android:id="@+id/my_advert_button_row"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -846,8 +851,8 @@
                         android:textAllCaps="false"
                         android:background="@drawable/custom_round_corner_blue_button"/>
                 </RelativeLayout>
-               <RelativeLayout
-                   android:id="@+id/saved_advert_button_row"
+                <RelativeLayout
+                    android:id="@+id/saved_advert_button_row"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -880,7 +885,6 @@
                         android:background="@drawable/custom_round_corner_blue_button"/>
                 </RelativeLayout>
             </RelativeLayout>
-
         </RelativeLayout>
     </LinearLayout>
 </ScrollView>

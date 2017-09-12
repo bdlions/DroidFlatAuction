@@ -37,22 +37,68 @@
                 android:textStyle="normal" />
         </LinearLayout>
     <LinearLayout
+        android:id="@+id/ll_upload_product_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="25dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Upload Product Photo"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_upload_product_photo"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginLeft="5dp" />
         <Button
-            android:id="@+id/btnCapturePicture"
+            android:id="@+id/btn_product_photo_upload"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/custom_round_corner_blue_button"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:text="Upload"
+            android:text="Upload Photo"
             android:textColor="#fff" />
-
         </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_edit_product_photo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="25dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="Edit Product Photo"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_edit_product_photo"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginLeft="5dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:text="Click over image to Change the photo"
+            android:layout_gravity="center"
+            android:textColor="#5a5a5a"
+            android:textSize="14dp"
+            android:textStyle="normal" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

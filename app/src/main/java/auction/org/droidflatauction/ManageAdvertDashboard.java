@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.auction.dto.AccountSettingFA;
 import com.auction.dto.Product;
@@ -54,6 +55,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
         onClickButtonRankingAdListener();
         onClickButtonFaqAdListener();
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -74,6 +76,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(new Product());
                         create_advert_intent.putExtra("productString", productString);
+                        create_advert_intent.putExtra("adCreateIdentity", Constants.MY_AD_CREATE_IDENTITY);
                         startActivity(create_advert_intent);
                     }
                 }

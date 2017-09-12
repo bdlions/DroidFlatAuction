@@ -69,6 +69,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
     public int fetchProductTypeCounter = 0;
     public int fetchProductSizeCounter = 0;
     public int fetchProductCategoryCounter = 0;
+    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,9 @@ public class CreateAdvertStep1 extends AppCompatActivity
         try
         {
             //product = (Product)getIntent().getExtras().get("product");
+            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
+            //makeText(CreateAdvertStep1.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
+
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -499,7 +503,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step1_forward_arrow_intent.putExtra("productString",productString);
-
+                        create_advert_step1_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step1_forward_arrow_intent);
                     }
                 }

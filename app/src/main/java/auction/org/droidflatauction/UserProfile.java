@@ -117,43 +117,15 @@ public class UserProfile extends AppCompatActivity
                                 else
                                 {
                                     roleString = roleString + ", " +roleList.get(counter).getDescription();
-                                   /* if((roleList.get(counter).getDescription()).equals("Agent")){
-                                        agentString = roleList.get(counter).getDescription();
-                                        Toast.makeText(UserProfile.this, "This: " + agentString,Toast.LENGTH_SHORT).show();
-                                        tvProfileBusinessNameHeader = (TextView) findViewById(R.id.tv_profile_business_name_header);
-                                        tvProfileBusinessNameHeader.setVisibility(View.GONE);
-                                        tvProfileBusinessName.setVisibility(View.GONE);
-
-                                        tvProfileAddressHeader = (TextView) findViewById(R.id.tv_profile_address_header);
-                                        tvProfileAddressHeader.setVisibility(View.GONE);
-                                        tvProfileAddress.setVisibility(View.GONE);
-
-                                        tvProfileAgentLogoHeader = (ImageView) findViewById(R.id.tv_profile_agent_logo_header);
-                                        tvProfileAgentLogoHeader.setVisibility(View.GONE);
-                                    }
-                                    else {
-                                        tvProfileBusinessName.setText(user.getBusinessName());
-                                        tvProfileAddress.setText(user.getAddress());
-                                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
-
-                                    }*/
-
                                 }
-
-
-
-
-
-
-
                             }
-
                         }
 
                         tvProfileBusinessName.setText(user.getBusinessName());
                         tvProfileAddress.setText(user.getAddress());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
-                        
+
+
+
                         tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
                         tvProfileEmail.setText(user.getEmail());
                         tvProfileTelephone.setText(user.getCellNo());
@@ -220,9 +192,9 @@ public class UserProfile extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
+        // if (id == R.id.action_settings) {
         //    return true;
-       // }
+        // }
 
         return super.onOptionsItemSelected(item);
     }

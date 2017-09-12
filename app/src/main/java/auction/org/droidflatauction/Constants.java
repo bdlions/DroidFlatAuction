@@ -16,6 +16,10 @@ public class Constants {
     public static int MY_AD_IDENTITY = 1;
     public static int OTHER_AD_IDENTITY = 2;
 
+    public static int MY_AD_CREATE_IDENTITY = 3;
+    public static int MY_AD_EDIT_IDENTITY = 4;
+
+
     public static int IMG_UPLOAD_TYPE_PROFILE_PICTURE = 1;
     public static int IMG_UPLOAD_TYPE_AGENT_LOGO = 2;
 

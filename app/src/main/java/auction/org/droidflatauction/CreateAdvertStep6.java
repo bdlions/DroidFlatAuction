@@ -2,6 +2,8 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,18 +14,30 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.auction.dto.Product;
+import com.auction.dto.response.GeneralResponse;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
+
+import org.auction.udp.BackgroundWork;
 
 
 public class CreateAdvertStep6 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static ImageButton ib_back_arrow,ib_forward_arrow;
+    private static ImageButton ib_back_arrow,ib_forward_arrow;
+    private static ImageView ivProductImage;
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
+    private static LinearLayout llUploadProductPhoto,llEditProductPhoto;
+    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,9 +50,16 @@ public class CreateAdvertStep6 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
+        llUploadProductPhoto = (LinearLayout)findViewById(R.id.ll_upload_product_photo);
+        llEditProductPhoto = (LinearLayout)findViewById(R.id.ll_edit_product_photo);
+        ivProductImage = (ImageView) findViewById(R.id.iv_edit_product_photo);
+
         //product = (Product)getIntent().getExtras().get("product");
         try
         {
+            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
+            //Toast.makeText(CreateAdvertStep6.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
+
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -48,8 +69,22 @@ public class CreateAdvertStep6 extends AppCompatActivity
             System.out.println(ex.toString());
         }
 
+        if(adCreateIdentity == Constants.MY_AD_CREATE_IDENTITY)
+        {
+           // Toast.makeText(CreateAdvertStep6.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_LONG).show();
+            llUploadProductPhoto.setVisibility(View.VISIBLE);
+            llEditProductPhoto.setVisibility(View.GONE);
+        } else
+        {
+            //Toast.makeText(CreateAdvertStep6.this, "adEditIdentity: " + adCreateIdentity,Toast.LENGTH_LONG).show();
+            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductImage);
+            llUploadProductPhoto.setVisibility(View.GONE);
+            llEditProductPhoto.setVisibility(View.VISIBLE);
+        }
+
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
+       // EditProductImage();
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -61,6 +96,50 @@ public class CreateAdvertStep6 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+   /* public void EditProductImage()
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String productString = gson.toJson(product);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.UPDATE_USER_LOGO);
+        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, productString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    GeneralResponse response = null;
+                    String responseString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        responseString = (String) msg.obj;
+                    }
+                    if(responseString != null)
+                    {
+                        Gson gson = new Gson();
+                        response = gson.fromJson(responseString, GeneralResponse.class);
+                    }
+                    if(response != null && response.isSuccess())
+                    {
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductImage);
+                        Toast.makeText(CreateAdvertStep6.this, "Agent logo is uploaded successfully!",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(CreateAdvertStep6.this, "Unable to upload agent logo. Please try again later.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Toast.makeText(CreateAdvertStep6.this, "Unable to upload agent logo. Please try again later.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }*/
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step6_back_arrow);
         ib_back_arrow.setOnClickListener(
@@ -72,6 +151,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step6_back_arrow_intent.putExtra("productString", productString);
+                        create_advert_step6_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step6_back_arrow_intent);
                     }
                 }
@@ -91,6 +171,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step6_forward_arrow_intent.putExtra("productString", productString);
+                        create_advert_step6_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step6_forward_arrow_intent);
                     }
                 }

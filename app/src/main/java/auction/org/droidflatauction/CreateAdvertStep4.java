@@ -69,6 +69,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
     public int fetchSmokingCounter = 0;
     public int fetchPetCounter = 0;
     public int fetchOccupationCounter = 0;
+    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +86,9 @@ public class CreateAdvertStep4 extends AppCompatActivity
         try
         {
             //product = (Product)getIntent().getExtras().get("product");
+            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
+            // Toast.makeText(CreateAdvertStep4.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
+
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -358,6 +362,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step4_back_arrow_intent.putExtra("productString", productString);
+                        create_advert_step4_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step4_back_arrow_intent);
                     }
                 }
@@ -389,6 +394,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step4_forward_arrow_intent.putExtra("productString", productString);
+                        create_advert_step4_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step4_forward_arrow_intent);
                     }
                 }

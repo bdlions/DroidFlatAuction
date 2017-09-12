@@ -23,10 +23,6 @@ public class ProfileDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static Button user_profile_btn,edit_profile_btn;
     SessionManager session;
-    LinearLayout ll;
-    ProgressBar pb;
-    int progress;
-    Handler h = new Handler();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +35,6 @@ public class ProfileDashboard extends AppCompatActivity
 
         onClickButtonUserProfileListener();
         onClickButtonEditProfileListener();
-        pb = (ProgressBar)findViewById(R.id.progress_bar) ;
-        ll = (LinearLayout)findViewById(R.id.progress_bar_layout);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -58,34 +52,8 @@ public class ProfileDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                    public void onClick(View v) {
-                         progress = 0;
-                        pb.setVisibility(View.VISIBLE);
-                        ll.setVisibility(View.VISIBLE);
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                for(int i = 0; i < 5; i++){
-                                    progress += 20;
-                                    h.post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            pb.setProgress(progress);
-                                            if(progress == pb.getMax()){
-                                                ll.setVisibility(View.GONE);
-                                                pb.setVisibility(View.GONE);
-                                                Intent user_profile_intent = new Intent(getBaseContext(), UserProfile.class);
-                                                startActivity(user_profile_intent);
-                                              }
-                                        }
-                                    });
-                                    try{
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException e){
-
-                                    }
-                                }
-                            }
-                        }).start();
+                        Intent user_profile_intent = new Intent(getBaseContext(), UserProfile.class);
+                        startActivity(user_profile_intent);
                     }
                 }
         );

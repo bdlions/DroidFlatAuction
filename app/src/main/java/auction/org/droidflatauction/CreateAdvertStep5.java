@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.Product;
 import com.google.gson.Gson;
@@ -27,6 +28,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
+    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,9 @@ public class CreateAdvertStep5 extends AppCompatActivity
         try
         {
             //product = (Product)getIntent().getExtras().get("product");
+            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
+            //Toast.makeText(CreateAdvertStep5.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
+
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -104,6 +109,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step5_back_arrow_intent.putExtra("productString", productString);
+                        create_advert_step5_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step5_back_arrow_intent);
                     }
                 }
@@ -128,6 +134,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step5_forward_arrow_intent.putExtra("productString", productString);
+                        create_advert_step5_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step5_forward_arrow_intent);
                     }
                 }
