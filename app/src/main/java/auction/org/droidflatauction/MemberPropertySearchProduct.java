@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,9 @@ public class MemberPropertySearchProduct extends AppCompatActivity
     SessionManager session;
 
     public int fetchProductInfoCounter = 0;
+
+    public Dialog progressBarDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +89,10 @@ public class MemberPropertySearchProduct extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int productId = productIdList.get(position);
+                progressBarDialog = new Dialog(MemberPropertySearchProduct.this);
+                progressBarDialog.setContentView(R.layout.progressbar);
+                progressBarDialog.show();
+
                 fetchProductInfo(productId);
             }
         });
@@ -166,6 +174,10 @@ public class MemberPropertySearchProduct extends AppCompatActivity
                         {
                             fetchProductInfo(productId);
                         }
+                        else
+                        {
+                            progressBarDialog.dismiss();
+                        }
                     }
                 }
                 catch(Exception ex)
@@ -175,6 +187,10 @@ public class MemberPropertySearchProduct extends AppCompatActivity
                     if (fetchProductInfoCounter <= 5)
                     {
                         fetchProductInfo(productId);
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
                     }
                 }
             }

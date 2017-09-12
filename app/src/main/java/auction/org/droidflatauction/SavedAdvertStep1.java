@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,6 +42,8 @@ public class SavedAdvertStep1 extends AppCompatActivity
 
     public int fetchProductInfoCounter = 0;
 
+    public Dialog progressBarDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +82,9 @@ public class SavedAdvertStep1 extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
                 int productId = productIdList.get(position);
+                progressBarDialog = new Dialog(SavedAdvertStep1.this);
+                progressBarDialog.setContentView(R.layout.progressbar);
+                progressBarDialog.show();
                 fetchProductInfo(productId);
 
                 /*Product product = new Product();
@@ -176,6 +182,10 @@ public class SavedAdvertStep1 extends AppCompatActivity
                         {
                             fetchProductInfo(productId);
                         }
+                        else
+                        {
+                            progressBarDialog.dismiss();
+                        }
                     }
                 }
                 catch(Exception ex)
@@ -185,6 +195,10 @@ public class SavedAdvertStep1 extends AppCompatActivity
                     if (fetchProductInfoCounter <= 5)
                     {
                         fetchProductInfo(productId);
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
                     }
                 }
             }

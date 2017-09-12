@@ -6,6 +6,7 @@ package auction.org.droidflatauction;
 
 public class Constants {
     public static String baseUrl = "http://roomauction.co.uk/";
+    public static String imageUploadPath = "uploads/";
     public static String profilePicturePath = "resources/images/profile/";
     public static String profilePicturePath_50_50 = "resources/images/profile/50_50/";
     public static String agentLogoPath_100_100 = "resources/images/profile/logo/100_100/";
@@ -22,6 +23,7 @@ public class Constants {
 
     public static int IMG_UPLOAD_TYPE_PROFILE_PICTURE = 1;
     public static int IMG_UPLOAD_TYPE_AGENT_LOGO = 2;
+    public static int IMG_UPLOAD_TYPE_PRODUCT_PICTURE= 3;
 
     public static int MAX_REPEAT_SERVER_REQUEST = 5;
 

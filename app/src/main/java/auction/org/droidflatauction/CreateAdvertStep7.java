@@ -57,8 +57,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
     String productString;
     SessionManager session;
     NavigationManager navigationManager;
-    public int adCreateIdentity;
-
 
 
     @Override
@@ -78,9 +76,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
         //product = (Product)getIntent().getExtras().get("product");
         try
         {
-            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
-            //Toast.makeText(CreateAdvertStep7.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
-
             String prodString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(prodString, Product.class);
@@ -208,7 +203,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step7_back_arrow_intent.putExtra("productString", productString);
-                        create_advert_step7_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step7_back_arrow_intent);
                     }
                 }
@@ -241,7 +235,6 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step7_forward_arrow_intent.putExtra("productString", productString);
-                        create_advert_step7_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step7_forward_arrow_intent);
                     }
                 }

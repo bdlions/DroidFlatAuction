@@ -39,7 +39,6 @@ public class CreateAdvertStep2 extends AppCompatActivity
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
-    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +55,6 @@ public class CreateAdvertStep2 extends AppCompatActivity
 
         try
         {
-            //product = (Product)getIntent().getExtras().get("product");
-            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
-            //Toast.makeText(CreateAdvertStep2.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
-
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -174,7 +169,6 @@ public class CreateAdvertStep2 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step2_back_arrow_intent.putExtra("productString", productString);
-                        create_advert_step2_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step2_back_arrow_intent);
                     }
                 }
@@ -201,7 +195,6 @@ public class CreateAdvertStep2 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step2_forward_arrow_intent.putExtra("productString", productString);
-                        create_advert_step2_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step2_forward_arrow_intent);
                     }
                 }

@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,8 @@ public class MessageDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static Button btn_msg_inbox, btn_msg_sent;
     SessionManager session;
+    public Dialog progressBarDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +64,11 @@ public class MessageDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
+                        progressBarDialog = new Dialog(MessageDashboard.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
+
                         String sessionId = session.getSessionId();
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         packetHeader.setAction(ACTION.FETCH_MESSAGE_INBOX_LIST);
@@ -109,6 +117,7 @@ public class MessageDashboard extends AppCompatActivity
                                 catch(Exception ex)
                                 {
                                     System.out.println(ex.toString());
+                                    progressBarDialog.dismiss();
                                 }
                             }
                         });
@@ -123,6 +132,10 @@ public class MessageDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        progressBarDialog = new Dialog(MessageDashboard.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
+
                         String sessionId = session.getSessionId();
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         packetHeader.setAction(ACTION.FETCH_MESSAGE_SENT_LIST);
@@ -170,6 +183,7 @@ public class MessageDashboard extends AppCompatActivity
                                 catch(Exception ex)
                                 {
                                     System.out.println(ex.toString());
+                                    progressBarDialog.dismiss();
                                 }
                             }
                         });

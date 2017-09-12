@@ -46,7 +46,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
     private String productString;
     SessionManager session;
     public static RelativeLayout myAdvertBtnRow,savedAdvertBtnRow;
-    public int adIdentity,adCreateIdentity;
+    public int adIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

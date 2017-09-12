@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +43,7 @@ public class UserProfile extends AppCompatActivity
     public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileBusinessNameHeader,tvProfileAddress,tvProfileAddressHeader,tvProfileRole;
     private static ImageView ivProfilePhoto, ivProfileAgentLogo,tvProfileAgentLogoHeader;
     public int fetchProfileCounter = 0;
+    public Dialog progressBarDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +81,10 @@ public class UserProfile extends AppCompatActivity
 
     public void fetchUserProfile()
     {
+        progressBarDialog = new Dialog(UserProfile.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_USER_INFO);
@@ -132,7 +138,8 @@ public class UserProfile extends AppCompatActivity
                         tvProfileRole.setText(roleString);
 
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivProfilePhoto);
-
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
+                        progressBarDialog.dismiss();
                     }
                     else
                     {
@@ -140,6 +147,10 @@ public class UserProfile extends AppCompatActivity
                         if (fetchProfileCounter <= 5)
                         {
                             fetchUserProfile();
+                        }
+                        else
+                        {
+                            progressBarDialog.dismiss();
                         }
                     }
                 }
@@ -149,6 +160,10 @@ public class UserProfile extends AppCompatActivity
                     if (fetchProfileCounter <= 5)
                     {
                         fetchUserProfile();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
                     }
                 }
             }

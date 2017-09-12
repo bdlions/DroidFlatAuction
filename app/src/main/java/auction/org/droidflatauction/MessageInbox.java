@@ -60,8 +60,6 @@ public class MessageInbox extends AppCompatActivity
         //message_subject_list = getMessageSubjectList();
         //messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this,user_images,user_list,message_subject_list);
         messageInboxAdapter = new MessageInboxAdapter(MessageInbox.this, session.getSessionId(), messageIdList, imageList, imgList, userNameList, subjectList);
-
-
         messageListView.setAdapter(messageInboxAdapter);
 
 

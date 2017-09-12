@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -65,11 +66,12 @@ public class CreateAdvertStep1 extends AppCompatActivity
     ProductSize selectedProductSize;
     ProductCategory selectedProductCategory;
 
+    public Dialog progressBarDialog;
+
     public int fetchProductInfoCounter = 0;
     public int fetchProductTypeCounter = 0;
     public int fetchProductSizeCounter = 0;
     public int fetchProductCategoryCounter = 0;
-    public int adCreateIdentity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,13 +89,14 @@ public class CreateAdvertStep1 extends AppCompatActivity
         //-------------if this activity is called from back arrow of step2 then handle it -----------------------
         try
         {
-            //product = (Product)getIntent().getExtras().get("product");
-            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
-            //makeText(CreateAdvertStep1.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
-
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
+
+            progressBarDialog = new Dialog(CreateAdvertStep1.this);
+            progressBarDialog.setContentView(R.layout.progressbar);
+            progressBarDialog.show();
+
             if(product.getId() > 0)
             {
                 fetchProductInfo();
@@ -203,6 +206,11 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         {
                             fetchProductInfo();
                         }
+                        else
+                        {
+                            //display a popup to show error message
+                            progressBarDialog.dismiss();
+                        }
                     }
                 }
                 catch(Exception ex)
@@ -212,6 +220,11 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     if (fetchProductInfoCounter <= 5)
                     {
                         fetchProductInfo();
+                    }
+                    else
+                    {
+                        //display a popup to show error message
+                        progressBarDialog.dismiss();
                     }
                 }
             }
@@ -297,6 +310,11 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     {
                         fetchProductCategoryList();
                     }
+                    else
+                    {
+                        //display pop up with error message
+                        progressBarDialog.dismiss();
+                    }
                 }
             }
         });
@@ -378,6 +396,11 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     {
                         fetchProductSizeList();
                     }
+                    else
+                    {
+                        //display pop up error message
+                        progressBarDialog.dismiss();
+                    }
                 }
             }
         });
@@ -450,6 +473,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                                 }
                             }
                     );
+                    progressBarDialog.dismiss();
                 }
                 else
                 {
@@ -457,6 +481,10 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     if (fetchProductTypeCounter <= 5)
                     {
                         fetchProductTypeList();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
                     }
                 }
             }
@@ -503,7 +531,6 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step1_forward_arrow_intent.putExtra("productString",productString);
-                        create_advert_step1_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step1_forward_arrow_intent);
                     }
                 }

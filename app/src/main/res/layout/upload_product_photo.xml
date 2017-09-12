@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="left"
+        android:text="Upload Image"
+        android:textSize="16dp"
+        android:textColor="#5a5a5a"/>
+    <ImageView
+        android:id="@+id/iv_upload_product_image"
+        android:layout_marginTop="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp" />
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:stretchColumns="0,1">
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btn_cancel_product_photo_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center"
+                android:text="Cancel"
+                android:textColor="#fff"
+                android:textAllCaps="false"
+                android:textSize="16dp"
+                android:background="@drawable/custom_round_corner_orange_button"/>
+            <Button
+                android:id="@+id/btn_submit_product_photo_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:text="Browse"
+                android:textColor="#fff"
+                android:textAllCaps="false"
+                android:textSize="16dp"
+                android:background="@drawable/custom_round_corner_blue_button"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

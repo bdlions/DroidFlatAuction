@@ -51,7 +51,7 @@ public class SignUpStep3 extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent sign_up_step3_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep4.class);
+                        Intent sign_up_step3_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep5.class);
                         user.setPassword(etPassword.getText().toString());
 
                         //GsonBuilder gsonBuilder = new GsonBuilder();

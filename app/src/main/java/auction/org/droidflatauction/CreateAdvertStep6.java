@@ -1,9 +1,13 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,18 +31,69 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
+import org.auction.udp.BackgroundUploader;
 import org.auction.udp.BackgroundWork;
 
 
 public class CreateAdvertStep6 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static ImageButton ib_back_arrow,ib_forward_arrow;
-    private static ImageView ivProductImage;
+    private static ImageView ivEditProductPhoto, ivUploadProductPhoto;
+    private static Button btnUploadProductPhoto;
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
     private static LinearLayout llUploadProductPhoto,llEditProductPhoto;
-    public int adCreateIdentity;
+
+    private final int SELECT_PHOTO = 1;
+    public int imgUploadType;
+    public Dialog imageUploadDialog, progressBarDialog;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch(requestCode) {
+            case SELECT_PHOTO:
+                if(resultCode == RESULT_OK){
+                    try {
+                        Uri uri = imageReturnedIntent.getData();
+                        String[] projection = { MediaStore.Images.Media.DATA };
+
+                        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+                        cursor.moveToFirst();
+
+
+                        int columnIndex = cursor.getColumnIndex(projection[0]);
+                        String picturePath = cursor.getString(columnIndex); // returns null
+                        cursor.close();
+                        new BackgroundUploader().execute(picturePath, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                imageUploadDialog.dismiss();
+                                try
+                                {
+                                    String img = (String)msg.obj;
+                                    if(imgUploadType == Constants.IMG_UPLOAD_TYPE_PRODUCT_PICTURE)
+                                    {
+                                        product.setImg(img);
+                                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.imageUploadPath+product.getImg()).into(ivEditProductPhoto);
+                                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.imageUploadPath+product.getImg()).into(ivUploadProductPhoto);
+                                        //call server to upload image
+                                    }
+                                }
+                                catch(Exception ex)
+                                {
+                                    Toast.makeText(getApplicationContext(), "Unable to upload image. Please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,14 +108,13 @@ public class CreateAdvertStep6 extends AppCompatActivity
 
         llUploadProductPhoto = (LinearLayout)findViewById(R.id.ll_upload_product_photo);
         llEditProductPhoto = (LinearLayout)findViewById(R.id.ll_edit_product_photo);
-        ivProductImage = (ImageView) findViewById(R.id.iv_edit_product_photo);
+        ivEditProductPhoto = (ImageView) findViewById(R.id.iv_edit_product_photo);
+        ivUploadProductPhoto = (ImageView) findViewById(R.id.iv_upload_product_photo);
+        btnUploadProductPhoto = (Button) findViewById(R.id.btn_product_photo_upload);
 
         //product = (Product)getIntent().getExtras().get("product");
         try
         {
-            adCreateIdentity = getIntent().getExtras().getInt("adCreateIdentity");
-            //Toast.makeText(CreateAdvertStep6.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_SHORT).show();
-
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
@@ -69,19 +124,20 @@ public class CreateAdvertStep6 extends AppCompatActivity
             System.out.println(ex.toString());
         }
 
-        if(adCreateIdentity == Constants.MY_AD_CREATE_IDENTITY)
+        if(product.getId() > 0)
         {
-           // Toast.makeText(CreateAdvertStep6.this, "adCreateIdentity: " + adCreateIdentity,Toast.LENGTH_LONG).show();
-            llUploadProductPhoto.setVisibility(View.VISIBLE);
-            llEditProductPhoto.setVisibility(View.GONE);
-        } else
-        {
-            //Toast.makeText(CreateAdvertStep6.this, "adEditIdentity: " + adCreateIdentity,Toast.LENGTH_LONG).show();
-            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductImage);
+            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivEditProductPhoto);
             llUploadProductPhoto.setVisibility(View.GONE);
             llEditProductPhoto.setVisibility(View.VISIBLE);
         }
+        else
+        {
+            llUploadProductPhoto.setVisibility(View.VISIBLE);
+            llEditProductPhoto.setVisibility(View.GONE);
+        }
 
+        onClickCreateProductPhotoEditListener();
+        onClickUpdateProductPhotoEditListener();
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
        // EditProductImage();
@@ -95,6 +151,72 @@ public class CreateAdvertStep6 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    public void onClickCreateProductPhotoEditListener()
+    {
+        btnUploadProductPhoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                imageUploadDialog = new Dialog(CreateAdvertStep6.this);
+                imageUploadDialog.setContentView(R.layout.upload_product_photo);
+                imageUploadDialog.setTitle("Upload Photo");
+                imageUploadDialog.show();
+                Button submitButton = (Button) imageUploadDialog.findViewById(R.id.btn_submit_product_photo_upload);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        imgUploadType = Constants.IMG_UPLOAD_TYPE_PRODUCT_PICTURE;
+                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                        photoPickerIntent.setType("image/*");
+                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                    }
+                });
+                Button declineButton = (Button) imageUploadDialog.findViewById(R.id.btn_cancel_product_photo_upload);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageUploadDialog.dismiss();
+                    }
+                });
+            }
+
+        });
+    }
+
+    public void onClickUpdateProductPhotoEditListener()
+    {
+        ivEditProductPhoto.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View arg0) {
+                imageUploadDialog = new Dialog(CreateAdvertStep6.this);
+                imageUploadDialog.setContentView(R.layout.upload_product_photo);
+                imageUploadDialog.setTitle("Upload Photo");
+                imageUploadDialog.show();
+                Button submitButton = (Button) imageUploadDialog.findViewById(R.id.btn_submit_product_photo_upload);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        imgUploadType = Constants.IMG_UPLOAD_TYPE_PRODUCT_PICTURE;
+                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                        photoPickerIntent.setType("image/*");
+                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                    }
+                });
+                Button declineButton = (Button) imageUploadDialog.findViewById(R.id.btn_cancel_product_photo_upload);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageUploadDialog.dismiss();
+                    }
+                });
+            }
+
+        });
     }
    /* public void EditProductImage()
     {
@@ -151,7 +273,6 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
                         create_advert_step6_back_arrow_intent.putExtra("productString", productString);
-                        create_advert_step6_back_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step6_back_arrow_intent);
                     }
                 }
@@ -171,7 +292,6 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         String productString = gson.toJson(product);
 
                         create_advert_step6_forward_arrow_intent.putExtra("productString", productString);
-                        create_advert_step6_forward_arrow_intent.putExtra("adCreateIdentity", adCreateIdentity);
                         startActivity(create_advert_step6_forward_arrow_intent);
                     }
                 }

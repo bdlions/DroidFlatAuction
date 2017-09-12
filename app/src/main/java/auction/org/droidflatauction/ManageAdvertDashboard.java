@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +36,8 @@ public class ManageAdvertDashboard extends AppCompatActivity
     SessionManager session;
     public int fetchMyAdsCounter = 0;
     public int fetchSavedAdsCounter = 0;
+
+    public Dialog progressBarDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,6 @@ public class ManageAdvertDashboard extends AppCompatActivity
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(new Product());
                         create_advert_intent.putExtra("productString", productString);
-                        create_advert_intent.putExtra("adCreateIdentity", Constants.MY_AD_CREATE_IDENTITY);
                         startActivity(create_advert_intent);
                     }
                 }
@@ -88,8 +90,10 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        progressBarDialog = new Dialog(ManageAdvertDashboard.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
                         fetchMyAds();
-
                     }
                 }
         );
@@ -152,6 +156,10 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     {
                         fetchMyAds();
                     }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
                 }
             }
         });
@@ -163,7 +171,9 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        progressBarDialog = new Dialog(ManageAdvertDashboard.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
                         fetchSavedAds();
                     }
                 }
@@ -230,6 +240,10 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     if (fetchSavedAdsCounter <= 5)
                     {
                         fetchSavedAds();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
                     }
                 }
             }
