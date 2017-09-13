@@ -319,16 +319,24 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         if(availableFrom != null && !availableFrom.equals(""))
                         {
                             product.setAvailableFrom(availableFrom);
+                        } else
+                        {
+                            Toast.makeText(getBaseContext(),"Available From can't be Empty" , Toast.LENGTH_SHORT).show();
                         }
+
                         if(availableTo != null && !availableTo.equals(""))
                         {
                             product.setAvailableTo(availableTo);
+                        }else
+                        {
+                            Toast.makeText(getBaseContext(),"Available To can't be Empty" , Toast.LENGTH_SHORT).show();
                         }
 
                         if(selectedMinStay != null)
                         {
                             product.setMinStay(selectedMinStay);
                         }
+
                         if(selectedMaxStay != null)
                         {
                             product.setMaxStay(selectedMaxStay);

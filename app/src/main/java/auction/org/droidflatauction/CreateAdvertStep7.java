@@ -222,10 +222,17 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         if(bidStartFrom != null && !bidStartFrom.equals(""))
                         {
                             product.setBidStartDate(bidStartFrom);
+                        }else
+                        {
+                            Toast.makeText(getBaseContext(),"Bid Start From can't be Empty" , Toast.LENGTH_SHORT).show();
                         }
+
                         if(bidStartTo != null && !bidStartTo.equals(""))
                         {
                             product.setBidEndDate(bidStartTo);
+                        }else
+                        {
+                            Toast.makeText(getBaseContext(),"Bid End From can't be Empty" , Toast.LENGTH_SHORT).show();
                         }
                         product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
                         product.setBidEndTime(bidEndTimer.getSelectedItem().toString());

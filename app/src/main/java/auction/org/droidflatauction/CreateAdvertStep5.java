@@ -24,7 +24,7 @@ import com.google.gson.GsonBuilder;
 public class CreateAdvertStep5 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
-    private static EditText etManageProductTitle, etManageProductDescription, etManageProductName, etManageProductCompany, etManageProductPhone;
+    private static EditText etManageProductTitle, etManageProductDescription, etManageProductUserFirstName,etManageProductUserLastName, etManageProductCompany, etManageProductPhone;
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
@@ -42,7 +42,9 @@ public class CreateAdvertStep5 extends AppCompatActivity
 
         etManageProductTitle = (EditText) findViewById(R.id.et_create_product_title);
         etManageProductDescription = (EditText) findViewById(R.id.et_create_product_description);
-        etManageProductName = (EditText) findViewById(R.id.et_manage_product_name);
+        //etManageProductName = (EditText) findViewById(R.id.et_manage_product_name);
+        etManageProductUserFirstName = (EditText) findViewById(R.id.et_manage_product_user_first_name);
+        etManageProductUserLastName = (EditText) findViewById(R.id.et_manage_product_user_last_name);
         etManageProductCompany = (EditText) findViewById(R.id.et_manage_product_company);
         etManageProductPhone = (EditText) findViewById(R.id.et_manage_product_phone);
 
@@ -61,9 +63,17 @@ public class CreateAdvertStep5 extends AppCompatActivity
             {
                 etManageProductDescription.setText(product.getDescription());
             }
-            if(product.getFirstName() != null && product.getLastName() != null)
+            /*if(product.getFirstName() != null && product.getLastName() != null)
             {
                 etManageProductName.setText(product.getFirstName() + product.getLastName());
+            }*/
+            if(product.getFirstName() != null)
+            {
+                etManageProductUserFirstName.setText(product.getFirstName());
+            }
+            if(product.getLastName() != null)
+            {
+                etManageProductUserLastName.setText(product.getLastName());
             }
             if(product.getCompanyName() != null)
             {
@@ -116,8 +126,29 @@ public class CreateAdvertStep5 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         product.setTitle(etManageProductTitle.getText().toString());
+                        if(product.getTitle() == null || product.getTitle().equals(""))
+                        {
+                            Toast.makeText(getBaseContext(),"Product Title can't be Empty" , Toast.LENGTH_SHORT).show();
+                        }
+
                         product.setDescription(etManageProductDescription.getText().toString());
-                        product.setFirstName(etManageProductName.getText().toString());
+                        if(product.getTitle() == null || product.getTitle().equals(""))
+                        {
+                            Toast.makeText(getBaseContext(),"Product Description can't be Empty" , Toast.LENGTH_SHORT).show();
+                        }
+
+                        product.setFirstName(etManageProductUserFirstName.getText().toString());
+                        if(product.getFirstName() == null || product.getFirstName().equals(""))
+                        {
+                            Toast.makeText(getBaseContext(),"First Name can't be Empty" , Toast.LENGTH_SHORT).show();
+                        }
+
+                        product.setLastName(etManageProductUserLastName.getText().toString());
+                        if(product.getLastName() == null || product.getLastName().equals("") )
+                        {
+                            Toast.makeText(getBaseContext(),"Last Name can't be Empty" , Toast.LENGTH_SHORT).show();
+                        }
+
                         product.setCompanyName(etManageProductCompany.getText().toString());
                         product.setPhone(etManageProductPhone.getText().toString());
 

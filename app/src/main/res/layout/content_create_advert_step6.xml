@@ -47,19 +47,21 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="Upload Product Photo"
+            android:layout_marginBottom="10dp"
             android:textColor="#2874b9"
             android:textSize="16dp"
             android:textStyle="bold" />
         <ImageView
             android:id="@+id/iv_upload_product_photo"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_marginTop="-10dp"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp" />
         <Button
             android:id="@+id/btn_product_photo_upload"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:background="@drawable/custom_round_corner_blue_button"
             android:paddingLeft="20dp"
