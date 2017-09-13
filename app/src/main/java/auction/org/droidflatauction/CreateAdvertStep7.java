@@ -225,6 +225,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         }else
                         {
                             Toast.makeText(getBaseContext(),"Bid Start From can't be Empty" , Toast.LENGTH_SHORT).show();
+                            return;
                         }
 
                         if(bidStartTo != null && !bidStartTo.equals(""))
@@ -233,6 +234,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         }else
                         {
                             Toast.makeText(getBaseContext(),"Bid End From can't be Empty" , Toast.LENGTH_SHORT).show();
+                            return;
                         }
                         product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
                         product.setBidEndTime(bidEndTimer.getSelectedItem().toString());
