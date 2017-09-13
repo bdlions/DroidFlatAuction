@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.User;
 import com.google.gson.Gson;
@@ -49,8 +50,16 @@ public class SignUpStep2 extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        String email = etEmail.getText().toString();
+                        user.setEmail(email);
+                        if(email == null || email.equals(""))
+                        {
+                            Toast.makeText(SignUpStep2.this, "Please assign valid email.",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         Intent sign_up_step2_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep3.class);
-                        user.setEmail(etEmail.getText().toString());
+
+
                         //GsonBuilder gsonBuilder = new GsonBuilder();
                         //Gson gson = gsonBuilder.create();
                         //String userString = gson.toJson(user);

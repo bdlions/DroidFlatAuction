@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.User;
 import com.google.gson.Gson;
@@ -47,8 +48,21 @@ public class SignUpStep1 extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent sign_up_step1_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep2.class);
                         User user = new User();
-                        user.setFirstName(etFirstName.getText().toString());
-                        user.setLastName(etLastName.getText().toString());
+                        String firstName = etFirstName.getText().toString();
+                        String lastName = etLastName.getText().toString();
+                        user.setFirstName(firstName);
+                        user.setLastName(lastName);
+
+                        if(firstName == null || firstName.equals(""))
+                        {
+                            Toast.makeText(SignUpStep1.this, "Please assign valid first name.",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        else if(lastName == null || lastName.equals(""))
+                        {
+                            Toast.makeText(SignUpStep1.this, "Please assign valid last name.",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         //GsonBuilder gsonBuilder = new GsonBuilder();
                         //Gson gson = gsonBuilder.create();
                         //String userString = gson.toJson(user);

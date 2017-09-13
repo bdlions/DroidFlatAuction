@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.auction.dto.User;
 import com.google.gson.Gson;
@@ -51,8 +52,15 @@ public class SignUpStep3 extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent sign_up_step3_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep5.class);
+                        String password = etPassword.getText().toString();
                         user.setPassword(etPassword.getText().toString());
+                        if(password == null || password.equals(""))
+                        {
+                            Toast.makeText(SignUpStep3.this, "Please assign password.",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        Intent sign_up_step3_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep5.class);
+
 
                         //GsonBuilder gsonBuilder = new GsonBuilder();
                         //Gson gson = gsonBuilder.create();

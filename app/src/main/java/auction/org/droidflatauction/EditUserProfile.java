@@ -418,9 +418,13 @@ public class EditUserProfile extends AppCompatActivity
                         String firstName = "", lastName = "";
                         firstName = etFirstName.getText().toString();
                         lastName = etLastName.getText().toString();
-                        if(firstName.equals("") && lastName.equals(""))
+                        if(firstName == null || firstName.equals(""))
                         {
-                            Toast.makeText(EditUserProfile.this, "Please assign valid name.",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditUserProfile.this, "Please assign valid first name.",Toast.LENGTH_SHORT).show();
+                        }
+                        else if(lastName == null || lastName.equals(""))
+                        {
+                            Toast.makeText(EditUserProfile.this, "Please assign valid last name.",Toast.LENGTH_SHORT).show();
                         }
                         else
                         {
@@ -464,7 +468,7 @@ public class EditUserProfile extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         String cellNo = etCellNo.getText().toString();
-                        if(cellNo.equals(""))
+                        if(cellNo == null || cellNo.equals(""))
                         {
                             Toast.makeText(EditUserProfile.this, "Please assign valid Cell Number.",Toast.LENGTH_SHORT).show();
                         }
@@ -503,7 +507,7 @@ public class EditUserProfile extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         String password = etPassword.getText().toString();
-                        if(password.equals(""))
+                        if(password == null || password.equals(""))
                         {
                             Toast.makeText(EditUserProfile.this, "Please assign valid password.",Toast.LENGTH_SHORT).show();
                         }
@@ -546,7 +550,7 @@ public class EditUserProfile extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         String email = etEmail.getText().toString();
-                        if(email.equals(""))
+                        if(email == null || email.equals(""))
                         {
                             Toast.makeText(EditUserProfile.this, "Please assign valid email.",Toast.LENGTH_SHORT).show();
                         }
@@ -588,7 +592,7 @@ public class EditUserProfile extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         String businessName = etBusinessName.getText().toString();
-                        if(businessName.equals(""))
+                        if(businessName == null || businessName.equals(""))
                         {
                             Toast.makeText(EditUserProfile.this, "Please assign business name.",Toast.LENGTH_SHORT).show();
                         }
@@ -629,7 +633,7 @@ public class EditUserProfile extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         String address = etAddress.getText().toString();
-                        if(address.equals(""))
+                        if(address == null || address.equals(""))
                         {
                             Toast.makeText(EditUserProfile.this, "Please assign address.",Toast.LENGTH_SHORT).show();
                         }

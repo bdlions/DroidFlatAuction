@@ -58,7 +58,8 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
         onClickButtonClaendarDateFromListener();
         onClickButtonClaendarDateToListener();
 
-
+        et_date_from = (EditText) findViewById(R.id.date_from);
+        et_date_to = (EditText) findViewById(R.id.date_to);
 
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -113,7 +114,6 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
         });
     }
     public void onClickButtonClaendarDateFromListener(){
-        et_date_from = (EditText) findViewById(R.id.date_from);
         et_date_from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +142,6 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
         };
     }
     public void onClickButtonClaendarDateToListener(){
-        et_date_to = (EditText) findViewById(R.id.date_to);
         et_date_to.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

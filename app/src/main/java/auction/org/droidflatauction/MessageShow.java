@@ -121,6 +121,12 @@ public class MessageShow extends AppCompatActivity
                         List<MessageText> messageTextList = new ArrayList<>();
                         messageTextList.add(messageText);
                         message.setMessageTextList(messageTextList);
+                        String body = etInboxSendMessageBody.getText().toString();
+                        if(body.equals(""))
+                        {
+                            Toast.makeText(MessageShow.this, "Please add message!",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
