@@ -118,6 +118,7 @@ public class MessageDashboard extends AppCompatActivity
                             imgList.add(message.getFrom().getImg());
                         }
                     }
+                    progressBarDialog.dismiss();
                     Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
                     inbox_button_intent.putExtra("messageIdList", messageIdList);
                     inbox_button_intent.putExtra("userNameList", userNameList);
@@ -197,6 +198,7 @@ public class MessageDashboard extends AppCompatActivity
                             imgList.add(message.getFrom().getImg());
                         }
                     }
+                    progressBarDialog.dismiss();
                     Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
                     inbox_button_intent.putExtra("messageIdList", messageIdList);
                     inbox_button_intent.putExtra("userNameList", userNameList);

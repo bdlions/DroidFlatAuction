@@ -138,6 +138,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                             priceList.add("");
                         }
                     }
+                    progressBarDialog.dismiss();
                     Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                     my_advert_intent.putExtra("imageList", imageList);
                     my_advert_intent.putExtra("imgList", imgList);
@@ -219,11 +220,8 @@ public class ManageAdvertDashboard extends AppCompatActivity
                             priceList.add("");
                         }
                     }
-
+                    progressBarDialog.dismiss();
                     Intent saved_advert_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
-                    //startActivity(saved_advert_intent);
-
-                    //Intent my_advert_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                     saved_advert_intent.putExtra("imageList", imageList);
                     saved_advert_intent.putExtra("imgList", imgList);
                     saved_advert_intent.putExtra("productIdList", productIdList);
