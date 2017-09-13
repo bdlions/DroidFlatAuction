@@ -36,6 +36,9 @@ public class MessageDashboard extends AppCompatActivity
     SessionManager session;
     public Dialog progressBarDialog;
 
+    public int fetchMessageInboxListCounter = 0;
+    public int fetchMessageSentListCounter = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,63 +72,77 @@ public class MessageDashboard extends AppCompatActivity
                         progressBarDialog.setContentView(R.layout.progressbar);
                         progressBarDialog.show();
 
-                        String sessionId = session.getSessionId();
-                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                        packetHeader.setAction(ACTION.FETCH_MESSAGE_INBOX_LIST);
-                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-                        packetHeader.setSessionId(sessionId);
-                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
-                            @Override
-                            public void handleMessage(Message msg) {
-                                try
-                                {
-                                    String resultString = (String)msg.obj;
-                                    Gson gson = new Gson();
-                                    MessageList response = gson.fromJson(resultString, MessageList.class);
-
-                                    List<com.auction.dto.Message> messageList = response.getMessageList();
-
-
-                                    ArrayList<Integer> messageIdList = new ArrayList<Integer>();
-                                    ArrayList<String> userNameList = new ArrayList<String>();
-                                    ArrayList<String> subjectList = new ArrayList<String>();
-                                    ArrayList<Integer> imageList = new ArrayList<Integer>();
-                                    ArrayList<String> imgList = new ArrayList<String>();
-
-
-                                    if(messageList != null)
-                                    {
-                                        int totalMessages = messageList.size();
-                                        for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
-                                        {
-                                            com.auction.dto.Message message = messageList.get(messageCounter);
-                                            messageIdList.add(message.getId());
-                                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
-                                            subjectList.add(message.getSubject());
-                                            imageList.add(R.drawable.user);
-                                            imgList.add(message.getFrom().getImg());
-                                        }
-                                    }
-                                    Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
-                                    inbox_button_intent.putExtra("messageIdList", messageIdList);
-                                    inbox_button_intent.putExtra("userNameList", userNameList);
-                                    inbox_button_intent.putExtra("subjectList", subjectList);
-                                    inbox_button_intent.putExtra("imageList", imageList);
-                                    inbox_button_intent.putExtra("imgList", imgList);
-                                    startActivity(inbox_button_intent);
-                                }
-                                catch(Exception ex)
-                                {
-                                    System.out.println(ex.toString());
-                                    progressBarDialog.dismiss();
-                                }
-                            }
-                        });
+                        fetchMessageInboxList();
 
                     }
                 }
         );
     }
+
+    public void fetchMessageInboxList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_MESSAGE_INBOX_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    MessageList response = gson.fromJson(resultString, MessageList.class);
+
+                    List<com.auction.dto.Message> messageList = response.getMessageList();
+
+
+                    ArrayList<Integer> messageIdList = new ArrayList<Integer>();
+                    ArrayList<String> userNameList = new ArrayList<String>();
+                    ArrayList<String> subjectList = new ArrayList<String>();
+                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                    ArrayList<String> imgList = new ArrayList<String>();
+
+
+                    if(messageList != null)
+                    {
+                        int totalMessages = messageList.size();
+                        for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
+                        {
+                            com.auction.dto.Message message = messageList.get(messageCounter);
+                            messageIdList.add(message.getId());
+                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
+                            subjectList.add(message.getSubject());
+                            imageList.add(R.drawable.user);
+                            imgList.add(message.getFrom().getImg());
+                        }
+                    }
+                    Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
+                    inbox_button_intent.putExtra("messageIdList", messageIdList);
+                    inbox_button_intent.putExtra("userNameList", userNameList);
+                    inbox_button_intent.putExtra("subjectList", subjectList);
+                    inbox_button_intent.putExtra("imageList", imageList);
+                    inbox_button_intent.putExtra("imgList", imgList);
+                    startActivity(inbox_button_intent);
+                }
+                catch(Exception ex)
+                {
+                    fetchMessageInboxListCounter++;
+                    if (fetchMessageInboxListCounter <= Constants.MAX_REPEAT_SERVER_REQUEST)
+                    {
+                        fetchMessageInboxList();
+                    }
+                    else
+                    {
+                        //display a popup to show error message
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
     public void onClickButtonMessageSentListener(){
         btn_msg_sent = (Button) findViewById(R.id.Sent_message_button);
         btn_msg_sent.setOnClickListener(
@@ -136,65 +153,75 @@ public class MessageDashboard extends AppCompatActivity
                         progressBarDialog.setContentView(R.layout.progressbar);
                         progressBarDialog.show();
 
-                        String sessionId = session.getSessionId();
-                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                        packetHeader.setAction(ACTION.FETCH_MESSAGE_SENT_LIST);
-                        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-                        packetHeader.setSessionId(sessionId);
-                        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
-                            @Override
-                            public void handleMessage(Message msg) {
-                                try
-                                {
-                                    String resultString = (String)msg.obj;
-                                    Gson gson = new Gson();
-                                    MessageList response = gson.fromJson(resultString, MessageList.class);
-
-                                    List<com.auction.dto.Message> messageList = response.getMessageList();
-
-
-                                    ArrayList<Integer> messageIdList = new ArrayList<Integer>();
-                                    ArrayList<String> userNameList = new ArrayList<String>();
-                                    ArrayList<String> subjectList = new ArrayList<String>();
-                                    ArrayList<Integer> imageList = new ArrayList<Integer>();
-                                    ArrayList<String> imgList = new ArrayList<String>();
-
-                                    if(messageList != null)
-                                    {
-                                        int totalMessages = messageList.size();
-                                        for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
-                                        {
-                                            com.auction.dto.Message message = messageList.get(messageCounter);
-                                            messageIdList.add(message.getId());
-                                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
-                                            subjectList.add(message.getSubject());
-                                            imageList.add(R.drawable.user);
-                                            imgList.add(message.getFrom().getImg());
-                                        }
-                                    }
-                                    Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
-                                    inbox_button_intent.putExtra("messageIdList", messageIdList);
-                                    inbox_button_intent.putExtra("userNameList", userNameList);
-                                    inbox_button_intent.putExtra("subjectList", subjectList);
-                                    inbox_button_intent.putExtra("imageList", imageList);
-                                    inbox_button_intent.putExtra("imgList", imgList);
-                                    startActivity(inbox_button_intent);
-                                }
-                                catch(Exception ex)
-                                {
-                                    System.out.println(ex.toString());
-                                    progressBarDialog.dismiss();
-                                }
-                            }
-                        });
-
-
-                        //Intent message_send_button_intent = new Intent(getBaseContext(), MessageSent.class);
-                        //startActivity(message_send_button_intent);
+                        fetchMessageSentList();
                     }
                 }
         );
     }
+
+    public void fetchMessageSentList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_MESSAGE_SENT_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    MessageList response = gson.fromJson(resultString, MessageList.class);
+
+                    List<com.auction.dto.Message> messageList = response.getMessageList();
+
+
+                    ArrayList<Integer> messageIdList = new ArrayList<Integer>();
+                    ArrayList<String> userNameList = new ArrayList<String>();
+                    ArrayList<String> subjectList = new ArrayList<String>();
+                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                    ArrayList<String> imgList = new ArrayList<String>();
+
+                    if(messageList != null)
+                    {
+                        int totalMessages = messageList.size();
+                        for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
+                        {
+                            com.auction.dto.Message message = messageList.get(messageCounter);
+                            messageIdList.add(message.getId());
+                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
+                            subjectList.add(message.getSubject());
+                            imageList.add(R.drawable.user);
+                            imgList.add(message.getFrom().getImg());
+                        }
+                    }
+                    Intent inbox_button_intent = new Intent(getBaseContext(), MessageInbox.class);
+                    inbox_button_intent.putExtra("messageIdList", messageIdList);
+                    inbox_button_intent.putExtra("userNameList", userNameList);
+                    inbox_button_intent.putExtra("subjectList", subjectList);
+                    inbox_button_intent.putExtra("imageList", imageList);
+                    inbox_button_intent.putExtra("imgList", imgList);
+                    startActivity(inbox_button_intent);
+                }
+                catch(Exception ex)
+                {
+                    fetchMessageSentListCounter++;
+                    if (fetchMessageSentListCounter <= Constants.MAX_REPEAT_SERVER_REQUEST)
+                    {
+                        fetchMessageSentList();
+                    }
+                    else
+                    {
+                        //display a popup to show error message
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

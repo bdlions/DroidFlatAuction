@@ -106,43 +106,6 @@ public class MyAdvertStep1 extends AppCompatActivity
                 progressBarDialog.setContentView(R.layout.progressbar);
                 progressBarDialog.show();
                 fetchProductInfo(productId);
-
-
-                /*Product product = new Product();
-                product.setId(productId);
-                GsonBuilder gsonBuilder = new GsonBuilder();
-                Gson gson = gsonBuilder.create();
-                String productString = gson.toJson(product);
-
-                //String sessionId = session.getSessionId();
-                org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
-                packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-                packetHeader.setSessionId(session.getSessionId());
-                new BackgroundWork().execute(packetHeader, productString, new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        try
-                        {
-                            String resultString = (String)msg.obj;
-                            Gson gson = new Gson();
-                            Product responseProduct = gson.fromJson(resultString, Product.class);
-                            System.out.println(responseProduct.getTitle());
-
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson2 = gsonBuilder.create();
-                            String productString = gson2.toJson(responseProduct);
-
-                            Intent my_advert_property_show_details_intent = new Intent(MyAdvertStep1.this, ShowAdvertProductDetails.class);
-                            my_advert_property_show_details_intent.putExtra("productString", productString);
-                            startActivity(my_advert_property_show_details_intent);
-                        }
-                        catch(Exception ex)
-                        {
-                            System.out.println(ex.toString());
-                        }
-                    }
-                });*/
             }
         });
 
