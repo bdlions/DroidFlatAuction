@@ -182,4 +182,5 @@ favourite properties, receive email alerts for new results and much more.</strin
         <item>11 PM</item>
     </string-array>
     <string name="title_activity_show_advert_product_details">RoomAuction</string>
+    <string name="title_activity_demo_pagination">RoomAuction</string>
 </resources>

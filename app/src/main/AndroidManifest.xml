@@ -241,6 +241,10 @@
         <activity
             android:name=".ShowAdvertProductDetails"
             android:label="@string/title_activity_show_advert_product_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".DemoPagination"
+            android:label="@string/title_activity_demo_pagination"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

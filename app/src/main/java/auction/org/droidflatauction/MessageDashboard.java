@@ -32,7 +32,7 @@ import java.util.List;
 
 public class MessageDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static Button btn_msg_inbox, btn_msg_sent;
+    private  static Button btn_msg_inbox, btn_msg_sent,demo_pagination;
     SessionManager session;
     public Dialog progressBarDialog;
 
@@ -51,6 +51,7 @@ public class MessageDashboard extends AppCompatActivity
 
         onClickButtonMessageInboxListener();
         onClickButtonMessageSentListener();
+        onClickButtonPaginationListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -60,6 +61,18 @@ public class MessageDashboard extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+    public void onClickButtonPaginationListener(){
+        demo_pagination = (Button) findViewById(R.id.demo_pagination);
+        demo_pagination.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                       Intent demo_pagination_intent = new Intent(getBaseContext(), DemoPagination.class);
+                        startActivity(demo_pagination_intent);
+                    }
+                }
+        );
     }
     public void onClickButtonMessageInboxListener(){
         btn_msg_inbox = (Button) findViewById(R.id.inbox_button);
