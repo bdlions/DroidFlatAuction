@@ -226,6 +226,11 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         else {
             myAdvertBtnRow.setVisibility(View.GONE);
             savedAdvertBtnRow.setVisibility(View.VISIBLE);
+            if(product.getTime() == 0){
+                //Toast.makeText(ShowAdvertProductDetails.this, "Time is finished! " + product.getTime(),Toast.LENGTH_SHORT).show();
+                proppertyPlaceBidBtn.setVisibility(View.GONE);
+                tvProductDetailsBidTimeLeft.setVisibility(View.GONE);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
