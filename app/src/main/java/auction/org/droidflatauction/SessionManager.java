@@ -35,6 +35,8 @@ public class SessionManager {
     public static final String KEY_IDENTITY = "identity";
     public static final String KEY_SESSION_ID = "sessionId";
     public static final String KEY_USER_ID = "userId";
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_PASSWORD = "password";
     //public static final String KEY_USER_ID = "userId";
 
     // Constructor
@@ -134,6 +136,13 @@ public class SessionManager {
         return pref.getString(KEY_SESSION_ID, null);
     }
 
+    public void setSessionId(String sessionId)
+    {
+        editor.putString(KEY_SESSION_ID, sessionId);
+        // commit changes
+        editor.commit();
+    }
+
     public int getUserId()
     {
         return pref.getInt(KEY_USER_ID, 0);
@@ -142,6 +151,30 @@ public class SessionManager {
     public void setUserId(int userId)
     {
         editor.putInt(KEY_USER_ID, userId);
+        // commit changes
+        editor.commit();
+    }
+
+    public String getEmail()
+    {
+        return pref.getString(KEY_EMAIL, null);
+    }
+
+    public void setEmail(String email)
+    {
+        editor.putString(KEY_EMAIL, email);
+        // commit changes
+        editor.commit();
+    }
+
+    public String getPassword()
+    {
+        return pref.getString(KEY_PASSWORD, null);
+    }
+
+    public void setPassword(String password)
+    {
+        editor.putString(KEY_PASSWORD, password);
         // commit changes
         editor.commit();
     }

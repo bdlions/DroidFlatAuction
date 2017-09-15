@@ -169,11 +169,12 @@ public class SavedAdvertStep1 extends AppCompatActivity
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson2 = gsonBuilder.create();
                         String productString = gson2.toJson(responseProduct);
-
+                        progressBarDialog.dismiss();
                         Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
                         saved_advert_property_show_details_intent.putExtra("productString", productString);
                         saved_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
                         startActivity(saved_advert_property_show_details_intent);
+                        return;
                     }
                     else
                     {

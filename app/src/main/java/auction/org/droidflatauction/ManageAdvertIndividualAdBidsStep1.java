@@ -38,11 +38,23 @@ public class ManageAdvertIndividualAdBidsStep1 extends AppCompatActivity
 
         onClickButtonBackArrowListener();
 
-        individualAdBidsPropertyListView = (ListView) findViewById(R.id.ad_bids_listview);
         property_title_list = new ArrayList<>();
-        property_title_list = getPropertyTitileList();
         property_postcode_list = new ArrayList<>();
-        property_postcode_list = getPropertyPostCodeList();
+
+
+        try
+        {
+            property_title_list = (ArrayList<String>)getIntent().getExtras().get("titleList");
+            property_postcode_list = (ArrayList<String>)getIntent().getExtras().get("postCodeList");
+        }
+        catch(Exception ex)
+        {
+
+        }
+
+        individualAdBidsPropertyListView = (ListView) findViewById(R.id.ad_bids_listview);
+        //property_title_list = getPropertyTitileList();
+        //property_postcode_list = getPropertyPostCodeList();
         individualAdBidsPropertyAdapter = new ManageAdvertIndividualAdBidsStep1ProductAdapter(ManageAdvertIndividualAdBidsStep1.this,property_title_list,property_postcode_list);
 
         individualAdBidsPropertyListView.setAdapter(individualAdBidsPropertyAdapter);

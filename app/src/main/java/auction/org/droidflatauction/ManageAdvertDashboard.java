@@ -36,6 +36,8 @@ public class ManageAdvertDashboard extends AppCompatActivity
     SessionManager session;
     public int fetchMyAdsCounter = 0;
     public int fetchSavedAdsCounter = 0;
+    public int fetchIndividualAdBidsCounter = 0;
+    public int fetchStatsCounter = 0;
 
     public Dialog progressBarDialog;
 
@@ -266,24 +268,159 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent individual_ad_bid_intent = new Intent(getBaseContext(), ManageAdvertIndividualAdBidsStep1.class);
-                        startActivity(individual_ad_bid_intent);
+                        progressBarDialog = new Dialog(ManageAdvertDashboard.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
+                        fetchIndividualAdBids();
                     }
                 }
         );
     }
+
+    public void fetchIndividualAdBids()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                    System.out.println(response);
+                    ArrayList<Product> productList = response.getProducts();
+                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                    ArrayList<String> imgList = new ArrayList<String>();
+                    ArrayList<Integer> productIdList = new ArrayList<Integer>();
+                    ArrayList<String> titleList = new ArrayList<String>();
+                    ArrayList<String> bedroomList = new ArrayList<String>();
+                    ArrayList<String> bathroomList = new ArrayList<String>();
+                    ArrayList<String> priceList = new ArrayList<String>();
+                    ArrayList<String> postCodeList = new ArrayList<String>();
+                    if(productList != null)
+                    {
+                        int totalProducts = productList.size();
+                        for(int productCounter = 0; productCounter < totalProducts; productCounter++)
+                        {
+                            Product product = productList.get(productCounter);
+                            productIdList.add(product.getId());
+                            imageList.add(R.drawable.property_image_01);
+                            imgList.add(product.getImg());
+                            titleList.add(product.getTitle());
+                            bedroomList.add("");
+                            bathroomList.add("");
+                            priceList.add("");
+                            postCodeList.add("c1");
+                        }
+                    }
+                    progressBarDialog.dismiss();
+
+                    Intent intentIndividualAdBids = new Intent(getBaseContext(), ManageAdvertIndividualAdBidsStep1.class);
+                    intentIndividualAdBids.putExtra("productIdList", productIdList);
+                    intentIndividualAdBids.putExtra("titleList", titleList);
+                    intentIndividualAdBids.putExtra("postCodeList", postCodeList);
+                    startActivity(intentIndividualAdBids);
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchIndividualAdBidsCounter++;
+                    if (fetchIndividualAdBidsCounter <= 5)
+                    {
+                        fetchIndividualAdBids();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
     public void onClickButtonStatsAdListener(){
         ad_stats_btn = (Button) findViewById(R.id.stats_advert);
         ad_stats_btn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent stats_advert_intent = new Intent(getBaseContext(), ManageAdvertStatsStep1.class);
-                        startActivity(stats_advert_intent);
+                        progressBarDialog = new Dialog(ManageAdvertDashboard.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
+                        fetchStats();
                     }
                 }
         );
     }
+
+    public void fetchStats()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                    System.out.println(response);
+                    ArrayList<Product> productList = response.getProducts();
+                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                    ArrayList<String> imgList = new ArrayList<String>();
+                    ArrayList<Integer> productIdList = new ArrayList<Integer>();
+                    ArrayList<String> titleList = new ArrayList<String>();
+                    ArrayList<String> bedroomList = new ArrayList<String>();
+                    ArrayList<String> bathroomList = new ArrayList<String>();
+                    ArrayList<String> priceList = new ArrayList<String>();
+                    if(productList != null)
+                    {
+                        int totalProducts = productList.size();
+                        for(int productCounter = 0; productCounter < totalProducts; productCounter++)
+                        {
+                            Product product = productList.get(productCounter);
+                            productIdList.add(product.getId());
+                            imageList.add(R.drawable.property_image_01);
+                            imgList.add(product.getImg());
+                            titleList.add(product.getTitle());
+                            bedroomList.add("");
+                            bathroomList.add("");
+                            priceList.add("");
+                        }
+                    }
+                    progressBarDialog.dismiss();
+
+                    Intent intentStats = new Intent(getBaseContext(), ManageAdvertStatsStep1.class);
+                    intentStats.putExtra("productIdList", productIdList);
+                    intentStats.putExtra("titleList", titleList);
+                    startActivity(intentStats);
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchStatsCounter++;
+                    if (fetchStatsCounter <= 5)
+                    {
+                        fetchStats();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
     public void onClickButtonRankingAdListener(){
         ad_ranking = (Button) findViewById(R.id.ranking_advert);
         ad_ranking.setOnClickListener(

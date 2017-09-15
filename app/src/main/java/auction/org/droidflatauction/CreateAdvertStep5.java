@@ -128,30 +128,30 @@ public class CreateAdvertStep5 extends AppCompatActivity
                         product.setTitle(etManageProductTitle.getText().toString());
                         if(product.getTitle() == null || product.getTitle().equals(""))
                         {
-                            Toast.makeText(getBaseContext(),"Product Title can't be Empty" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(),"Title is required." , Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         product.setDescription(etManageProductDescription.getText().toString());
                         if(product.getTitle() == null || product.getTitle().equals(""))
                         {
-                            Toast.makeText(getBaseContext(),"Product Description can't be Empty" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(),"Description is required." , Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         product.setFirstName(etManageProductUserFirstName.getText().toString());
-                        if(product.getFirstName() == null || product.getFirstName().equals(""))
+                        /*if(product.getFirstName() == null || product.getFirstName().equals(""))
                         {
                             Toast.makeText(getBaseContext(),"First Name can't be Empty" , Toast.LENGTH_SHORT).show();
                             return;
-                        }
+                        }*/
 
                         product.setLastName(etManageProductUserLastName.getText().toString());
-                        if(product.getLastName() == null || product.getLastName().equals("") )
+                        /*if(product.getLastName() == null || product.getLastName().equals("") )
                         {
                             Toast.makeText(getBaseContext(),"Last Name can't be Empty" , Toast.LENGTH_SHORT).show();
                             return;
-                        }
+                        }*/
 
                         product.setCompanyName(etManageProductCompany.getText().toString());
                         product.setPhone(etManageProductPhone.getText().toString());

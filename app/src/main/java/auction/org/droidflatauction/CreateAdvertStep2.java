@@ -184,7 +184,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
                         {
                             product.setBasePrice(Double.parseDouble(etManageProductPrice.getText().toString()));
                             if (product.getBasePrice() <= 0.0) {
-                                Toast.makeText(getBaseContext(),"Price can't be " + product.getBasePrice(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getBaseContext(),"Invalid price " + product.getBasePrice(), Toast.LENGTH_SHORT).show();
                                 return;
                             }
                         }

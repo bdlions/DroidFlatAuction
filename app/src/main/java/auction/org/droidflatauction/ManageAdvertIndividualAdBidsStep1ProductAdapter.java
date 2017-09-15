@@ -44,13 +44,13 @@ public class ManageAdvertIndividualAdBidsStep1ProductAdapter extends BaseAdapter
     public View getView(int position, View convertView, ViewGroup viewGroup) {
         if(convertView == null){
             convertView = View.inflate(context,R.layout.manage_advert_individual_ad_bids_step1_row, null);
-            convertView.setOnClickListener(new View.OnClickListener() {
+            /*convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent saved_advert_property_step2_intent = new Intent(context, SavedAdvertStep2.class);
                     context.startActivity(saved_advert_property_step2_intent);
                 }
-            });
+            });*/
         }
 
         ImageView property_images = (ImageView) convertView.findViewById(R.id.saved_advert_property_image);

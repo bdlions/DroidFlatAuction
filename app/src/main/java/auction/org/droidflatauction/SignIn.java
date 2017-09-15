@@ -95,6 +95,8 @@ public class SignIn extends AppCompatActivity {
                                 if(signInResponse != null && signInResponse.isSuccess())
                                 {
                                     session.createLoginSession(identity, signInResponse.getSessionId());
+                                    session.setEmail(etIdentity.getText().toString());
+                                    session.setPassword(etPassword.getText().toString());
                                     //navigate to member dashboard
                                     Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
                                     login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

@@ -400,14 +400,17 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(adIdentity == Constants.MY_AD_IDENTITY){
+                        Intent intentProductDetailsBack = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                        startActivity(intentProductDetailsBack);
+
+                        /*if(adIdentity == Constants.MY_AD_IDENTITY){
                             Intent show_advert_product_details_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
                             startActivity(show_advert_product_details_intent);
                         }
                         else {
                             Intent show_advert_product_details_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
                             startActivity(show_advert_product_details_intent);
-                        }
+                        }*/
 
                     }
                 }

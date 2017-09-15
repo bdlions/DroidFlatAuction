@@ -58,6 +58,16 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
         onClickButtonClaendarDateFromListener();
         onClickButtonClaendarDateToListener();
 
+        ArrayList<String> titleList = new ArrayList<String>();
+        try
+        {
+            titleList = (ArrayList<String>)getIntent().getExtras().get("titleList");
+        }
+        catch(Exception ex)
+        {
+
+        }
+
         et_date_from = (EditText) findViewById(R.id.date_from);
         et_date_to = (EditText) findViewById(R.id.date_to);
 
@@ -104,7 +114,7 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
         sp_select_advert.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
             }
 
             @Override
