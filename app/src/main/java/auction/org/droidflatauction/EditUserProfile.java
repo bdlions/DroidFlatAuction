@@ -1,7 +1,6 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -9,9 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.TypedValue;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,9 +23,10 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.auction.dto.Role;
+import com.auction.dto.RoleList;
 import com.auction.dto.User;
 import com.auction.dto.response.GeneralResponse;
 import com.auction.util.ACTION;
@@ -40,11 +37,7 @@ import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundUploader;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.client.reqeust.uploads.UploadService;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,9 +50,14 @@ public class EditUserProfile extends AppCompatActivity
     SessionManager session;
     NavigationManager navigationManager;
 
+    ListView listViewRole;
+
     public User user;
+    public List<Role> userRoleList = new ArrayList<>();
 
     public int fetchProfileCounter = 0;
+    public int fetchRoleListCounter = 0;
+
     public int imgUploadType;
 
     public Dialog imageUploadDialog, progressBarDialog;
@@ -144,28 +142,7 @@ public class EditUserProfile extends AppCompatActivity
         onClickEditUserBusinessNameEditListener();
         onClickEditUserAddressEditListener();
 
-        ListView listViewRole = (ListView)findViewById(R.id.roles_listView);
-        final List<RoleModel> roles = new ArrayList<>();
-        roles.add(new RoleModel(false,"Landlord"));
-        roles.add(new RoleModel(false,"Tanent"));
-        roles.add(new RoleModel(false,"Agent"));
-
-        final RoleAdapter roleAdapter = new RoleAdapter(this,roles);
-        listViewRole.setAdapter(roleAdapter);
-        listViewRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                RoleModel roleModel = roles.get(i);
-                if(roleModel.isSelected())
-                    roleModel.setSelected(false);
-
-                else
-                    roleModel.setSelected(true);
-
-                roles.set(i,roleModel);
-                roleAdapter.updateRecords(roles);
-            }
-        });
+        listViewRole = (ListView)findViewById(R.id.roles_listView);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -177,15 +154,15 @@ public class EditUserProfile extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //Picasso.with(getApplicationContext()).load("http://roomauction.co.uk/resources/images/logo.png").into(iv_profile_photo);
+        progressBarDialog = new Dialog(EditUserProfile.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+
         this.fetchUserProfile();
     }
 
     public void fetchUserProfile()
     {
-        progressBarDialog = new Dialog(EditUserProfile.this);
-        progressBarDialog.setContentView(R.layout.progressbar);
-        progressBarDialog.show();
-
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_USER_INFO);
@@ -208,6 +185,8 @@ public class EditUserProfile extends AppCompatActivity
                     }
                     if(user != null && user.isSuccess())
                     {
+                        userRoleList = user.getRoleList();
+
                         btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
                         btnEditProfileEmail.setText(user.getEmail());
                         btnEditProfilePassword.setText(user.getPassword());
@@ -216,7 +195,7 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
-                        progressBarDialog.dismiss();
+                        fetchRoleList();
                     }
                     else
                     {
@@ -227,6 +206,7 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
+                            //toast error message
                             progressBarDialog.dismiss();
                         }
                     }
@@ -240,12 +220,144 @@ public class EditUserProfile extends AppCompatActivity
                     }
                     else
                     {
+                        //toast error message
                         progressBarDialog.dismiss();
                     }
                 }
             }
         });
 
+    }
+
+    public void fetchRoleList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_MEMBER_ROLES);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    RoleList roleList = null;
+                    String roleListString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        roleListString = (String) msg.obj;
+                    }
+                    if(roleListString != null)
+                    {
+                        Gson gson = new Gson();
+                        roleList = gson.fromJson(roleListString, RoleList.class);
+                    }
+                    if(roleList != null && roleList.isSuccess())
+                    {
+                        progressBarDialog.dismiss();
+                        ArrayList<Integer> userRoleListId = new ArrayList<Integer>();
+                        for(int counter = 0; counter < userRoleList.size(); counter++)
+                        {
+                            userRoleListId.add(userRoleList.get(counter).getId());
+                        }
+                        final List<RoleDTO> roles = new ArrayList<>();
+                        for(int counter = 0; counter < roleList.getRoles().size(); counter++ )
+                        {
+                            Role role = roleList.getRoles().get(counter);
+                            RoleDTO roleDTO = new RoleDTO(false,role.getDescription());
+                            if(userRoleListId.contains(role.getId()))
+                            {
+                                roleDTO.setSelected(true);
+                            }
+
+                            roleDTO.setId(role.getId());
+                            roles.add(roleDTO);
+                        }
+                        //roles.add(new RoleDTO(false,"Landlord"));
+                        //roles.add(new RoleDTO(false,"Tanent"));
+                        //roles.add(new RoleDTO(false,"Agent"));
+
+                        final RoleAdapter roleAdapter = new RoleAdapter(EditUserProfile.this,roles);
+                        listViewRole.setAdapter(roleAdapter);
+                        listViewRole.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                RoleDTO roleModel = roles.get(i);
+
+                                Role role = new Role();
+                                role.setId(roleModel.getId());
+
+                                if(roleModel.isSelected())
+                                {
+                                    roleModel.setSelected(false);
+                                }
+                                else
+                                {
+                                    roleModel.setSelected(true);
+                                }
+
+                                List<Role> tempRoleList = new ArrayList<Role>();
+                                boolean isExists = false;
+                                if(userRoleList != null && userRoleList.size() > 0)
+                                {
+                                    for (int counter = 0; counter < userRoleList.size(); counter++)
+                                    {
+                                        if (userRoleList.get(counter).getId() == role.getId())
+                                        {
+                                            isExists = true;
+                                        }
+                                        else
+                                        {
+                                            tempRoleList.add(userRoleList.get(counter));
+                                        }
+                                    }
+                                }
+                                if (!isExists)
+                                {
+                                    tempRoleList.add(role);
+                                }
+                                userRoleList = tempRoleList;
+                                user.setRoleList(userRoleList);
+
+                                roles.set(i,roleModel);
+                                roleAdapter.updateRecords(roles);
+
+                                progressBarDialog = new Dialog(EditUserProfile.this);
+                                progressBarDialog.setContentView(R.layout.progressbar);
+                                progressBarDialog.show();
+                                updateUserProfile();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        fetchRoleListCounter++;
+                        if (fetchRoleListCounter <= 5)
+                        {
+                            fetchRoleList();
+                        }
+                        else
+                        {
+                            //toast error message
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    fetchRoleListCounter++;
+                    if (fetchRoleListCounter <= 5)
+                    {
+                        fetchRoleList();
+                    }
+                    else
+                    {
+                        //toast error message
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
     }
 
     public void updateUserProfile()
@@ -262,6 +374,7 @@ public class EditUserProfile extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, userString, new Handler(){
             @Override
             public void handleMessage(Message msg) {
+                progressBarDialog.dismiss();
                 try
                 {
                     GeneralResponse response = null;
@@ -430,10 +543,13 @@ public class EditUserProfile extends AppCompatActivity
                         {
                             user.setFirstName(firstName);
                             user.setLastName(lastName);
-                            updateUserProfile();
                             dialog.dismiss();
-                        }
 
+                            progressBarDialog = new Dialog(EditUserProfile.this);
+                            progressBarDialog.setContentView(R.layout.progressbar);
+                            progressBarDialog.show();
+                            updateUserProfile();
+                        }
                     }
                 });
                 Button declineButton = (Button) dialog.findViewById(R.id.user_name_edit_cancel_button);
@@ -475,8 +591,12 @@ public class EditUserProfile extends AppCompatActivity
                         else
                         {
                             user.setCellNo(cellNo);
-                            updateUserProfile();
                             dialog.dismiss();
+
+                            progressBarDialog = new Dialog(EditUserProfile.this);
+                            progressBarDialog.setContentView(R.layout.progressbar);
+                            progressBarDialog.show();
+                            updateUserProfile();
                         }
                     }
                 });
@@ -514,8 +634,12 @@ public class EditUserProfile extends AppCompatActivity
                         else
                         {
                             user.setPassword(etPassword.getText().toString());
-                            updateUserProfile();
                             dialog.dismiss();
+
+                            progressBarDialog = new Dialog(EditUserProfile.this);
+                            progressBarDialog.setContentView(R.layout.progressbar);
+                            progressBarDialog.show();
+                            updateUserProfile();
                         }
                     }
                 });
@@ -557,8 +681,12 @@ public class EditUserProfile extends AppCompatActivity
                         else
                         {
                             user.setEmail(etEmail.getText().toString());
-                            updateUserProfile();
                             dialog.dismiss();
+
+                            progressBarDialog = new Dialog(EditUserProfile.this);
+                            progressBarDialog.setContentView(R.layout.progressbar);
+                            progressBarDialog.show();
+                            updateUserProfile();
                         }
                     }
                 });
@@ -599,8 +727,12 @@ public class EditUserProfile extends AppCompatActivity
                         else
                         {
                             user.setBusinessName(etBusinessName.getText().toString());
-                            updateUserProfile();
                             dialog.dismiss();
+
+                            progressBarDialog = new Dialog(EditUserProfile.this);
+                            progressBarDialog.setContentView(R.layout.progressbar);
+                            progressBarDialog.show();
+                            updateUserProfile();
                         }
                     }
                 });
@@ -640,8 +772,12 @@ public class EditUserProfile extends AppCompatActivity
                         else
                         {
                             user.setAddress(etAddress.getText().toString());
-                            updateUserProfile();
                             dialog.dismiss();
+
+                            progressBarDialog = new Dialog(EditUserProfile.this);
+                            progressBarDialog.setContentView(R.layout.progressbar);
+                            progressBarDialog.show();
+                            updateUserProfile();
                         }
                     }
                 });

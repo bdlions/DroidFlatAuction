@@ -51,7 +51,7 @@ public class MessageDashboard extends AppCompatActivity
 
         onClickButtonMessageInboxListener();
         onClickButtonMessageSentListener();
-        onClickButtonPaginationListener();
+        //onClickButtonPaginationListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -62,7 +62,8 @@ public class MessageDashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    public void onClickButtonPaginationListener(){
+
+    /*public void onClickButtonPaginationListener(){
         demo_pagination = (Button) findViewById(R.id.demo_pagination);
         demo_pagination.setOnClickListener(
                 new View.OnClickListener() {
@@ -73,7 +74,7 @@ public class MessageDashboard extends AppCompatActivity
                     }
                 }
         );
-    }
+    }*/
     public void onClickButtonMessageInboxListener(){
         btn_msg_inbox = (Button) findViewById(R.id.inbox_button);
         btn_msg_inbox.setOnClickListener(

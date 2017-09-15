@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,6 +38,9 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
     SessionManager session;
     NavigationManager navigationManager;
 
+    public Dialog progressBarDialog;
+    public int fetchAccountSettingFACounter = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +57,10 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         etSettingDefaultBidPerClick = (EditText) findViewById(R.id.et_setting_default_bid_per_click);
         etSettingDailyBudget = (EditText) findViewById(R.id.et_setting_daily_budget);
 
-        this.setAccountSetting();
+        progressBarDialog = new Dialog(ManageAdvertAccountSettingsStep.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+        fetchAccountSettingFA();
 
         onClickButtonBackArrowListener();
         onClickButtonSubmitListener();
@@ -68,7 +75,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    public void setAccountSetting()
+    public void fetchAccountSettingFA()
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
@@ -89,11 +96,23 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                         etSettingDefaultBidPerClick.setText(accountSettingFA.getDefaultBidPerClick()*100 + "");
                         etSettingDailyBudget.setText(accountSettingFA.getDailyBudget()+"");
                     }
-
+                    else
+                    {
+                        //show error message in toast
+                    }
+                    progressBarDialog.dismiss();
                 }
                 catch(Exception ex)
                 {
-                    System.out.println(ex.toString());
+                    fetchAccountSettingFACounter++;
+                    if (fetchAccountSettingFACounter <= 5)
+                    {
+                        fetchAccountSettingFA();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
                 }
             }
         });
@@ -117,6 +136,9 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        progressBarDialog = new Dialog(ManageAdvertAccountSettingsStep.this);
+                        progressBarDialog.setContentView(R.layout.progressbar);
+                        progressBarDialog.show();
                         //set amount here
                         try
                         {
@@ -130,8 +152,6 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                             Toast.makeText(getBaseContext(),   "Please assign correct number.", Toast.LENGTH_SHORT).show();
                             return;
                         }
-
-
                         String sessionId = session.getSessionId();
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         packetHeader.setAction(ACTION.SAVE_ACCOUNT_SETTING_FA);
@@ -143,6 +163,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                         new BackgroundWork().execute(packetHeader, accountSettingFAString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
+                                progressBarDialog.dismiss();
                                 try
                                 {
                                     String resultString = (String)msg.obj;
@@ -150,7 +171,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                                     accountSettingFA = gson.fromJson(resultString, AccountSettingFA.class);
                                     if(accountSettingFA.isSuccess())
                                     {
-                                        Toast.makeText(getBaseContext(),   accountSettingFA.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getBaseContext(),   "Updated successfully.", Toast.LENGTH_SHORT).show();
                                     }
                                     else
                                     {
@@ -160,12 +181,10 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                                 catch(Exception ex)
                                 {
                                     System.out.println(ex.toString());
+                                    Toast.makeText(getBaseContext(),   "Unable to save. Please try again.", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
-
-                      //  Intent account_settings_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                      //  startActivity(account_settings_advert_submit_button_intent);
                     }
                 }
         );

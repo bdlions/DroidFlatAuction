@@ -114,7 +114,7 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
         });
     }
     public void onClickButtonClaendarDateFromListener(){
-        et_date_from.setOnClickListener(new View.OnClickListener() {
+        /*et_date_from.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar cal = Calendar.getInstance();
@@ -139,10 +139,10 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
                 String date = dayOfMonth +"/" + month + "/" + year;
                 et_date_from.setText(date);
             }
-        };
+        };*/
     }
     public void onClickButtonClaendarDateToListener(){
-        et_date_to.setOnClickListener(new View.OnClickListener() {
+        /*et_date_to.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Calendar cal = Calendar.getInstance();
@@ -167,7 +167,7 @@ public class ManageAdvertStatsStep1 extends AppCompatActivity
                 String date = dayOfMonth +"/" + month + "/" + year;
                 et_date_to.setText(date);
             }
-        };
+        };*/
     }
     @Override
     public void onBackPressed() {

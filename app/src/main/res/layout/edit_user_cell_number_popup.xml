@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="left"
-        android:text="Email"
+        android:text="Cell No"
         android:textSize="16dp"
         android:textColor="#5a5a5a"/>
     <EditText

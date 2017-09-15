@@ -1,13 +1,17 @@
 package auction.org.droidflatauction;
 
+import com.auction.dto.Role;
+
 /**
  * Created by bdlions on 09/09/2017.
  */
 
-public class RoleModel { boolean isSelected;
+public class RoleDTO extends Role
+{
+    boolean isSelected;
     String  role;
 
-    public RoleModel(boolean isSelected, String role) {
+    public RoleDTO(boolean isSelected, String role) {
         this.isSelected = isSelected;
         this.role = role;
     }

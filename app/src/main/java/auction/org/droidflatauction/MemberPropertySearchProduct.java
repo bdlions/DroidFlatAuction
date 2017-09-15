@@ -155,6 +155,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
                         Gson gson2 = gsonBuilder.create();
                         String productString = gson2.toJson(responseProduct);
 
+                        progressBarDialog.dismiss();
                         Intent my_advert_property_show_details_intent = new Intent(MemberPropertySearchProduct.this, ShowAdvertProductDetails.class);
                         my_advert_property_show_details_intent.putExtra("productString", productString);
                         if(session.getUserId() == responseProduct.getUser().getId())

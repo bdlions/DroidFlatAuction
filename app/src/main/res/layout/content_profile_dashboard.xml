@@ -43,7 +43,7 @@
         android:background="@drawable/button_pressed"
         android:textColor="#fff"
         android:textSize="12dp"/>
-    <Button
+<!--    <Button
         android:id="@+id/profile_verification"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,5 +52,5 @@
         android:text="Profile Verification"
         android:background="@drawable/button_pressed"
         android:textColor="#fff"
-        android:textSize="12dp"/>
+        android:textSize="12dp"/>-->
 </LinearLayout>

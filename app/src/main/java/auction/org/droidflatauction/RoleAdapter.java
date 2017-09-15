@@ -16,14 +16,14 @@ import java.util.List;
 
 public class RoleAdapter extends BaseAdapter {
     Activity activity;
-    List<RoleModel> roles;
+    List<RoleDTO> roles;
     LayoutInflater layoutInflater;
 
     public RoleAdapter(Activity activity){
 
     }
 
-    public RoleAdapter(Activity activity, List<RoleModel> roles) {
+    public RoleAdapter(Activity activity, List<RoleDTO> roles) {
         this.activity = activity;
         this.roles = roles;
 
@@ -57,7 +57,7 @@ public class RoleAdapter extends BaseAdapter {
         }
         else
             holder = (RoleAdapter.ViewHolder)view.getTag();
-        RoleModel model = roles.get(i);
+        RoleDTO model = roles.get(i);
 
         holder.tvRole.setText(model.getRole());
 
@@ -70,7 +70,7 @@ public class RoleAdapter extends BaseAdapter {
         return view;
     }
 
-    public void updateRecords(List<RoleModel> roles){
+    public void updateRecords(List<RoleDTO> roles){
         this.roles = roles;
         notifyDataSetChanged();
 

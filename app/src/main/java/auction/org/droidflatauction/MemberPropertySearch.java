@@ -178,6 +178,7 @@ public void initList(){
                             priceList.add("");
                         }
                     }
+                    progressBarDialog.dismiss();
                     Intent adverts_intent = new Intent(getBaseContext(), MemberPropertySearchProduct.class);
                     //Intent adverts_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
                     adverts_intent.putExtra("imageList", imageList);
