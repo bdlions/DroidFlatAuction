@@ -165,6 +165,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
                         else
                         {
                             my_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
+
                         }
                         startActivity(my_advert_property_show_details_intent);
                     }
