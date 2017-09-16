@@ -1,9 +1,11 @@
 package auction.org.droidflatauction;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -38,9 +40,9 @@ import java.util.List;
 public class ShowAdvertProductDetails extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
-    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft, tvProductDetailsAvailableFrom, tvProductDetailsAvailableTo, tvProductDetailsAvailability, tvProductDetailsMinTerm, tvProductDetailsMaxTerm, tvProductDetailsOccupation, tvProductDetailsPets, tvProductDetailsSmoking, tvProductDetailsAmenityParking, tvProductDetailsAmenityBalcony, tvProductDetailsAmenityGarden, tvProductDetailsAmenityDisabledAccess, tvProductDetailsAmenityGarage,tvProductBusinessName,tvProductAddress,tvProductCompanyName;
+    private static TextView tvProductDetailsTotalBids, tvProductDetailsTitle, tvProductDetailsPrice, tvProductDetailsDescription, tvProductDetailsBidTimeLeft, tvProductDetailsAvailableFrom, tvProductDetailsAvailableTo, tvProductDetailsAvailability, tvProductDetailsMinTerm, tvProductDetailsMaxTerm, tvProductDetailsOccupation, tvProductDetailsPets, tvProductDetailsSmoking, tvProductDetailsAmenityParking, tvProductDetailsAmenityBalcony, tvProductDetailsAmenityGarden, tvProductDetailsAmenityDisabledAccess, tvProductDetailsAmenityGarage,tvProductBusinessName, tvProductAddress,tvProductCompanyName;
     private  static Button proppertyContentEditBtn, proppertyPlaceBidBtn, proppertyContactBtn;
-    private static ImageView ivProductDetailsImage,ivProductAgentLogo;
+    private static ImageView ivProductDetailsImage,ivProductAgentLogo,ivProductSave;
     private static LinearLayout llProductAgent,llProductCompanyName;
     private Product product;
     private String productString;
@@ -59,9 +61,10 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
 
         tvProductDetailsTitle = (TextView) findViewById(R.id.tv_product_details_title);
-        tvProductDetailsPrice = (TextView) findViewById(R.id.tv_product_details_price);
+        //tvProductDetailsPrice = (TextView) findViewById(R.id.tv_product_details_price);
         tvProductDetailsDescription = (TextView) findViewById(R.id.tv_product_details_description);
         ivProductDetailsImage = (ImageView) findViewById(R.id.iv_product_details_image);
+       // ivProductSave = (ImageView) findViewById(R.id.iv_product_details_save_product_button);
 
         llProductAgent = (LinearLayout)findViewById(R.id.ll_product_agent);
         llProductCompanyName = (LinearLayout)findViewById(R.id.ll_product_company_name);
@@ -222,15 +225,22 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         if(adIdentity == Constants.MY_AD_IDENTITY){
             myAdvertBtnRow.setVisibility(View.VISIBLE);
             savedAdvertBtnRow.setVisibility(View.GONE);
+            //ivProductSave.setVisibility(View.GONE);
+            if(product.getTime() == 0){
+                tvProductDetailsBidTimeLeft.setVisibility(View.GONE);
+            }
         }
         else {
             myAdvertBtnRow.setVisibility(View.GONE);
             savedAdvertBtnRow.setVisibility(View.VISIBLE);
+            //ivProductSave.setVisibility(View.VISIBLE);
             if(product.getTime() == 0){
                 //Toast.makeText(ShowAdvertProductDetails.this, "Time is finished! " + product.getTime(),Toast.LENGTH_SHORT).show();
                 proppertyPlaceBidBtn.setVisibility(View.GONE);
                 tvProductDetailsBidTimeLeft.setVisibility(View.GONE);
             }
+
+
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -244,6 +254,31 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         executeTimer();
     }
 
+    public void  saveProductDialogEvent(View view){
+        ivProductSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder saveDialog = new AlertDialog.Builder(ShowAdvertProductDetails.this);
+                saveDialog.setMessage("Do you want to save this product!").setCancelable(false)
+
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+
+                    }
+                })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                dialog.cancel();
+                            }
+                        });
+                AlertDialog alert = saveDialog.create();
+                alert.setTitle("Save Product");
+                alert.show();
+            }
+        });
+    }
     public void executeTimer()
     {
         new Thread() {
