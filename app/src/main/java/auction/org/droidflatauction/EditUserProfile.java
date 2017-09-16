@@ -45,7 +45,7 @@ public class EditUserProfile extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private final int SELECT_PHOTO = 1;
-    private static ImageView ivEditProfilePhoto, ivEditProfileAgentLogo;
+    private static ImageView ivEditProfilePhoto, ivEditProfileAgentLogo,ivEditProfileDocument;
     private static Button btnEditProfileName,btnEditProfileEmail,btnEditProfilePassword,btnEditProfileCell,btnEditProfileBusinessName,btnEditProfileAddress;
     SessionManager session;
     NavigationManager navigationManager;
@@ -97,6 +97,11 @@ public class EditUserProfile extends AppCompatActivity
                                         user.setAgentLogo(img);
                                         updateUserAgentLogo();
                                     }
+                                    else if(imgUploadType == Constants.IMG_UPLOAD_TYPE_PROFILE_DOCUMENT)
+                                    {
+                                        user.setDocument(img);
+                                        updateUserProfileDocument();
+                                    }
                                 }
                                 catch(Exception ex)
                                 {
@@ -131,10 +136,12 @@ public class EditUserProfile extends AppCompatActivity
 
         ivEditProfilePhoto = (ImageView) findViewById(R.id.iv_edit_profile_photo);
         ivEditProfileAgentLogo = (ImageView) findViewById(R.id.iv_edit_profile_agent_logo);
+        ivEditProfileDocument = (ImageView) findViewById(R.id.iv_edit_profile_profile_document);
 
         onClickButtonBackArrowListener();
         onClickEditUserProfilePhotoEditListener();
         onClickEditUserAgentLogoEditListener();
+        onClickEditUserProfileDocumentEditListener();
         onClickEditUserNameEditListener();
         onClickEditUserEmailEditListener();
         onClickEditUserPasswordEditListener();
@@ -195,6 +202,7 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivEditProfileDocument);
                         fetchRoleList();
                     }
                     else
@@ -398,6 +406,7 @@ public class EditUserProfile extends AppCompatActivity
                         btnEditProfileAddress.setText(user.getAddress());
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivEditProfileDocument);
                         Toast.makeText(EditUserProfile.this, "Profile is updated successfully!",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -498,6 +507,51 @@ public class EditUserProfile extends AppCompatActivity
                 catch(Exception ex)
                 {
                     Toast.makeText(EditUserProfile.this, "Unable to upload agent logo. Please try again later.",Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void updateUserProfileDocument()
+    {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String userString = gson.toJson(user);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.UPDATE_USER_DOCUMENT);
+        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    GeneralResponse response = null;
+                    String responseString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        responseString = (String) msg.obj;
+                    }
+                    if(responseString != null)
+                    {
+                        Gson gson = new Gson();
+                        response = gson.fromJson(responseString, GeneralResponse.class);
+                    }
+                    if(response != null && response.isSuccess())
+                    {
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivEditProfileDocument);
+                        Toast.makeText(EditUserProfile.this, "Profile document is uploaded successfully!",Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(EditUserProfile.this, "Unable to upload profile document. Please try again later.",Toast.LENGTH_SHORT).show();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Toast.makeText(EditUserProfile.this, "Unable to upload profile document. Please try again later.",Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -847,6 +901,38 @@ public class EditUserProfile extends AppCompatActivity
                     }
                 });
                 Button declineButton = (Button) imageUploadDialog.findViewById(R.id.agent_logo_upload_cancel_button);
+                declineButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageUploadDialog.dismiss();
+                    }
+                });
+            }
+
+        });
+    }
+    public void onClickEditUserProfileDocumentEditListener(){
+        ivEditProfileDocument.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                imageUploadDialog = new Dialog(EditUserProfile.this);
+                imageUploadDialog.setContentView(R.layout.upload_profile_document);
+                imageUploadDialog.setTitle("Upload Profile Document");
+                ImageView profile_document = (ImageView) imageUploadDialog.findViewById(R.id.profile_document);
+                //profile_image.setImageResource(R.drawable.user);
+                imageUploadDialog.show();
+                Button submitButton = (Button) imageUploadDialog.findViewById(R.id.profile_document_upload_submit_button);
+                submitButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                        imgUploadType = Constants.IMG_UPLOAD_TYPE_PROFILE_DOCUMENT;
+                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                        photoPickerIntent.setType("image/*");
+                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                    }
+                });
+                Button declineButton = (Button) imageUploadDialog.findViewById(R.id.profile_document_upload_cancel_button);
                 declineButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

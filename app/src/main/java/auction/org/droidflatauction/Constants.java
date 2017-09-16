@@ -10,6 +10,7 @@ public class Constants {
     public static String profilePicturePath = "resources/images/profile/";
     public static String profilePicturePath_50_50 = "resources/images/profile/50_50/";
     public static String agentLogoPath_100_100 = "resources/images/profile/logo/100_100/";
+    public static String profileDocument = "resources/images/profile/document/";
 
     public static String productImagePath_103_87 = "resources/images/product/103_87/";
     public static String productImagePath_328_212 = "resources/images/product/328_212/";
@@ -24,6 +25,8 @@ public class Constants {
     public static int IMG_UPLOAD_TYPE_PROFILE_PICTURE = 1;
     public static int IMG_UPLOAD_TYPE_AGENT_LOGO = 2;
     public static int IMG_UPLOAD_TYPE_PRODUCT_PICTURE= 3;
+    public static int IMG_UPLOAD_TYPE_PROFILE_DOCUMENT= 4;
+
 
     public static int MAX_REPEAT_SERVER_REQUEST = 5;
 

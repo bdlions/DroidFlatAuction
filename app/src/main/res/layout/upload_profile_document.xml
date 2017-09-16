@@ -10,11 +10,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:gravity="left"
-        android:text="Agent Logo"
+        android:text="Profile Document"
         android:textSize="16dp"
         android:textColor="#5a5a5a"/>
     <ImageView
-        android:id="@+id/agent_logo"
+        android:id="@+id/profile_document"
         android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Button
-                android:id="@+id/agent_logo_upload_cancel_button"
+                android:id="@+id/profile_document_upload_cancel_button"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_marginRight="20dp"
@@ -39,7 +39,7 @@
                 android:textSize="16dp"
                 android:background="@drawable/custom_round_corner_orange_button"/>
             <Button
-                android:id="@+id/agent_logo_upload_submit_button"
+                android:id="@+id/profile_document_upload_submit_button"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:gravity="center"

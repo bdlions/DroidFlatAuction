@@ -41,7 +41,7 @@ public class UserProfile extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     SessionManager session;
     public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileBusinessNameHeader,tvProfileAddress,tvProfileAddressHeader,tvProfileRole;
-    private static ImageView ivProfilePhoto, ivProfileAgentLogo,tvProfileAgentLogoHeader;
+    private static ImageView ivProfilePhoto, ivProfileAgentLogo,ivProfileDocument;
     public int fetchProfileCounter = 0;
     public Dialog progressBarDialog;
 
@@ -60,6 +60,7 @@ public class UserProfile extends AppCompatActivity
 
         ivProfilePhoto = (ImageView) findViewById(R.id.iv_profile_photo);
         ivProfileAgentLogo = (ImageView) findViewById(R.id.iv_profile_agent_logo);
+        ivProfileDocument = (ImageView) findViewById(R.id.iv_profile_document);
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
@@ -139,6 +140,7 @@ public class UserProfile extends AppCompatActivity
 
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivProfileDocument);
                         progressBarDialog.dismiss();
                     }
                     else
