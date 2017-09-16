@@ -55,7 +55,7 @@
             android:id="@+id/iv_edit_profile_photo"
             android:layout_width="150dp"
             android:layout_height="150dp"
-            android:layout_marginTop="-10dp"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp" />
         <TextView
             android:layout_width="wrap_content"
@@ -68,6 +68,21 @@
             android:textStyle="bold" />
         <ImageView
             android:id="@+id/iv_edit_profile_agent_logo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="5dp"
+            android:text="Profile Document"
+            android:textColor="#2874b9"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@+id/iv_edit_profile_profile_document"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
