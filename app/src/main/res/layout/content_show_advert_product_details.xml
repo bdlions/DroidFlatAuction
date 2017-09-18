@@ -74,34 +74,58 @@
                     android:padding="10dp"
                     android:layout_marginTop="40dp"
                     android:orientation="vertical">
-                    <RelativeLayout
+                    <!--  <RelativeLayout
+                          android:id="@+id/saved_advert_button_rowsdf"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:layout_alignParentBottom="true"
+                          android:orientation="vertical">
+                          <TextView
+                              android:id="@+id/tv_product_details_price"
+                              android:layout_width="match_parent"
+                              android:layout_height="40dp"
+                              android:layout_alignParentLeft="true"
+                              android:gravity="left"
+                              android:text=""
+                              android:textColor="#ff9000"
+                              android:textSize="28dp"
+                              android:textStyle="bold"/>
+                          <ImageView
+                              android:id="@+id/iv_product_details_save_product"
+                              android:onClick="saveProductDialogEvent"
+                              android:layout_width="25dp"
+                              android:layout_height="25dp"
+                              android:layout_marginTop="10dp"
+                              android:layout_alignParentRight="true"
+                              android:layout_marginLeft="5dp"
+                              android:textColor="#ffffff"
+                             android:src="@drawable/save" />
+                      </RelativeLayout>-->
+                    <LinearLayout
                         android:id="@+id/saved_advert_button_rowsdf"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:weightSum="3">
                         <TextView
                             android:id="@+id/tv_product_details_price"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
-                            android:layout_alignParentLeft="true"
                             android:gravity="left"
                             android:text=""
                             android:textColor="#ff9000"
                             android:textSize="28dp"
-                            android:textStyle="bold"/>
-                       <!-- <ImageView
+                            android:textStyle="bold"
+                            android:layout_weight="2"/>
+                        <ImageView
                             android:id="@+id/iv_product_details_save_product"
-                            android:onClick="saveProductDialogEvent"
-                            android:layout_width="25dp"
-                            android:layout_height="25dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_alignParentRight="true"
-                            android:layout_marginLeft="5dp"
-                            android:textColor="#ffffff"
-                           android:src="@drawable/save" /> -->
-                    </RelativeLayout>
-
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/save"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
                     <!--<LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
