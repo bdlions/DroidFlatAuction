@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:background="#fff" >
         <TableLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TableRow
                 android:layout_width="wrap_content"
@@ -22,18 +22,17 @@
                     android:id="@+id/login_back_arrow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginLeft="5dp"
                     android:src="@drawable/back_arrow"
                     android:background="#fff"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="15dp"
-                    android:gravity="left"
+                    android:layout_marginLeft="5dp"
                     android:text="Login"
                     android:textColor="#2874b9"
-                    android:textSize="36dp"
+                    android:textSize="32dp"
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>

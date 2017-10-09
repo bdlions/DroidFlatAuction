@@ -39,6 +39,7 @@ public class SignUpStep2 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent sing_up_step2_back_arrow_intent = new Intent(getBaseContext(), SignUpStep1.class);
+                        sing_up_step2_back_arrow_intent.putExtra("user",user);
                         startActivity(sing_up_step2_back_arrow_intent);
                     }
                 }
