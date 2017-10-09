@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -157,6 +158,16 @@ public class CreateAdvertStep3 extends AppCompatActivity
             }
         });
 
+        etCreateProductAvailableFrom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateDialog dialog = new DateDialog(v);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                dialog.show(ft,"DatePicker");
+            }
+        });
+
+
         etCreateProductAvailableTo.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -165,6 +176,15 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     FragmentTransaction ft = getFragmentManager().beginTransaction();
                     dialog.show(ft,"DatePicker");
                 }
+            }
+        });
+
+        etCreateProductAvailableTo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateDialog dialog = new DateDialog(v);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                dialog.show(ft,"DatePicker");
             }
         });
     }
@@ -318,19 +338,35 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         String availableTo = etCreateProductAvailableTo.getText().toString();
                         if(availableFrom != null && !availableFrom.equals(""))
                         {
+                            availableFrom = availableFrom.replaceAll("/", "-");
+                            String[] availableFromArray = availableFrom.split("-");
+                            if(availableFromArray.length != 3 || availableFromArray[2].length() != 4)
+                            {
+                                Toast.makeText(getBaseContext(),"Invalid available from date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             product.setAvailableFrom(availableFrom);
-                        } else
+                        }
+                        else
                         {
-                            Toast.makeText(getBaseContext(),"Available From can't be Empty" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(),"Available from date is required" , Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         if(availableTo != null && !availableTo.equals(""))
                         {
+                            availableTo = availableTo.replaceAll("/", "-");
+                            String[] availableToArray = availableTo.split("-");
+                            if(availableToArray.length != 3 || availableToArray[2].length() != 4)
+                            {
+                                Toast.makeText(getBaseContext(),"Invalid available to date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             product.setAvailableTo(availableTo);
-                        }else
+                        }
+                        else
                         {
-                            Toast.makeText(getBaseContext(),"Available To can't be Empty" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(),"Available to date is required." , Toast.LENGTH_SHORT).show();
                             return;
                         }
 

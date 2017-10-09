@@ -144,6 +144,8 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         String availableTo = product.getAvailableTo();
                         if(availableFrom != null && !availableFrom.equals(""))
                         {
+                            //if user uses / instead of - then convert symbol
+                            availableFrom = availableFrom.replaceAll("/", "-");
                             String[] availableFromArray = availableFrom.split("-");
                             product.setAvailableFrom(availableFromArray[2]+"-"+availableFromArray[1]+"-"+availableFromArray[0]);
                         }
@@ -153,6 +155,8 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         }
                         if(availableTo != null && !availableTo.equals(""))
                         {
+                            //if user uses / instead of - then convert symbol
+                            availableTo = availableTo.replaceAll("/", "-");
                             String[] availableToArray = availableTo.split("-");
                             product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
                         }
@@ -165,6 +169,8 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         String bidStartTo = product.getBidEndDate();
                         if(bidStartFrom != null && !bidStartFrom.equals(""))
                         {
+                            //if user uses / instead of - then convert symbol
+                            bidStartFrom = bidStartFrom.replaceAll("/", "-");
                             String[] bidStartFromArray = bidStartFrom.split("-");
                             product.setBidStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
                         }
@@ -174,6 +180,8 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         }
                         if(bidStartTo != null && !bidStartTo.equals(""))
                         {
+                            //if user uses / instead of - then convert symbol
+                            bidStartTo = bidStartTo.replaceAll("/", "-");
                             String[] bidStartToArray = bidStartTo.split("-");
                             product.setBidEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
                         }

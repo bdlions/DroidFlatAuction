@@ -156,6 +156,14 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 }
             }
         });
+        etCreateProductBidStartCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateDialog dialog = new DateDialog(v);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                dialog.show(ft,"DatePicker");
+            }
+        });
 
 
         etCreateProductBidEndCalendar.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -168,6 +176,15 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 }
             }
         });
+        etCreateProductBidEndCalendar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DateDialog dialog = new DateDialog(v);
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                dialog.show(ft,"DatePicker");
+            }
+        });
+
     }
     /*
     public void selectItem( View view){
@@ -219,21 +236,38 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
                         String bidStartFrom = etCreateProductBidStartCalendar.getText().toString();
                         String bidStartTo = etCreateProductBidEndCalendar.getText().toString();
+
                         if(bidStartFrom != null && !bidStartFrom.equals(""))
                         {
+                            bidStartFrom = bidStartFrom.replaceAll("/", "-");
+                            String[] bidStartFromArray = bidStartFrom.split("-");
+                            if(bidStartFromArray.length != 3 || bidStartFromArray[2].length() != 4)
+                            {
+                                Toast.makeText(getBaseContext(),"Invalid bid Start date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             product.setBidStartDate(bidStartFrom);
-                        }else
+                        }
+                        else
                         {
-                            Toast.makeText(getBaseContext(),"Bid Start From can't be Empty" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(),"Bid Start date is required." , Toast.LENGTH_SHORT).show();
                             return;
                         }
 
                         if(bidStartTo != null && !bidStartTo.equals(""))
                         {
+                            bidStartTo = bidStartTo.replaceAll("/", "-");
+                            String[] bidStartToArray = bidStartTo.split("-");
+                            if(bidStartToArray.length != 3 || bidStartToArray[2].length() != 4)
+                            {
+                                Toast.makeText(getBaseContext(),"Invalid bid end date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             product.setBidEndDate(bidStartTo);
-                        }else
+                        }
+                        else
                         {
-                            Toast.makeText(getBaseContext(),"Bid End From can't be Empty" , Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getBaseContext(),"Bid End date is required." , Toast.LENGTH_SHORT).show();
                             return;
                         }
                         product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
