@@ -16,14 +16,14 @@ import java.util.List;
 
 public class AmenityAdapter extends BaseAdapter {
     Activity activity;
-    List<AmenityModel> amenities;
+    List<DTOAmenity> amenities;
     LayoutInflater layoutInflater;
 
     public AmenityAdapter(Activity activity){
 
     }
 
-    public AmenityAdapter(Activity activity, List<AmenityModel> amenities) {
+    public AmenityAdapter(Activity activity, List<DTOAmenity> amenities) {
         this.activity = activity;
         this.amenities = amenities;
 
@@ -57,7 +57,7 @@ public class AmenityAdapter extends BaseAdapter {
         }
         else
             holder = (AmenityAdapter.ViewHolder)view.getTag();
-        AmenityModel model = amenities.get(i);
+        DTOAmenity model = amenities.get(i);
 
         holder.tvAmenity.setText(model.getAmenity());
 
@@ -70,7 +70,7 @@ public class AmenityAdapter extends BaseAdapter {
         return view;
     }
 
-    public void updateRecords(List<AmenityModel> amenities){
+    public void updateRecords(List<DTOAmenity> amenities){
         this.amenities = amenities;
         notifyDataSetChanged();
 

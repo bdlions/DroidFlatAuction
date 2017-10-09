@@ -1,9 +1,10 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,17 +16,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.auction.dto.Amenity;
+import com.auction.dto.AmenityList;
 import com.auction.dto.Product;
-import com.auction.dto.ProductTypeList;
+import com.auction.dto.Role;
+import com.auction.dto.RoleList;
+import com.auction.util.ACTION;
+import com.auction.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.auction.udp.BackgroundWork;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +43,12 @@ public class CreateAdvertStep2 extends AppCompatActivity
     private static Spinner sp_area;
     private static EditText etManageProductPrice;
     ArrayAdapter<CharSequence> area_adapter;
+    public ListView listViewAmenity;
     Product product;
     SessionManager session;
     NavigationManager navigationManager;
+    public Dialog progressBarDialog;
+    public int fetchAmenityListCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +69,10 @@ public class CreateAdvertStep2 extends AppCompatActivity
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
             etManageProductPrice.setText(product.getBasePrice()+"");
+            if(product.getId() == 0 && product.getAmenities() == null)
+            {
+                product.setAmenities(new ArrayList<Amenity>());
+            }
         }
         catch(Exception ex)
         {
@@ -71,20 +85,20 @@ public class CreateAdvertStep2 extends AppCompatActivity
         onClickButtonForwardArrowListener();
         areaSpinner();
 
-        ListView listViewAmenity = (ListView)findViewById(R.id.amenities_listView);
-        final List<AmenityModel> amenities = new ArrayList<>();
-        amenities.add(new AmenityModel(false,"Parking"));
-        amenities.add(new AmenityModel(false,"Balcony"));
-        amenities.add(new AmenityModel(false,"Garden"));
-        amenities.add(new AmenityModel(false,"Disabled access"));
-        amenities.add(new AmenityModel(false,"Garage"));
+        listViewAmenity = (ListView)findViewById(R.id.amenities_listView);
+        /*final List<DTOAmenity> amenities = new ArrayList<>();
+        amenities.add(new DTOAmenity(false,"Parking"));
+        amenities.add(new DTOAmenity(false,"Balcony"));
+        amenities.add(new DTOAmenity(false,"Garden"));
+        amenities.add(new DTOAmenity(false,"Disabled access"));
+        amenities.add(new DTOAmenity(false,"Garage"));
 
         final AmenityAdapter amenityAdapter = new AmenityAdapter(this,amenities);
         listViewAmenity.setAdapter(amenityAdapter);
         listViewAmenity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AmenityModel amenityModel = amenities.get(i);
+                DTOAmenity amenityModel = amenities.get(i);
                 if(amenityModel.isSelected())
                     amenityModel.setSelected(false);
 
@@ -94,7 +108,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 amenities.set(i,amenityModel);
                 amenityAdapter.updateRecords(amenities);
             }
-        });
+        });*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -104,6 +118,130 @@ public class CreateAdvertStep2 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        progressBarDialog = new Dialog(CreateAdvertStep2.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+
+        this.fetchAmenityList();
+    }
+
+    public void fetchAmenityList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_AMENITY_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    AmenityList amenityList = null;
+                    String amenityListString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        amenityListString = (String) msg.obj;
+                    }
+                    if(amenityListString != null)
+                    {
+                        Gson gson = new Gson();
+                        amenityList = gson.fromJson(amenityListString, AmenityList.class);
+                    }
+                    if(amenityList != null && amenityList.isSuccess())
+                    {
+                        progressBarDialog.dismiss();
+                        ArrayList<Integer> amenityListId = new ArrayList<Integer>();
+                        for(int counter = 0; counter < product.getAmenities().size(); counter++)
+                        {
+                            amenityListId.add(product.getAmenities().get(counter).getId());
+                        }
+                        final List<DTOAmenity> amenities = new ArrayList<>();
+                        for(int counter = 0; counter < amenityList.getAmenities().size(); counter++ )
+                        {
+                            Amenity amenity = amenityList.getAmenities().get(counter);
+                            DTOAmenity dtoAmenity = new DTOAmenity(false,amenity.getTitle());
+                            if(amenityListId.contains(amenity.getId()))
+                            {
+                                dtoAmenity.setSelected(true);
+                            }
+
+                            dtoAmenity.setId(amenity.getId());
+                            amenities.add(dtoAmenity);
+                        }
+
+                        final AmenityAdapter amenityAdapter = new AmenityAdapter(CreateAdvertStep2.this, amenities);
+                        listViewAmenity.setAdapter(amenityAdapter);
+                        listViewAmenity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                DTOAmenity dtoAmenity = amenities.get(i);
+                                if(dtoAmenity.isSelected())
+                                {
+                                    dtoAmenity.setSelected(false);
+                                }
+                                else
+                                {
+                                    dtoAmenity.setSelected(true);
+                                }
+                                Amenity amenity = new Amenity();
+                                amenity.setId(dtoAmenity.getId());
+                                List<Amenity> tempAmenityList = new ArrayList<Amenity>();
+                                boolean isExists = false;
+                                if(product.getAmenities() != null && product.getAmenities().size() > 0)
+                                {
+                                    for (int counter = 0; counter < product.getAmenities().size(); counter++)
+                                    {
+                                        if (product.getAmenities().get(counter).getId() == amenity.getId())
+                                        {
+                                            isExists = true;
+                                        }
+                                        else
+                                        {
+                                            tempAmenityList.add(product.getAmenities().get(counter));
+                                        }
+                                    }
+                                }
+                                if (!isExists)
+                                {
+                                    tempAmenityList.add(amenity);
+                                }
+                                product.setAmenities(tempAmenityList);
+                                amenities.set(i,dtoAmenity);
+                                amenityAdapter.updateRecords(amenities);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        fetchAmenityListCounter++;
+                        if (fetchAmenityListCounter <= 5)
+                        {
+                            fetchAmenityList();
+                        }
+                        else
+                        {
+                            //toast error message
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    fetchAmenityListCounter++;
+                    if (fetchAmenityListCounter <= 5)
+                    {
+                        fetchAmenityList();
+                    }
+                    else
+                    {
+                        //toast error message
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
     }
 
     /*
