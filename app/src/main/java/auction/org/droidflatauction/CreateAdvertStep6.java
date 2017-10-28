@@ -23,10 +23,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
-import com.auction.dto.response.GeneralResponse;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.response.GeneralResponse;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -89,7 +89,9 @@ public class CreateAdvertStep6 extends AppCompatActivity
                             }
                         });
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        imageUploadDialog.dismiss();
+                        //e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Error:"+e.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
         }
@@ -132,6 +134,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
         }
         else
         {
+            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.imageUploadPath+product.getImg()).into(ivUploadProductPhoto);
             llUploadProductPhoto.setVisibility(View.VISIBLE);
             llEditProductPhoto.setVisibility(View.GONE);
         }

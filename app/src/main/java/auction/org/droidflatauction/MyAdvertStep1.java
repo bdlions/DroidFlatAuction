@@ -29,11 +29,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
-import com.auction.dto.ProductList;
-import com.auction.dto.User;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.ProductList;
+import com.bdlions.dto.User;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

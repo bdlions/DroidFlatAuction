@@ -17,11 +17,11 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.auction.dto.AccountSettingFA;
-import com.auction.dto.Product;
-import com.auction.dto.ProductList;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.AccountSettingFA;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.ProductList;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

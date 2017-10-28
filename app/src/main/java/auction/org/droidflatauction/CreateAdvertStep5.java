@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
+import com.bdlions.dto.Product;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

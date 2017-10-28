@@ -12,7 +12,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.auction.dto.User;
+import com.bdlions.dto.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

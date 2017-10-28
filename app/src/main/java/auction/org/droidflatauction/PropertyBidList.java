@@ -30,11 +30,11 @@ import android.graphics.Typeface;
 import android.widget.TableRow.LayoutParams;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
-import com.auction.dto.ProductBid;
-import com.auction.dto.ProductBidList;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.ProductBid;
+import com.bdlions.dto.ProductBidList;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;

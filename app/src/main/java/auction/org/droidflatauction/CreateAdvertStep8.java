@@ -20,12 +20,12 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.auction.dto.Image;
-import com.auction.dto.Location;
-import com.auction.dto.Product;
-import com.auction.dto.response.SignInResponse;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Image;
+import com.bdlions.dto.Location;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -219,7 +219,6 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             {
                                 product.setImg("a.jpg");
                             }
-
                             Image image1 = new Image();
                             image1.setId(1);
                             image1.setTitle(product.getImg());

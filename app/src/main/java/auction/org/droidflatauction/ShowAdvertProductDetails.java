@@ -1,8 +1,11 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -23,10 +26,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.auction.dto.Amenity;
-import com.auction.dto.Availability;
-import com.auction.dto.Product;
-import com.auction.dto.Role;
+import com.bdlions.dto.Amenity;
+import com.bdlions.dto.Availability;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.Role;
+import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,6 +40,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
+
+import org.auction.udp.BackgroundWork;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +58,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
     SessionManager session;
     public static RelativeLayout myAdvertBtnRow,savedAdvertBtnRow;
     public int adIdentity;
+    public Dialog progressBarDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +104,9 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
         try
         {
+            progressBarDialog = new Dialog(ShowAdvertProductDetails.this);
+            progressBarDialog.setContentView(R.layout.progressbar);
+
             adIdentity = getIntent().getExtras().getInt("adIdentity");
             productString = getIntent().getExtras().getString("productString");
             Gson gson = new Gson();
@@ -244,25 +256,43 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             ivProductSave.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder saveDialog = new AlertDialog.Builder(ShowAdvertProductDetails.this);
-                    saveDialog.setMessage("Do you want to save this product!").setCancelable(false)
-
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int i) {
-
-                                    Toast.makeText(ShowAdvertProductDetails.this, "Save it! " ,Toast.LENGTH_SHORT).show();
+                    progressBarDialog.show();
+                    try
+                    {
+                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+                        packetHeader.setAction(ACTION.ADD_SAVED_PRODUCT);
+                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+                        packetHeader.setSessionId(session.getSessionId());
+                        new BackgroundWork().execute(packetHeader, productString, new Handler(){
+                            @Override
+                            public void handleMessage(Message msg) {
+                                progressBarDialog.dismiss();
+                                SignInResponse signInResponse = null;
+                                String stringSignInResponse = null;
+                                if(msg != null && msg.obj != null)
+                                {
+                                    stringSignInResponse = (String)msg.obj;
                                 }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int i) {
-                                    dialog.cancel();
+                                if(stringSignInResponse != null)
+                                {
+                                    Gson gson = new Gson();
+                                    signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
                                 }
-                            });
-                    AlertDialog alert = saveDialog.create();
-                    alert.setTitle("Save Product");
-                    alert.show();
+                                if(signInResponse != null && signInResponse.isSuccess())
+                                {
+                                    Toast.makeText(getApplicationContext(), "Ad is saved.", Toast.LENGTH_LONG).show();
+                                }
+                                else
+                                {
+                                    Toast.makeText(getApplicationContext(), "Error while saving ad. Please try again later.", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
+                    }
+                    catch(Exception ex)
+                    {
+                        progressBarDialog.dismiss();
+                    }
                 }
             });
         }

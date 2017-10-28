@@ -21,11 +21,11 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
-import com.auction.dto.ProductBid;
-import com.auction.dto.response.GeneralResponse;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.ProductBid;
+import com.bdlions.dto.response.GeneralResponse;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

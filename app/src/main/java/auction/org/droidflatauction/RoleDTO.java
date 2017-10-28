@@ -1,6 +1,6 @@
 package auction.org.droidflatauction;
 
-import com.auction.dto.Role;
+import com.bdlions.dto.Role;
 
 /**
  * Created by bdlions on 09/09/2017.

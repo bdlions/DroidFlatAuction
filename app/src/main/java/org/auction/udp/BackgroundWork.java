@@ -11,7 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-        import com.auction.util.ACTION;
+        import com.bdlions.util.ACTION;
         import com.google.gson.Gson;
         import com.google.gson.GsonBuilder;
 
@@ -54,14 +54,6 @@ public class BackgroundWork extends AsyncTask<Object, Integer, Void> {
         IServerCallback callback = new IServerCallback() {
             @Override
             public void timeout(String s) {
-                try
-                {
-                    Thread.sleep(5000);
-                }
-                catch(Exception ex)
-                {
-
-                }
                 handler.sendEmptyMessage( 0 );
             }
 

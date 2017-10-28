@@ -1,6 +1,6 @@
 package auction.org.droidflatauction;
 
-import com.auction.dto.Amenity;
+import com.bdlions.dto.Amenity;
 
 /**
  * Created by bdlions on 29/08/2017.

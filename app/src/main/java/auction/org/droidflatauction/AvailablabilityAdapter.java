@@ -16,14 +16,14 @@ import java.util.List;
 
 public class AvailablabilityAdapter extends BaseAdapter {
     Activity activity;
-    List<AvailablabilityModel> availablabilities;
+    List<DTOAvailablability> availablabilities;
     LayoutInflater layoutInflater;
 
     public AvailablabilityAdapter(Activity activity){
 
     }
 
-    public AvailablabilityAdapter(Activity activity, List<AvailablabilityModel> availablabilities) {
+    public AvailablabilityAdapter(Activity activity, List<DTOAvailablability> availablabilities) {
         this.activity = activity;
         this.availablabilities = availablabilities;
 
@@ -57,7 +57,7 @@ public class AvailablabilityAdapter extends BaseAdapter {
         }
         else
             holder = (ViewHolder)view.getTag();
-        AvailablabilityModel model = availablabilities.get(i);
+        DTOAvailablability model = availablabilities.get(i);
 
         holder.tvAvailablability.setText(model.getAvailablability());
 
@@ -70,7 +70,7 @@ public class AvailablabilityAdapter extends BaseAdapter {
         return view;
     }
 
-    public void updateRecords(List<AvailablabilityModel> availablabilities){
+    public void updateRecords(List<DTOAvailablability> availablabilities){
         this.availablabilities = availablabilities;
         notifyDataSetChanged();
 

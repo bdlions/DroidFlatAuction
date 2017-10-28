@@ -21,19 +21,19 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.auction.dto.Image;
-import com.auction.dto.Location;
-import com.auction.dto.MessageText;
-import com.auction.dto.Occupation;
-import com.auction.dto.Pet;
-import com.auction.dto.ProductCategory;
-import com.auction.dto.ProductSize;
-import com.auction.dto.ProductType;
-import com.auction.dto.Smoking;
-import com.auction.dto.Stay;
-import com.auction.dto.response.SignInResponse;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Image;
+import com.bdlions.dto.Location;
+import com.bdlions.dto.MessageText;
+import com.bdlions.dto.Occupation;
+import com.bdlions.dto.Pet;
+import com.bdlions.dto.ProductCategory;
+import com.bdlions.dto.ProductSize;
+import com.bdlions.dto.ProductType;
+import com.bdlions.dto.Smoking;
+import com.bdlions.dto.Stay;
+import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -58,7 +58,7 @@ public class MessageShow extends AppCompatActivity
     ArrayList<String> imgList = new ArrayList<String>();
     ArrayList<String> timeList = new ArrayList<String>();
 
-    public com.auction.dto.Message message;
+    public com.bdlions.dto.Message message;
 
     SessionManager session;
 
@@ -78,7 +78,7 @@ public class MessageShow extends AppCompatActivity
         btnInboxSendMessage = (Button) findViewById(R.id.btn_inbox_send_message);
         onClickButtonSendMessageListener();
 
-        message = new com.auction.dto.Message();
+        message = new com.bdlions.dto.Message();
         message.setId(getIntent().getExtras().getInt("messageId"));
 
         messageBodyList = (ArrayList<String>)getIntent().getExtras().get("messageBodyList");
@@ -142,7 +142,7 @@ public class MessageShow extends AppCompatActivity
                             public void handleMessage(Message msg) {
                                 String resultString = (String)msg.obj;
                                 Gson gson = new Gson();
-                                com.auction.dto.Message response = gson.fromJson(resultString, com.auction.dto.Message.class);
+                                com.bdlions.dto.Message response = gson.fromJson(resultString, com.bdlions.dto.Message.class);
                                 if(response.isSuccess())
                                 {
                                     Toast.makeText(getApplicationContext(), "Message is sent successfully.", Toast.LENGTH_LONG).show();

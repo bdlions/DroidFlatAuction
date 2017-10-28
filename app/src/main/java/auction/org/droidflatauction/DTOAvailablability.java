@@ -1,14 +1,16 @@
 package auction.org.droidflatauction;
 
+import com.bdlions.dto.Availability;
+
 /**
  * Created by bdlions on 29/08/2017.
  */
 
-public class AvailablabilityModel {
+public class DTOAvailablability extends Availability{
     boolean isSelected;
     String  availablability;
 
-    public AvailablabilityModel(boolean isSelected, String availablability) {
+    public DTOAvailablability(boolean isSelected, String availablability) {
         this.isSelected = isSelected;
         this.availablability = availablability;
     }

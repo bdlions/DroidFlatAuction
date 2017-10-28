@@ -20,9 +20,9 @@ import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 
-import com.auction.dto.MessageText;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.MessageText;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -102,7 +102,7 @@ public class MessageInbox extends AppCompatActivity
 
     public void fetchMessageInfo(final int messageId)
     {
-        com.auction.dto.Message requestMessage = new com.auction.dto.Message();
+        com.bdlions.dto.Message requestMessage = new com.bdlions.dto.Message();
         requestMessage.setId(messageId);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -121,7 +121,7 @@ public class MessageInbox extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    com.auction.dto.Message responseMessage = gson.fromJson(resultString, com.auction.dto.Message.class);
+                    com.bdlions.dto.Message responseMessage = gson.fromJson(resultString, com.bdlions.dto.Message.class);
                     System.out.println(responseMessage.getSubject());
                     if(responseMessage.getMessageTextList() != null)
                     {

@@ -1,7 +1,7 @@
 package auction.org.droidflatauction;
 
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 
 import org.bdlions.transport.packet.IPacketHeader;
 

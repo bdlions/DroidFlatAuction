@@ -22,14 +22,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.auction.dto.Location;
-import com.auction.dto.LocationList;
-import com.auction.dto.Product;
-import com.auction.dto.ProductList;
-import com.auction.dto.User;
-import com.auction.dto.response.SignInResponse;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Location;
+import com.bdlions.dto.LocationList;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.ProductList;
+import com.bdlions.dto.User;
+import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
@@ -47,10 +47,12 @@ public class MemberDashboard extends AppCompatActivity
     private static TextView tv_md_user_full_name;
 
     public int fetchProfileCounter = 0;
-    public int reattemptAutoLogin = 0;
+    public int fetchProfileMaxCounter = 5;
+    public int reAttemptAutoLogin = 0;
+    public int reAttemptAutoLoginMaxCounter = 5;
 
     SessionManager session;
-    NavigationManager navigationManager;
+    //NavigationManager navigationManager;
 
     public Dialog progressBarDialog;
 
@@ -63,7 +65,7 @@ public class MemberDashboard extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
-        navigationManager = new NavigationManager(getApplicationContext());
+        //navigationManager = new NavigationManager(getApplicationContext());
 
         onClickButtonManageAdvertDashboardListener();
         onClickButtonMessageDashboardListener();
@@ -90,48 +92,42 @@ public class MemberDashboard extends AppCompatActivity
 
     public void initUserProfile()
     {
-        String sessionId = session.getSessionId();
-        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_USER_INFO);
-        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-        packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                User user = null;
-                String userString = null;
-                if(msg != null  && msg.obj != null)
-                {
-                    userString = (String) msg.obj;
-                }
-                if(userString != null)
-                {
-                    Gson gson = new Gson();
-                    user = gson.fromJson(userString, User.class);
-                }
-                if(user != null && user.isSuccess())
-                {
-                    progressBarDialog.dismiss();
-                    if(session.getUserId() == 0)
+        try
+        {
+            String sessionId = session.getSessionId();
+            org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+            packetHeader.setAction(ACTION.FETCH_APP_DASHBOARD_USER_INFO);
+            packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+            packetHeader.setSessionId(sessionId);
+            new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    User user = null;
+                    String userString = null;
+                    if(msg != null  && msg.obj != null)
                     {
-                        session.setUserId(user.getId());
+                        userString = (String) msg.obj;
                     }
-                    tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
-                    Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
-                    return;
-                }
-                else
-                {
-                    fetchProfileCounter++;
-                    if (fetchProfileCounter <= 5)
+                    if(userString != null)
                     {
-                        initUserProfile();
+                        Gson gson = new Gson();
+                        user = gson.fromJson(userString, User.class);
                     }
-                    else
+                    if(user != null && user.isSuccess())
                     {
-                        //auto login again.
-                        reattemptAutoLogin++;
-                        if(reattemptAutoLogin <= 5)
+                        progressBarDialog.dismiss();
+                        if(session.getUserId() == 0)
+                        {
+                            session.setUserId(user.getId());
+                        }
+                        //tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
+                        //Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                        return;
+                    }
+                    else if(user != null && !user.isSuccess())
+                    {
+                        reAttemptAutoLogin++;
+                        if(reAttemptAutoLogin <= reAttemptAutoLoginMaxCounter)
                         {
                             autoLogin();
                         }
@@ -141,51 +137,45 @@ public class MemberDashboard extends AppCompatActivity
                             session.logoutUser();
                         }
                     }
+                    else
+                    {
+                        fetchProfileCounter++;
+                        if (fetchProfileCounter <= fetchProfileMaxCounter)
+                        {
+                            initUserProfile();
+                        }
+                        else
+                        {
+                            //auto login again.
+                            reAttemptAutoLogin++;
+                            if(reAttemptAutoLogin <= reAttemptAutoLoginMaxCounter)
+                            {
+                                autoLogin();
+                            }
+                            else
+                            {
+                                progressBarDialog.dismiss();
+                                session.logoutUser();
+                            }
+                        }
+                    }
                 }
-            }
-        });
-
-    }
-
-    public void autoLogin()
-    {
-        String email = session.getEmail();
-        String password = session.getPassword();
-        if(email == null || password == null)
-        {
-            progressBarDialog.dismiss();
-            session.logoutUser();
+            });
         }
-
-        User user = new User();
-        user.setUserName(email);
-        user.setPassword(password);
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.create();
-        String userString = gson.toJson(user);
-        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.SIGN_IN);
-        packetHeader.setRequestType(REQUEST_TYPE.AUTH);
-        new BackgroundWork().execute(packetHeader, userString, new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                SignInResponse signInResponse = null;
-                String stringSignInResponse = null;
-                if(msg != null && msg.obj != null)
+        catch(Exception ex)
+        {
+            fetchProfileCounter++;
+            if (fetchProfileCounter <= fetchProfileMaxCounter)
+            {
+                initUserProfile();
+            }
+            else
+            {
+                //auto login again.
+                reAttemptAutoLogin++;
+                if(reAttemptAutoLogin <= reAttemptAutoLoginMaxCounter)
                 {
-                    stringSignInResponse = (String)msg.obj;
-                }
-                if(stringSignInResponse != null)
-                {
-                    Gson gson = new Gson();
-                    signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
-                }
-
-                if(signInResponse != null && signInResponse.isSuccess())
-                {
-                    session.setSessionId(signInResponse.getSessionId());
-                    fetchProfileCounter = 0;
-                    initUserProfile();
+                    autoLogin();
                 }
                 else
                 {
@@ -193,7 +183,66 @@ public class MemberDashboard extends AppCompatActivity
                     session.logoutUser();
                 }
             }
-        });
+        }
+
+
+    }
+
+    public void autoLogin()
+    {
+        try
+        {
+            String email = session.getEmail();
+            String password = session.getPassword();
+            if(email == null || password == null)
+            {
+                progressBarDialog.dismiss();
+                session.logoutUser();
+            }
+
+            User user = new User();
+            user.setUserName(email);
+            user.setPassword(password);
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            String userString = gson.toJson(user);
+            org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+            packetHeader.setAction(ACTION.SIGN_IN);
+            packetHeader.setRequestType(REQUEST_TYPE.AUTH);
+            new BackgroundWork().execute(packetHeader, userString, new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    SignInResponse signInResponse = null;
+                    String stringSignInResponse = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        stringSignInResponse = (String)msg.obj;
+                    }
+                    if(stringSignInResponse != null)
+                    {
+                        Gson gson = new Gson();
+                        signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                    }
+
+                    if(signInResponse != null && signInResponse.isSuccess())
+                    {
+                        session.setSessionId(signInResponse.getSessionId());
+                        fetchProfileCounter = 0;
+                        initUserProfile();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                        session.logoutUser();
+                    }
+                }
+            });
+        }
+        catch(Exception ex)
+        {
+            progressBarDialog.dismiss();
+            session.logoutUser();
+        }
     }
 
     public void onClickButtonManageAdvertDashboardListener(){

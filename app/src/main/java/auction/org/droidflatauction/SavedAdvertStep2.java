@@ -21,7 +21,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
+import com.bdlions.dto.Product;
 import com.google.gson.Gson;
 
 public class SavedAdvertStep2 extends AppCompatActivity

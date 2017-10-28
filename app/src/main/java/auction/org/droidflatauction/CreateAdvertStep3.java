@@ -6,9 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,24 +21,23 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.auction.dto.Product;
-import com.auction.dto.ProductCategory;
-import com.auction.dto.ProductCategoryList;
-import com.auction.dto.Stay;
-import com.auction.dto.StayList;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.Amenity;
+import com.bdlions.dto.AmenityList;
+import com.bdlions.dto.Availability;
+import com.bdlions.dto.AvailabilityList;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.Stay;
+import com.bdlions.dto.StayList;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 public class CreateAdvertStep3 extends AppCompatActivity
@@ -64,9 +60,10 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
     Stay selectedMinStay, selectedMaxStay;
 
-    public int fetchStayCounter = 0;
+    public int fetchStayCounter = 0, fetchAvailabilityListCounter = 0;
 
     public Dialog progressBarDialog;
+    public ListView listViewAvailablability;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +93,10 @@ public class CreateAdvertStep3 extends AppCompatActivity
             {
                 etCreateProductAvailableTo.setText(product.getAvailableTo());
             }
+            if(product.getId() == 0 && product.getAvailabilities() == null)
+            {
+                product.setAvailabilities(new ArrayList<Availability>());
+            }
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
@@ -106,18 +107,18 @@ public class CreateAdvertStep3 extends AppCompatActivity
         //minimumStaySpinner();
         //maximumStaySpinner();
 
-        ListView listViewAvailablability = (ListView)findViewById(R.id.availabilities_listView);
-        final List<AvailablabilityModel> availablabilities = new ArrayList<>();
-        availablabilities.add(new AvailablabilityModel(false,"Daily"));
-        availablabilities.add(new AvailablabilityModel(false,"Weekly"));
-        availablabilities.add(new AvailablabilityModel(false,"Monthly"));
+        listViewAvailablability = (ListView)findViewById(R.id.availabilities_listView);
+        /*final List<DTOAvailablability> availablabilities = new ArrayList<>();
+        availablabilities.add(new DTOAvailablability(false,"Daily"));
+        availablabilities.add(new DTOAvailablability(false,"Weekly"));
+        availablabilities.add(new DTOAvailablability(false,"Monthly"));
 
         final AvailablabilityAdapter availablabilityAdapter = new AvailablabilityAdapter(this,availablabilities);
         listViewAvailablability.setAdapter(availablabilityAdapter);
         listViewAvailablability.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                AvailablabilityModel availablabilityModel = availablabilities.get(i);
+                DTOAvailablability availablabilityModel = availablabilities.get(i);
                 if(availablabilityModel.isSelected())
                     availablabilityModel.setSelected(false);
 
@@ -127,13 +128,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 availablabilities.set(i,availablabilityModel);
                 availablabilityAdapter.updateRecords(availablabilities);
             }
-        });
-
-        progressBarDialog = new Dialog(CreateAdvertStep3.this);
-        progressBarDialog.setContentView(R.layout.progressbar);
-        progressBarDialog.show();
-        fetchStayList();
-
+        });*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -142,6 +137,130 @@ public class CreateAdvertStep3 extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        progressBarDialog = new Dialog(CreateAdvertStep3.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+        fetchAvailabilityList();
+    }
+
+    public void fetchAvailabilityList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_AVAILABILITY_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    AvailabilityList availabilityList = null;
+                    String availabilityListString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        availabilityListString = (String) msg.obj;
+                    }
+                    if(availabilityListString != null)
+                    {
+                        Gson gson = new Gson();
+                        availabilityList = gson.fromJson(availabilityListString, AvailabilityList.class);
+                    }
+                    if(availabilityList != null && availabilityList.isSuccess())
+                    {
+                        //progressBarDialog.dismiss();
+                        ArrayList<Integer> availabilityListId = new ArrayList<Integer>();
+                        for(int counter = 0; counter < product.getAvailabilities().size(); counter++)
+                        {
+                            availabilityListId.add(product.getAvailabilities().get(counter).getId());
+                        }
+                        final List<DTOAvailablability> availabilities = new ArrayList<>();
+                        for(int counter = 0; counter < availabilityList.getAvailabilities().size(); counter++ )
+                        {
+                            Availability availability = availabilityList.getAvailabilities().get(counter);
+                            DTOAvailablability dtoAvailablability = new DTOAvailablability(false,availability.getTitle());
+                            if(availabilityListId.contains(availability.getId()))
+                            {
+                                dtoAvailablability.setSelected(true);
+                            }
+
+                            dtoAvailablability.setId(availability.getId());
+                            availabilities.add(dtoAvailablability);
+                        }
+
+                        final AvailablabilityAdapter availablabilityAdapter = new AvailablabilityAdapter(CreateAdvertStep3.this, availabilities);
+                        listViewAvailablability.setAdapter(availablabilityAdapter);
+                        listViewAvailablability.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                DTOAvailablability dtoAvailablability = availabilities.get(i);
+                                if(dtoAvailablability.isSelected())
+                                {
+                                    dtoAvailablability.setSelected(false);
+                                }
+                                else
+                                {
+                                    dtoAvailablability.setSelected(true);
+                                }
+                                Availability availability = new Availability();
+                                availability.setId(dtoAvailablability.getId());
+                                List<Availability> tempAvailabilityList = new ArrayList<Availability>();
+                                boolean isExists = false;
+                                if(product.getAvailabilities() != null && product.getAvailabilities().size() > 0)
+                                {
+                                    for (int counter = 0; counter < product.getAvailabilities().size(); counter++)
+                                    {
+                                        if (product.getAvailabilities().get(counter).getId() == availability.getId())
+                                        {
+                                            isExists = true;
+                                        }
+                                        else
+                                        {
+                                            tempAvailabilityList.add(product.getAvailabilities().get(counter));
+                                        }
+                                    }
+                                }
+                                if (!isExists)
+                                {
+                                    tempAvailabilityList.add(availability);
+                                }
+                                product.setAvailabilities(tempAvailabilityList);
+                                availabilities.set(i,dtoAvailablability);
+                                availablabilityAdapter.updateRecords(availabilities);
+                            }
+                        });
+                        fetchStayList();
+                    }
+                    else
+                    {
+                        fetchAvailabilityListCounter++;
+                        if (fetchAvailabilityListCounter <= 5)
+                        {
+                            fetchAvailabilityList();
+                        }
+                        else
+                        {
+                            //toast error message
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    fetchAvailabilityListCounter++;
+                    if (fetchAvailabilityListCounter <= 5)
+                    {
+                        fetchAvailabilityList();
+                    }
+                    else
+                    {
+                        //toast error message
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
     }
 
 

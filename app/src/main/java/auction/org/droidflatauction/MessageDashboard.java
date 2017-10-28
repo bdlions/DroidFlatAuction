@@ -18,11 +18,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
-import com.auction.dto.MessageList;
-import com.auction.dto.Product;
-import com.auction.dto.ProductList;
-import com.auction.util.ACTION;
-import com.auction.util.REQUEST_TYPE;
+import com.bdlions.dto.MessageList;
+import com.bdlions.dto.Product;
+import com.bdlions.dto.ProductList;
+import com.bdlions.util.ACTION;
+import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 
 import org.auction.udp.BackgroundWork;
@@ -109,7 +109,7 @@ public class MessageDashboard extends AppCompatActivity
                     Gson gson = new Gson();
                     MessageList response = gson.fromJson(resultString, MessageList.class);
 
-                    List<com.auction.dto.Message> messageList = response.getMessageList();
+                    List<com.bdlions.dto.Message> messageList = response.getMessageList();
 
 
                     ArrayList<Integer> messageIdList = new ArrayList<Integer>();
@@ -124,7 +124,7 @@ public class MessageDashboard extends AppCompatActivity
                         int totalMessages = messageList.size();
                         for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
                         {
-                            com.auction.dto.Message message = messageList.get(messageCounter);
+                            com.bdlions.dto.Message message = messageList.get(messageCounter);
                             messageIdList.add(message.getId());
                             userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
                             subjectList.add(message.getSubject());
@@ -190,7 +190,7 @@ public class MessageDashboard extends AppCompatActivity
                     Gson gson = new Gson();
                     MessageList response = gson.fromJson(resultString, MessageList.class);
 
-                    List<com.auction.dto.Message> messageList = response.getMessageList();
+                    List<com.bdlions.dto.Message> messageList = response.getMessageList();
 
 
                     ArrayList<Integer> messageIdList = new ArrayList<Integer>();
@@ -204,7 +204,7 @@ public class MessageDashboard extends AppCompatActivity
                         int totalMessages = messageList.size();
                         for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
                         {
-                            com.auction.dto.Message message = messageList.get(messageCounter);
+                            com.bdlions.dto.Message message = messageList.get(messageCounter);
                             messageIdList.add(message.getId());
                             userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
                             subjectList.add(message.getSubject());
