@@ -24,6 +24,7 @@ import com.google.gson.GsonBuilder;
 import org.auction.udp.BackgroundWork;
 import org.bdlions.client.reqeust.threads.IServerCallback;
 import org.bdlions.transport.packet.*;
+import org.w3c.dom.Text;
 
 public class SignIn extends AppCompatActivity {
     private  static ImageButton login_ib_back_arrow;
@@ -106,7 +107,10 @@ public class SignIn extends AppCompatActivity {
                                         session.setEmail(etIdentity.getText().toString());
                                         session.setPassword(etPassword.getText().toString());
                                         //navigate to member dashboard
-                                        Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
+                                        //Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
+                                        //login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        //startActivity(login_intent);
+                                        Intent login_intent = new Intent(getBaseContext(), Test.class);
                                         login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(login_intent);
                                     }
