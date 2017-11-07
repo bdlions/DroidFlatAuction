@@ -33,6 +33,7 @@ public class SignIn extends AppCompatActivity {
     private static EditText etIdentity, etPassword;
     String identity, password;
     public Dialog progressBarDialog;
+    private static String message = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,16 +108,25 @@ public class SignIn extends AppCompatActivity {
                                         session.setEmail(etIdentity.getText().toString());
                                         session.setPassword(etPassword.getText().toString());
                                         //navigate to member dashboard
-                                        //Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
-                                        //login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        //startActivity(login_intent);
-                                        Intent login_intent = new Intent(getBaseContext(), Test.class);
+                                        Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
                                         login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(login_intent);
+                                        //Intent login_intent = new Intent(getBaseContext(), Test.class);
+                                        //login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        //startActivity(login_intent);
                                     }
                                     else if(signInResponse != null && !signInResponse.isSuccess())
                                     {
-                                        AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
+                                        Toast.makeText(getBaseContext(), signInResponse.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                        /*message = signInResponse.getMessage();
+                                        runOnUiThread(new Runnable() {
+                                            public void run() {
+                                                Toast.makeText(getBaseContext(), "Invalid datafrom the server.Error:"+message, Toast.LENGTH_SHORT).show();
+                                            }
+                                        });*/
+
+                                        /*AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
                                         sign_in_builder.setMessage(signInResponse.getMessage())
                                                 .setCancelable(false)
                                                 .setPositiveButton("", new DialogInterface.OnClickListener() {
@@ -134,11 +144,19 @@ public class SignIn extends AppCompatActivity {
 
                                         AlertDialog sign_in_alert = sign_in_builder.create();
                                         sign_in_alert.setTitle("Alert!!!");
-                                        sign_in_alert.show();
+                                        sign_in_alert.show();*/
                                     }
                                     else
                                     {
-                                        AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
+                                        Toast.makeText(getBaseContext(), "Unable to process request. Please try again later.", Toast.LENGTH_SHORT).show();
+
+                                        /*runOnUiThread(new Runnable() {
+                                            public void run() {
+                                                Toast.makeText(getBaseContext(), "Unable to process request. Please try again later.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });*/
+
+                                        /*AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
                                         sign_in_builder.setMessage("Unable to process request. Please try again later.")
                                                 .setCancelable(false)
                                                 .setPositiveButton("", new DialogInterface.OnClickListener() {
@@ -155,7 +173,7 @@ public class SignIn extends AppCompatActivity {
                                                 });
                                         AlertDialog sign_in_alert = sign_in_builder.create();
                                         sign_in_alert.setTitle("Alert!!!");
-                                        sign_in_alert.show();
+                                        sign_in_alert.show();*/
 
                                     }
                                 }
@@ -164,7 +182,15 @@ public class SignIn extends AppCompatActivity {
                         catch(Exception ex)
                         {
                             progressBarDialog.dismiss();
-                            AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
+                            Toast.makeText(getBaseContext(), "Unable to process request. Please try again later..", Toast.LENGTH_SHORT).show();
+
+                            /*runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(getBaseContext(), "Unable to process request. Please try again later..", Toast.LENGTH_SHORT).show();
+                                }
+                            });*/
+
+                            /*AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
                             sign_in_builder.setMessage("Unable to process request. Please try again.")
                                     .setCancelable(false)
                                     .setPositiveButton("", new DialogInterface.OnClickListener() {
@@ -181,7 +207,7 @@ public class SignIn extends AppCompatActivity {
                                     });
                             AlertDialog sign_in_alert = sign_in_builder.create();
                             sign_in_alert.setTitle("Alert!!!");
-                            sign_in_alert.show();
+                            sign_in_alert.show();*/
                         }
                     }
                 }

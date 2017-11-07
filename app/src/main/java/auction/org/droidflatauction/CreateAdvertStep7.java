@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,12 +26,15 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bdlions.dto.BidTime;
 import com.bdlions.dto.Image;
+import com.bdlions.dto.ListBidTime;
 import com.bdlions.dto.Location;
 import com.bdlions.dto.Occupation;
 import com.bdlions.dto.Pet;
 import com.bdlions.dto.Product;
 import com.bdlions.dto.ProductCategory;
+import com.bdlions.dto.ProductCategoryList;
 import com.bdlions.dto.ProductSize;
 import com.bdlions.dto.ProductType;
 import com.bdlions.dto.Smoking;
@@ -53,10 +57,18 @@ public class CreateAdvertStep7 extends AppCompatActivity
     private static EditText etCreateProductBidStartCalendar,etCreateProductBidEndCalendar;
     private static Spinner bidStartTimer,bidEndTimer;
     ArrayAdapter<CharSequence> bidStartTimerAdapter,bidEndTimerAdapter;
+    ArrayAdapter<BidTime> bidStartTimeAdapter,bidEndTimeAdapter;
     Product product;
     String productString;
     SessionManager session;
     NavigationManager navigationManager;
+
+    public Dialog progressBarDialog;
+
+    public List<BidTime> bidTimes = new ArrayList<>();
+    public BidTime selectedBidStartTime = new BidTime();
+    public BidTime selectedBidEndTime = new BidTime();
+    public int fetchProductBidTimeCounter = 0;
 
 
     @Override
@@ -88,6 +100,10 @@ public class CreateAdvertStep7 extends AppCompatActivity
             {
                 etCreateProductBidEndCalendar.setText(product.getBidEndDate());
             }
+            progressBarDialog = new Dialog(CreateAdvertStep7.this);
+            progressBarDialog.setContentView(R.layout.progressbar);
+            progressBarDialog.show();
+            fetchBidTimeList();
         }
         catch(Exception ex)
         {
@@ -97,8 +113,8 @@ public class CreateAdvertStep7 extends AppCompatActivity
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
 
-        fetchBidStartTimerList();
-        fetchBidEndTimerList();
+        //fetchBidStartTimerList();
+        //fetchBidEndTimerList();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -109,8 +125,120 @@ public class CreateAdvertStep7 extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+
+    public void fetchBidTimeList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_BID_TIME_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                ListBidTime listBidTime = null;
+                String listBidTimeString = null;
+                if(msg != null && msg.obj != null)
+                {
+                    listBidTimeString = (String) msg.obj;
+                }
+                if(listBidTimeString != null)
+                {
+                    Gson gson = new Gson();
+                    listBidTime = gson.fromJson(listBidTimeString, ListBidTime.class);
+                }
+                if(listBidTime != null && listBidTime.isSuccess() && listBidTime.getBidTimes() != null )
+                {
+                    progressBarDialog.dismiss();
+                    bidTimes = listBidTime.getBidTimes();
+                    if(bidTimes.size() > 0)
+                    {
+                        int selectedBidStartTimePosition = 0;
+                        int selectedBidEndTimePosition = 0;
+                        selectedBidStartTime = bidTimes.get(0);
+                        selectedBidEndTime = bidTimes.get(0);
+                        if(product.getBidStartTime() == null)
+                        {
+                            product.setBidStartTime("");
+                        }
+                        if(product.getBidEndTime() == null)
+                        {
+                            product.setBidEndTime("");
+                        }
+                        for(int counter = 0; counter < bidTimes.size(); counter++)
+                        {
+                            if(product.getBidStartTime().equals(bidTimes.get(counter).getTitle()))
+                            {
+                                selectedBidStartTime = bidTimes.get(counter);
+                                selectedBidStartTimePosition = counter;
+                            }
+                            if(product.getBidEndTime().equals(bidTimes.get(counter).getTitle()))
+                            {
+                                selectedBidEndTime = bidTimes.get(counter);
+                                selectedBidEndTimePosition = counter;
+                            }
+                        }
+
+                        bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
+                        bidStartTimeAdapter = new ArrayAdapter<BidTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
+                        bidStartTimer.setAdapter(bidStartTimeAdapter);
+                        bidStartTimer.setSelection(selectedBidStartTimePosition);
+                        bidStartTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                selectedBidStartTime = (BidTime) bidStartTimer.getSelectedItem();
+                                product.setBidStartTime(selectedBidStartTime.getTitle());
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+
+                        bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
+                        bidEndTimeAdapter = new ArrayAdapter<BidTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
+                        bidEndTimer.setAdapter(bidEndTimeAdapter);
+                        bidEndTimer.setSelection(selectedBidEndTimePosition);
+                        bidEndTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                selectedBidEndTime = (BidTime) bidStartTimer.getSelectedItem();
+                                product.setBidEndTime(selectedBidEndTime.getTitle());
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
+                        });
+                    }
+                    else
+                    {
+                        //show an error message
+                    }
+                }
+                else
+                {
+                    fetchProductBidTimeCounter++;
+                    if (fetchProductBidTimeCounter <= 5)
+                    {
+                        fetchBidTimeList();
+                    }
+                    else
+                    {
+                        //display pop up with error message
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
+
     public void fetchBidStartTimerList(){
-        bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
+        /*bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
         bidStartTimerAdapter = ArrayAdapter.createFromResource(this,R.array.bid_timer_spinner_options,android.R.layout.simple_spinner_item);
         bidStartTimerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bidStartTimer.setAdapter(bidStartTimerAdapter);
@@ -124,10 +252,10 @@ public class CreateAdvertStep7 extends AppCompatActivity
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
+        });*/
     }
     public void fetchBidEndTimerList(){
-        bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
+        /*bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
         bidEndTimerAdapter = ArrayAdapter.createFromResource(this,R.array.bid_timer_spinner_options,android.R.layout.simple_spinner_item);
         bidEndTimerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         bidEndTimer.setAdapter(bidEndTimerAdapter);
@@ -141,7 +269,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
+        });*/
     }
     public void onStart(){
         super.onStart();

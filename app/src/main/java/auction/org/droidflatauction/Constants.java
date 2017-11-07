@@ -5,7 +5,7 @@ package auction.org.droidflatauction;
  */
 
 public class Constants {
-    public static String baseUrl = "http://roomauction.co.uk/";
+    public static String baseUrl = "http://roombidrent.co.uk/";
     public static String imageUploadPath = "uploads/";
     public static String profilePicturePath = "resources/images/profile/";
     public static String profilePicturePath_50_50 = "resources/images/profile/50_50/";

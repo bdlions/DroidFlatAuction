@@ -1,45 +1,45 @@
 <resources>
     <string name="action_settings">Settings</string>
-    <string name="app_name">RoomAuction</string>
-    <string name="non_member_home_welcome_note">Welcome to RoomAuction!</string>
+    <string name="app_name">RoomBidRent</string>
+    <string name="non_member_home_welcome_note">Welcome to RoomBidRent!</string>
     <string name="non_member_home_paragraph">Create an account and sign in to bid for your
 favourite properties, receive email alerts for new results and much more.</string>
-    <string name="footer_note">Room Auction UK 2017</string>
+    <string name="footer_note">RoomBidRent UK 2017</string>
     <!-- sign in -->
     <string name="sign_in_welcome_note">Welcome Back!</string>
     <string name="sign_in_paragraph">It is great to see you again. We hope your search is going well.</string>
     <string name="sign_up_create_password_paragraph">Your password must be 8 or more characters long.
         Do not use any common passwords, repetition or sequences. Try making is longer or adding symbols
         like !, # or %.</string>
-    <string name="sign_up_joining_top_paragraph">Whether its your first time using RoomAuction or you are
-    one of our original bidders, please commit to respecting and including everyone in the  RoomAuction Community.</string>
-    <string name="sign_up_joining_bottom_paragraph">I agree to treat everyone in the RoomAuction community - regardless
+    <string name="sign_up_joining_top_paragraph">Whether its your first time using RoomBidRent or you are
+    one of our original bidders, please commit to respecting and including everyone in the  RoomBidRent Community.</string>
+    <string name="sign_up_joining_bottom_paragraph">I agree to treat everyone in the RoomBidRent community - regardless
         of their race, religion, national origin, ethnicuty, disability, sex, gender, identity, sexual orientation or age
         - with respect and without judgement or bias.</string>
-    <string name="title_activity_member_dashboard">RoomAuction</string>
+    <string name="title_activity_member_dashboard">RoomBidRent</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="title_activity_profile_dashboard">RoomAuction</string>
-    <string name="title_activity_user_profile">RoomAuction</string>
-    <string name="title_activity_edit_user_profile">RoomAuction</string>
-    <string name="title_activity_manage_advert_dashboard">RoomAuction</string>
-    <string name="title_activity_message_dashboard">RoomAuction</string>
-    <string name="title_activity_account_settings_dashboard">RoomAuction</string>
-    <string name="title_activity_member_property_search">RoomAuction</string>
-    <string name="title_activity_create_advert_step1">RoomAuction</string>
-    <string name="title_activity_create_advert_step2">RoomAuction</string>
-    <string name="title_activity_create_advert_step3">RoomAuction</string>
-    <string name="title_activity_create_advert_step4">RoomAuction</string>
-    <string name="title_activity_create_advert_step5">RoomAuction</string>
-    <string name="title_activity_create_advert_step6">RoomAuction</string>
-    <string name="title_activity_my_advert_step1">RoomAuction</string>
-    <string name="title_activity_saved_advert_step1">RoomAuction</string>
-    <string name="title_activity_manage_advert_account_settings_step1">RoomAuction</string>
-    <string name="title_activity_manage_advert_individual_ad_bids">RoomAuction</string>
-    <string name="title_activity_manage_advert_individual_ad_bids_step1"> RoomAuction </string>
-    <string name="title_activity_manage_advert_stats">RoomAuction</string>
-    <string name="title_activity_manage_advert_ranking">RoomAuction</string>
-    <string name="title_activity_manage_advert_faq">RoomAuction</string>
+    <string name="title_activity_profile_dashboard">RoomBidRent</string>
+    <string name="title_activity_user_profile">RoomBidRent</string>
+    <string name="title_activity_edit_user_profile">RoomBidRent</string>
+    <string name="title_activity_manage_advert_dashboard">RoomBidRent</string>
+    <string name="title_activity_message_dashboard">RoomBidRent</string>
+    <string name="title_activity_account_settings_dashboard">RoomBidRent</string>
+    <string name="title_activity_member_property_search">RoomBidRent</string>
+    <string name="title_activity_create_advert_step1">RoomBidRent</string>
+    <string name="title_activity_create_advert_step2">RoomBidRent</string>
+    <string name="title_activity_create_advert_step3">RoomBidRent</string>
+    <string name="title_activity_create_advert_step4">RoomBidRent</string>
+    <string name="title_activity_create_advert_step5">RoomBidRent</string>
+    <string name="title_activity_create_advert_step6">RoomBidRent</string>
+    <string name="title_activity_my_advert_step1">RoomBidRent</string>
+    <string name="title_activity_saved_advert_step1">RoomBidRent</string>
+    <string name="title_activity_manage_advert_account_settings_step1">RoomBidRent</string>
+    <string name="title_activity_manage_advert_individual_ad_bids">RoomBidRent</string>
+    <string name="title_activity_manage_advert_individual_ad_bids_step1"> RoomBidRent </string>
+    <string name="title_activity_manage_advert_stats">RoomBidRent</string>
+    <string name="title_activity_manage_advert_ranking">RoomBidRent</string>
+    <string name="title_activity_manage_advert_faq">RoomBidRent</string>
 
     <string-array name="i_have_for_rent_spinner_options">
         <item>1 Room</item>
@@ -101,16 +101,16 @@ favourite properties, receive email alerts for new results and much more.</strin
     </string-array>
     <string name="daily_email_alerts">Yes, please send me daily summary emails of new Rooms Wanted ad</string>
     <string name="instant_email_alerts">Yes, please send me emails of new Rooms Wanted adverts matching my requirements as soon as they are placed on the website</string>
-    <string name="title_activity_manage_advert_account_settings_step"> RoomAuction </string>
-    <string name="title_activity_my_advert_step2">RoomAuction</string>
-    <string name="title_activity_member_property_search_product">RoomAuction</string>
-    <string name="title_activity_my_advert_step3">RoomAuction</string>
-    <string name="title_activity_saved_advert_step2">RoomAuction</string>
-    <string name="title_activity_create_advert_step7">RoomAuction</string>
-    <string name="title_activity_property_bid_list">RoomAuction</string>
-    <string name="title_activity_contact_though_message">RoomAuction</string>
-    <string name="title_activity_message_inbox">RoomAuction</string>
-    <string name="title_activity_message_show">RoomAuction</string>
+    <string name="title_activity_manage_advert_account_settings_step"> RoomBidRent </string>
+    <string name="title_activity_my_advert_step2">RoomBidRent</string>
+    <string name="title_activity_member_property_search_product">RoomBidRent</string>
+    <string name="title_activity_my_advert_step3">RoomBidRent</string>
+    <string name="title_activity_saved_advert_step2">RoomBidRent</string>
+    <string name="title_activity_create_advert_step7">RoomBidRent</string>
+    <string name="title_activity_property_bid_list">RoomBidRent</string>
+    <string name="title_activity_contact_though_message">RoomBidRent</string>
+    <string name="title_activity_message_inbox">RoomBidRent</string>
+    <string name="title_activity_message_show">RoomBidRent</string>
 
     <string-array name="ranking_list_items">
         <item>1__Property 1__$10__$100</item>
@@ -150,11 +150,11 @@ favourite properties, receive email alerts for new results and much more.</strin
         <item>Advert 5</item>
         <item>Advert 6</item>
     </string-array>
-    <string name="title_activity_manage_advert_stats_step1">RoomAuction</string>
-    <string name="title_activity_manage_advert_stats_step2">RoomAuction</string>
-    <string name="title_activity_message_sent">RoomAuction</string>
-    <string name="title_activity_property_place_bid">RoomAuction</string>
-    <string name="title_activity_create_advert_step8">RoomAuction</string>
+    <string name="title_activity_manage_advert_stats_step1">RoomBidRent</string>
+    <string name="title_activity_manage_advert_stats_step2">RoomBidRent</string>
+    <string name="title_activity_message_sent">RoomBidRent</string>
+    <string name="title_activity_property_place_bid">RoomBidRent</string>
+    <string name="title_activity_create_advert_step8">RoomBidRent</string>
     <string-array name="bid_timer_spinner_options">
         <item>12 AM</item>
         <item>1 AM</item>
@@ -181,7 +181,7 @@ favourite properties, receive email alerts for new results and much more.</strin
         <item>10 PM</item>
         <item>11 PM</item>
     </string-array>
-    <string name="title_activity_show_advert_product_details">RoomAuction</string>
-    <string name="title_activity_demo_pagination">RoomAuction</string>
-    <string name="title_activity_test">RoomAuction</string>
+    <string name="title_activity_show_advert_product_details">RoomBidRent</string>
+    <string name="title_activity_demo_pagination">RoomBidRent</string>
+    <string name="title_activity_test">RoomBidRent</string>
 </resources>

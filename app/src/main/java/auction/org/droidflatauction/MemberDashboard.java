@@ -120,8 +120,8 @@ public class MemberDashboard extends AppCompatActivity
                         {
                             session.setUserId(user.getId());
                         }
-                        //tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
-                        //Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                        tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
                         return;
                     }
                     else if(user != null && !user.isSuccess())
