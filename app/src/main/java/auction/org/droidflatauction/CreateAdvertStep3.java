@@ -47,6 +47,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
     private static Spinner sp_minimum_stay,sp_maximum_stay;
     ArrayAdapter<CharSequence> minimum_stay_adapter,maximum_stay_adapter;
     private static EditText etCreateProductAvailableFrom,etCreateProductAvailableTo;
+    private static CheckBox cbManageProductOngoing;
 
 
     Product product;
@@ -78,7 +79,8 @@ public class CreateAdvertStep3 extends AppCompatActivity
         navigationManager = new NavigationManager(getApplicationContext());
 
         etCreateProductAvailableFrom = (EditText) findViewById(R.id.et_create_product_available_from);
-        etCreateProductAvailableTo= (EditText) findViewById(R.id.et_create_product_available_to);
+        etCreateProductAvailableTo = (EditText) findViewById(R.id.et_create_product_available_to);
+        cbManageProductOngoing = (CheckBox) findViewById(R.id.cb_manage_product_ongoing);
 
 
         try {
@@ -93,6 +95,11 @@ public class CreateAdvertStep3 extends AppCompatActivity
             if(product.getAvailableTo() != null)
             {
                 etCreateProductAvailableTo.setText(product.getAvailableTo());
+            }
+            if(product.isOngoing())
+            {
+                etCreateProductAvailableTo.setText("");
+                cbManageProductOngoing.setChecked(true);
             }
             if(product.getId() == 0 && product.getAvailabilities() == null)
             {
@@ -308,13 +315,12 @@ public class CreateAdvertStep3 extends AppCompatActivity
             }
         });
     }
-    public void ongoingCheckBox( View view){
+    public void ongoingCheckBoxClicked( View view){
         boolean checked = ((CheckBox) view).isChecked();
-                if (checked) {
-
-                } else {
-
-                }
+        if (checked) {
+            etCreateProductAvailableTo.setText("");
+            product.setAvailableTo("");
+        }
     }
 
     public void fetchStayList()
@@ -481,22 +487,24 @@ public class CreateAdvertStep3 extends AppCompatActivity
                             Toast.makeText(getBaseContext(),"Available from date is required" , Toast.LENGTH_SHORT).show();
                             return;
                         }
-
-                        if(availableTo != null && !availableTo.equals(""))
+                        if(!product.isOngoing())
                         {
-                            availableTo = availableTo.replaceAll("/", "-");
-                            String[] availableToArray = availableTo.split("-");
-                            if(availableToArray.length != 3 || availableToArray[2].length() != 4)
+                            if(availableTo != null && !availableTo.equals(""))
                             {
-                                Toast.makeText(getBaseContext(),"Invalid available to date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                                availableTo = availableTo.replaceAll("/", "-");
+                                String[] availableToArray = availableTo.split("-");
+                                if(availableToArray.length != 3 || availableToArray[2].length() != 4)
+                                {
+                                    Toast.makeText(getBaseContext(),"Invalid available to date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+                                product.setAvailableTo(availableTo);
+                            }
+                            else
+                            {
+                                Toast.makeText(getBaseContext(),"Available to date is required." , Toast.LENGTH_SHORT).show();
                                 return;
                             }
-                            product.setAvailableTo(availableTo);
-                        }
-                        else
-                        {
-                            Toast.makeText(getBaseContext(),"Available to date is required." , Toast.LENGTH_SHORT).show();
-                            return;
                         }
 
                         if(selectedMinStay != null)

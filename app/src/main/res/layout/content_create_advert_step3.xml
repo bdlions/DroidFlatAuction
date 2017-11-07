@@ -98,12 +98,13 @@
                    android:textStyle="bold"
                    android:layout_weight="1"/>
                <CheckBox
+                   android:id="@+id/cb_manage_product_ongoing"
                    android:layout_width="match_parent"
                    android:layout_height="40dp"
                    android:layout_marginTop="2dp"
                    android:layout_marginLeft="5dp"
                    android:gravity="left"
-                   android:onClick="ongoingCheckBox"
+                   android:onClick="ongoingCheckBoxClicked"
                    android:layout_weight="1"/>
            </LinearLayout>
            <TextView
