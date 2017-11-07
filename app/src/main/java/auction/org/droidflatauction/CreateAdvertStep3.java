@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -307,6 +308,15 @@ public class CreateAdvertStep3 extends AppCompatActivity
             }
         });
     }
+    public void ongoingCheckBox( View view){
+        boolean checked = ((CheckBox) view).isChecked();
+                if (checked) {
+
+                } else {
+
+                }
+    }
+
     public void fetchStayList()
     {
         String sessionId = session.getSessionId();
