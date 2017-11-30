@@ -371,12 +371,15 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step4_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-                        create_advert_step4_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step4_back_arrow_intent);
+                        if(setInputToProduct())
+                        {
+                            Intent create_advert_step4_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step4_back_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step4_back_arrow_intent);
+                        }
                     }
                 }
         );
@@ -387,83 +390,52 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step4_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
-
-                        if(selectedSmoking != null)
+                        if(setInputToProduct())
                         {
-                            product.setSmoking(selectedSmoking);
+                            Intent create_advert_step4_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step4_forward_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step4_forward_arrow_intent);
                         }
-                        if(selectedOccupation != null)
-                        {
-                            product.setOccupation(selectedOccupation);
-                        }
-                        if(selectedPet != null)
-                        {
-                            product.setPet(selectedPet);
-                        }
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-
-                        create_advert_step4_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step4_forward_arrow_intent);
                     }
                 }
         );
     }
 
-    /*public void smokingSpinner(){
-        sp_smoking = (Spinner) findViewById(R.id.smoking_spinner);
-        smoking_adapter = ArrayAdapter.createFromResource(this,R.array.smoking_spinner_options,android.R.layout.simple_spinner_item);
-        smoking_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_smoking.setAdapter(smoking_adapter);
-        sp_smoking.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
+    public boolean setInputToProduct()
+    {
+        if(selectedSmoking != null)
+        {
+            product.setSmoking(selectedSmoking);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Smoking is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(selectedOccupation != null)
+        {
+            product.setOccupation(selectedOccupation);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Occupation is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(selectedPet != null)
+        {
+            product.setPet(selectedPet);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Pet is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
-    public void occupationSpinner(){
-        sp_occupation = (Spinner) findViewById(R.id.occupation_spinner);
-        occupation_adapter = ArrayAdapter.createFromResource(this,R.array.occupation_spinner_options,android.R.layout.simple_spinner_item);
-        occupation_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_occupation.setAdapter(occupation_adapter);
-        sp_occupation.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }
-    public void petsSpinner(){
-        sp_pets = (Spinner) findViewById(R.id.pets_spinner);
-        pets_adapter = ArrayAdapter.createFromResource(this,R.array.pets_spinner_options,android.R.layout.simple_spinner_item);
-        pets_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_pets.setAdapter(pets_adapter);
-        sp_pets.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }*/
 
     @Override
     public void onBackPressed() {

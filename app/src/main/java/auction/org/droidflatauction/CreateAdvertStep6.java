@@ -1,13 +1,17 @@
 package auction.org.droidflatauction;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -67,6 +71,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         int columnIndex = cursor.getColumnIndex(projection[0]);
                         String picturePath = cursor.getString(columnIndex); // returns null
                         cursor.close();
+                        //Toast.makeText(getApplicationContext(), "PicturePath:"+picturePath, Toast.LENGTH_LONG).show();
                         new BackgroundUploader().execute(picturePath, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
@@ -94,6 +99,13 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         Toast.makeText(getApplicationContext(), "Error:"+e.toString(), Toast.LENGTH_LONG).show();
                     }
                 }
+                else
+                {
+                    //Toast.makeText(getApplicationContext(), "ResultCode:"+resultCode, Toast.LENGTH_LONG).show();
+                }
+            break;
+            default:
+                //Toast.makeText(getApplicationContext(), "RequestCode:"+requestCode, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -162,32 +174,24 @@ public class CreateAdvertStep6 extends AppCompatActivity
 
             @Override
             public void onClick(View arg0) {
-                imageUploadDialog = new Dialog(CreateAdvertStep6.this);
-                imageUploadDialog.setContentView(R.layout.upload_product_photo);
-                imageUploadDialog.setTitle("Upload Photo");
-                imageUploadDialog.show();
-                Button submitButton = (Button) imageUploadDialog.findViewById(R.id.btn_submit_product_photo_upload);
-                submitButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
-                        imgUploadType = Constants.IMG_UPLOAD_TYPE_PRODUCT_PICTURE;
-                        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
-                        photoPickerIntent.setType("image/*");
-                        startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Settings.System.canWrite(CreateAdvertStep6.this)) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE}, 2909);
+                    } else {
+                        // continue with your code
+                        addProductPhoto();
                     }
-                });
-                Button declineButton = (Button) imageUploadDialog.findViewById(R.id.btn_cancel_product_photo_upload);
-                declineButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        imageUploadDialog.dismiss();
-                    }
-                });
+                } else {
+                    // continue with your code
+                    addProductPhoto();
+                }
             }
 
         });
     }
+
+
 
     public void onClickUpdateProductPhotoEditListener()
     {
@@ -219,6 +223,47 @@ public class CreateAdvertStep6 extends AppCompatActivity
                 });
             }
 
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 2909: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Log.e("Permission", "Granted");
+                    addProductPhoto();
+                } else {
+                    //Log.e("Permission", "Denied");
+                }
+                //return;
+            }
+        }
+    }
+
+    public void addProductPhoto()
+    {
+        imageUploadDialog = new Dialog(CreateAdvertStep6.this);
+        imageUploadDialog.setContentView(R.layout.upload_product_photo);
+        imageUploadDialog.setTitle("Upload Photo");
+        imageUploadDialog.show();
+        Button submitButton = (Button) imageUploadDialog.findViewById(R.id.btn_submit_product_photo_upload);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(EditUserProfile.this, "Upload is successfull!",Toast.LENGTH_SHORT).show();
+                imgUploadType = Constants.IMG_UPLOAD_TYPE_PRODUCT_PICTURE;
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+            }
+        });
+        Button declineButton = (Button) imageUploadDialog.findViewById(R.id.btn_cancel_product_photo_upload);
+        declineButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageUploadDialog.dismiss();
+            }
         });
     }
    /* public void EditProductImage()

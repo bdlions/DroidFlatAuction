@@ -261,10 +261,23 @@ public class CreateAdvertStep8 extends AppCompatActivity
                                 }
                                 if(signInResponse != null && signInResponse.isSuccess())
                                 {
-                                    Toast.makeText(getApplicationContext(), "Ad is created.", Toast.LENGTH_LONG).show();
-                                    //show a message that advert is created and go to my ads page
+                                    //right now success message is hardcoded. Later display message from server
+                                    if(product.getId() > 0)
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Ad is updated successfully.", Toast.LENGTH_LONG).show();
+                                    }
+                                    else
+                                    {
+                                        Toast.makeText(getApplicationContext(), "Ad is created successfully.", Toast.LENGTH_LONG).show();
+                                    }
+                                    //go to my ads page
                                     Intent create_advert_submit_button_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
                                     startActivity(create_advert_submit_button_intent);
+                                    return;
+                                }
+                                else if(signInResponse != null && !signInResponse.isSuccess())
+                                {
+                                    Toast.makeText(getApplicationContext(), signInResponse.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                                 else
                                 {

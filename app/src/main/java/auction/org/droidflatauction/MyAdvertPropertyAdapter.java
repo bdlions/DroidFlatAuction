@@ -119,7 +119,7 @@ public class MyAdvertPropertyAdapter extends BaseAdapter {
 
         //property_images.setImageResource(listId.get(position));
         String imageName = imgList.get(position);
-        Picasso.with(convertView.getContext()).load(Constants.baseUrl+Constants.productImagePath_103_87+imageName).into(property_images);
+        Picasso.with(convertView.getContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+imageName).into(property_images);
 
         property_title.setText(property_title_list.get(position));
         property_bedroom.setText(property_bedroom_list.get(position));

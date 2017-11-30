@@ -109,12 +109,15 @@ public class CreateAdvertStep5 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step5_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-                        create_advert_step5_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step5_back_arrow_intent);
+                        if(setInputToProduct())
+                        {
+                            Intent create_advert_step5_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step5_back_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step5_back_arrow_intent);
+                        }
                     }
                 }
         );
@@ -125,49 +128,51 @@ public class CreateAdvertStep5 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        product.setTitle(etManageProductTitle.getText().toString());
-                        if(product.getTitle() == null || product.getTitle().equals(""))
+                        if(setInputToProduct())
                         {
-                            Toast.makeText(getBaseContext(),"Title is required." , Toast.LENGTH_SHORT).show();
-                            return;
+                            Intent create_advert_step5_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step5_forward_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step5_forward_arrow_intent);
                         }
-
-                        product.setDescription(etManageProductDescription.getText().toString());
-                        if(product.getTitle() == null || product.getTitle().equals(""))
-                        {
-                            Toast.makeText(getBaseContext(),"Description is required." , Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        product.setFirstName(etManageProductUserFirstName.getText().toString());
-                        /*if(product.getFirstName() == null || product.getFirstName().equals(""))
-                        {
-                            Toast.makeText(getBaseContext(),"First Name can't be Empty" , Toast.LENGTH_SHORT).show();
-                            return;
-                        }*/
-
-                        product.setLastName(etManageProductUserLastName.getText().toString());
-                        /*if(product.getLastName() == null || product.getLastName().equals("") )
-                        {
-                            Toast.makeText(getBaseContext(),"Last Name can't be Empty" , Toast.LENGTH_SHORT).show();
-                            return;
-                        }*/
-
-                        product.setCompanyName(etManageProductCompany.getText().toString());
-                        product.setPhone(etManageProductPhone.getText().toString());
-
-                        Intent create_advert_step5_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-
-                        create_advert_step5_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step5_forward_arrow_intent);
                     }
                 }
         );
     }
+
+    public boolean setInputToProduct()
+    {
+        String title = etManageProductTitle.getText().toString();
+        if(title == null || title.equals(""))
+        {
+            Toast.makeText(getBaseContext(),"Title is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else
+        {
+            product.setTitle(title);
+        }
+
+        String description = etManageProductDescription.getText().toString();
+        if(description == null || description.equals(""))
+        {
+            Toast.makeText(getBaseContext(),"Description is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else
+        {
+            product.setDescription(description);
+        }
+
+        product.setFirstName(etManageProductUserFirstName.getText().toString());
+        product.setLastName(etManageProductUserLastName.getText().toString());
+        product.setCompanyName(etManageProductCompany.getText().toString());
+        product.setPhone(etManageProductPhone.getText().toString());
+        return true;
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

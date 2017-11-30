@@ -162,13 +162,21 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
             //product = (Product)getIntent().getExtras().get("productInfo");
             tvProductDetailsTitle.setText(product.getTitle());
-            tvProductDetailsPrice.setText(product.getBasePrice()+" £");
+            tvProductDetailsPrice.setText("£"+product.getBasePrice());
             tvProductDetailsDescription.setText(product.getDescription());
             Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetailsImage);
             tvProductDetailsTotalBids.setText(product.getTotalBids()+"");
             //tvProductDetailsBidTimeLeft.setText("7 Hours 24 Mins 12 Seconds");
             tvProductDetailsAvailableFrom.setText(product.getAvailableFrom());
-            tvProductDetailsAvailableTo.setText(product.getAvailableTo());
+            if(product.isOngoing())
+            {
+                tvProductDetailsAvailableTo.setText("Ongoing");
+            }
+            else
+            {
+                tvProductDetailsAvailableTo.setText(product.getAvailableTo());
+            }
+
             String availabilityString = "";
             List<Availability> availabilityList = product.getAvailabilities();
             if(availabilityList != null && availabilityList.size() > 0)

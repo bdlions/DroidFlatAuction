@@ -238,38 +238,10 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
 
     public void fetchBidStartTimerList(){
-        /*bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
-        bidStartTimerAdapter = ArrayAdapter.createFromResource(this,R.array.bid_timer_spinner_options,android.R.layout.simple_spinner_item);
-        bidStartTimerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bidStartTimer.setAdapter(bidStartTimerAdapter);
-        bidStartTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
     }
     public void fetchBidEndTimerList(){
-        /*bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
-        bidEndTimerAdapter = ArrayAdapter.createFromResource(this,R.array.bid_timer_spinner_options,android.R.layout.simple_spinner_item);
-        bidEndTimerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        bidEndTimer.setAdapter(bidEndTimerAdapter);
-        bidEndTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
     }
     public void onStart(){
         super.onStart();
@@ -314,41 +286,22 @@ public class CreateAdvertStep7 extends AppCompatActivity
         });
 
     }
-    /*
-    public void selectItem( View view){
-        boolean checked = ((CheckBox) view).isChecked();
 
-        switch (view.getId()) {
-            case R.id.daily_email_alerts:
-                if (checked) {
-                    //Toast.makeText(getBaseContext(), "Daily Email Alerts is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), "Daily Email Alerts is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.instant_email_alerts:
-                if (checked) {
-                    //Toast.makeText(getBaseContext(),   "Instant Email Alerts is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(),   "Instant Email Alerts is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-    */
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step7_back_arrow);
         ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step7_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-                        create_advert_step7_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step7_back_arrow_intent);
+                        if(setInputToProduct())
+                        {
+                            Intent create_advert_step7_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step7_back_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step7_back_arrow_intent);
+                        }
                     }
                 }
         );
@@ -359,150 +312,63 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-                        Intent create_advert_step7_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep8.class);
-
-                        String bidStartFrom = etCreateProductBidStartCalendar.getText().toString();
-                        String bidStartTo = etCreateProductBidEndCalendar.getText().toString();
-
-                        if(bidStartFrom != null && !bidStartFrom.equals(""))
+                        if(setInputToProduct())
                         {
-                            bidStartFrom = bidStartFrom.replaceAll("/", "-");
-                            String[] bidStartFromArray = bidStartFrom.split("-");
-                            if(bidStartFromArray.length != 3 || bidStartFromArray[2].length() != 4)
-                            {
-                                Toast.makeText(getBaseContext(),"Invalid bid Start date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            product.setBidStartDate(bidStartFrom);
+                            Intent create_advert_step7_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep8.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step7_forward_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step7_forward_arrow_intent);
                         }
-                        else
-                        {
-                            Toast.makeText(getBaseContext(),"Bid Start date is required." , Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-
-                        if(bidStartTo != null && !bidStartTo.equals(""))
-                        {
-                            bidStartTo = bidStartTo.replaceAll("/", "-");
-                            String[] bidStartToArray = bidStartTo.split("-");
-                            if(bidStartToArray.length != 3 || bidStartToArray[2].length() != 4)
-                            {
-                                Toast.makeText(getBaseContext(),"Invalid bid end date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            product.setBidEndDate(bidStartTo);
-                        }
-                        else
-                        {
-                            Toast.makeText(getBaseContext(),"Bid End date is required." , Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
-                        product.setBidEndTime(bidEndTimer.getSelectedItem().toString());
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-
-                        create_advert_step7_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step7_forward_arrow_intent);
                     }
                 }
         );
     }
-    /*
-    public void onClickButtonSubmitListener(){
-        btn_submit = (Button) findViewById(R.id.create_advert_submit_button);
-        btn_submit.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
 
-                        //for testing purpose some default fields are set here but it should come from user selection
-                        //ProductCategory productCategory = new ProductCategory();
-                        //productCategory.setId(1);
-                        //product.setProductCategory(productCategory);
+    public boolean setInputToProduct()
+    {
+        String bidStartFrom = etCreateProductBidStartCalendar.getText().toString();
+        String bidStartTo = etCreateProductBidEndCalendar.getText().toString();
 
-                        //ProductSize productSize = new ProductSize();
-                        //productSize.setId(1);
-                        //product.setProductSize(productSize);
+        if(bidStartFrom != null && !bidStartFrom.equals(""))
+        {
+            bidStartFrom = bidStartFrom.replaceAll("/", "-");
+            String[] bidStartFromArray = bidStartFrom.split("-");
+            if(bidStartFromArray.length != 3 || bidStartFromArray[2].length() != 4)
+            {
+                Toast.makeText(getBaseContext(),"Invalid bid Start date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            product.setBidStartDate(bidStartFrom);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Bid Start date is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
-                        //ProductType productType = new ProductType();
-                        //productType.setId(1);
-                        //product.setProductType(productType);
-
-                        Location location = new Location();
-                        location.setId(1);
-                        product.setLocation(location);
-
-                        //Stay minStay = new Stay();
-                        //minStay.setId(1);
-                        //Stay maxStay = new Stay();
-                        //maxStay.setId(1);
-                        //product.setMinStay(minStay);
-                        //product.setMaxStay(maxStay);
-
-                        //Smoking smoking = new Smoking();
-                        //smoking.setId(1);
-                        //Occupation occupation = new Occupation();
-                        //occupation.setId(1);
-                        //Pet pet = new Pet();
-                        //pet.setId(1);
-                        //product.setSmoking(smoking);
-                        //product.setOccupation(occupation);
-                        //product.setPet(pet);
-
-                        product.setImg("a.jpg");
-
-                        Image image = new Image();
-                        image.setId(1);
-                        image.setTitle("b.jpg");
-
-                        Image[] images = new Image[1];
-                        images[0] = image;
-                        product.setImages(images);
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        productString = gson.toJson(product);
-
-                        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                        packetHeader.setAction(ACTION.ADD_PRODUCT);
-                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
-                        packetHeader.setSessionId(session.getSessionId());
-                        new BackgroundWork().execute(packetHeader, productString, new Handler(){
-                            @Override
-                            public void handleMessage(Message msg) {
-                                SignInResponse signInResponse = null;
-                                String stringSignInResponse = null;
-                                if(msg != null && msg.obj != null)
-                                {
-                                    stringSignInResponse = (String)msg.obj;
-                                }
-                                if(stringSignInResponse != null)
-                                {
-                                    Gson gson = new Gson();
-                                    signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
-                                }
-                                if(signInResponse != null && signInResponse.isSuccess())
-                                {
-                                    Toast.makeText(getApplicationContext(), "Ad is created.", Toast.LENGTH_LONG).show();
-                                    //show a message that advert is created and go to my ads page
-                                    Intent create_advert_submit_button_intent = new Intent(getBaseContext(), MyAdvertStep1.class);
-                                    startActivity(create_advert_submit_button_intent);
-                                }
-                                else
-                                {
-                                    Toast.makeText(getApplicationContext(), "Error while creating a new ad. Please try again later.", Toast.LENGTH_LONG).show();
-                                }
-                            }
-                        });
-                    }
-                }
-        );
+        if(bidStartTo != null && !bidStartTo.equals(""))
+        {
+            bidStartTo = bidStartTo.replaceAll("/", "-");
+            String[] bidStartToArray = bidStartTo.split("-");
+            if(bidStartToArray.length != 3 || bidStartToArray[2].length() != 4)
+            {
+                Toast.makeText(getBaseContext(),"Invalid bid end date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            product.setBidEndDate(bidStartTo);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Bid End date is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
+        product.setBidEndTime(bidEndTimer.getSelectedItem().toString());
+        return true;
     }
-    */
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

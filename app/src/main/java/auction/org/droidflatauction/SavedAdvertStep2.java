@@ -52,7 +52,7 @@ public class SavedAdvertStep2 extends AppCompatActivity
             Gson gson = new Gson();
             product = gson.fromJson(productString, Product.class);
             tv_view_saved_product_title.setText(product.getTitle());
-            tv_view_saved_product_price.setText(product.getBasePrice()+" £");
+            tv_view_saved_product_price.setText("£"+product.getBasePrice());
             tv_view_saved_product_description.setText(product.getDescription());
         }
         catch(Exception ex)

@@ -86,30 +86,6 @@ public class CreateAdvertStep2 extends AppCompatActivity
         areaSpinner();
 
         listViewAmenity = (ListView)findViewById(R.id.amenities_listView);
-        /*final List<DTOAmenity> amenities = new ArrayList<>();
-        amenities.add(new DTOAmenity(false,"Parking"));
-        amenities.add(new DTOAmenity(false,"Balcony"));
-        amenities.add(new DTOAmenity(false,"Garden"));
-        amenities.add(new DTOAmenity(false,"Disabled access"));
-        amenities.add(new DTOAmenity(false,"Garage"));
-
-        final AmenityAdapter amenityAdapter = new AmenityAdapter(this,amenities);
-        listViewAmenity.setAdapter(amenityAdapter);
-        listViewAmenity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                DTOAmenity amenityModel = amenities.get(i);
-                if(amenityModel.isSelected())
-                    amenityModel.setSelected(false);
-
-                else
-                    amenityModel.setSelected(true);
-
-                amenities.set(i,amenityModel);
-                amenityAdapter.updateRecords(amenities);
-            }
-        });*/
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -244,70 +220,21 @@ public class CreateAdvertStep2 extends AppCompatActivity
         });
     }
 
-    /*
-    public void selectItem( View view){
-        boolean checked = ((CheckBox) view).isChecked();
-
-        switch (view.getId()){
-            case R.id.amenities_parking:
-                String st_parking = getString(R.string.parking);
-                if(checked){
-                    //Toast.makeText(getBaseContext(), st_parking + " is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), st_parking + " is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.amenities_balcony_patio:
-                String st_balcony_patio = getString(R.string.balcony_patio);
-                if(checked){
-                    //Toast.makeText(getBaseContext(), st_balcony_patio + " is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), st_balcony_patio + " is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.amenities_garden_rootTerrace:
-                String st_garden_rootTerrace = getString(R.string.garden_rootTerrace);
-                if(checked){
-                    //Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), st_garden_rootTerrace + " is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.amenities_disabled_access:
-                String st_disabled_access = getString(R.string.disabled_access);
-                if(checked){
-                    //Toast.makeText(getBaseContext(), st_disabled_access + " is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), st_disabled_access + " is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.amenities_garage:
-                String st_garage = getString(R.string.garage);
-                if(checked){
-                    //Toast.makeText(getBaseContext(), st_garage + " is selected", Toast.LENGTH_SHORT).show();
-                } else {
-                    //Toast.makeText(getBaseContext(), st_garage + " is deselected", Toast.LENGTH_SHORT).show();
-                }
-                break;
-        }
-    }
-    */
     public void onClickButtonBackArrowListener(){
         ib_back_arrow = (ImageButton) findViewById(R.id.create_advert_step2_back_arrow);
         ib_back_arrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step2_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-                        create_advert_step2_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step2_back_arrow_intent);
+                        if(setInputToProduct())
+                        {
+                            Intent create_advert_step2_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step2_back_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step2_back_arrow_intent);
+                        }
                     }
                 }
         );
@@ -318,30 +245,44 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        try
+                        if(setInputToProduct())
                         {
-                            product.setBasePrice(Double.parseDouble(etManageProductPrice.getText().toString()));
-                            if (product.getBasePrice() <= 0.0) {
-                                Toast.makeText(getBaseContext(),"Invalid price " + product.getBasePrice(), Toast.LENGTH_SHORT).show();
-                                return;
-                            }
+                            Intent create_advert_step2_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step2_forward_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step2_forward_arrow_intent);
                         }
-                        catch(Exception ex)
-                        {
-
-                        }
-
-                        Intent create_advert_step2_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-                        create_advert_step2_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step2_forward_arrow_intent);
                     }
                 }
         );
     }
+
+    public boolean setInputToProduct()
+    {
+        String strAssignedPrice = etManageProductPrice.getText().toString();
+        try
+        {
+            double basePrice = Double.parseDouble(strAssignedPrice);
+
+            if (basePrice <= 0.0) {
+                Toast.makeText(getBaseContext(),"Invalid price " +strAssignedPrice, Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            else
+            {
+                product.setBasePrice(basePrice);
+            }
+        }
+        catch(Exception ex)
+        {
+            Toast.makeText(getBaseContext(),"Invalid price " + strAssignedPrice, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     public void areaSpinner(){
         sp_area = (Spinner) findViewById(R.id.area_spinner);
         area_adapter = ArrayAdapter.createFromResource(this,R.array.area_spinner_options,android.R.layout.simple_spinner_item);

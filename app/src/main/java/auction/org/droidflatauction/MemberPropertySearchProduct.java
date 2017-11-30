@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 public class MemberPropertySearchProduct extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static ImageButton ib_back_arrow;
     ListView propertySearchProductListview;
     ArrayList<Integer> property_iamges, productIdList;
     ArrayList<String> property_title_list,property_bedroom_list,property_bathroom_list,property_price_list, imgList;
@@ -43,7 +42,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
     public int fetchProductInfoCounter = 0;
 
     public Dialog progressBarDialog;
-
+    private  static ImageButton ibBackArrow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +106,8 @@ public class MemberPropertySearchProduct extends AppCompatActivity
 
             }
         });*/
+
+        onClickButtonBackArrowListener();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -200,13 +201,13 @@ public class MemberPropertySearchProduct extends AppCompatActivity
     }
 
     public void onClickButtonBackArrowListener(){
-        ib_back_arrow = (ImageButton)findViewById(R.id.saved_advert_step1_back_arrow);
-        ib_back_arrow.setOnClickListener(
+        ibBackArrow = (ImageButton)findViewById(R.id.member_property_search_product_back_arrow);
+        ibBackArrow.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent saved_advert_step1_back_arrow_intent = new Intent(getBaseContext(), MemberPropertySearch.class);
-                        startActivity(saved_advert_step1_back_arrow_intent);
+                        Intent memberDashboardBackArrowIntent = new Intent(getBaseContext(), MemberDashboard.class);
+                        startActivity(memberDashboardBackArrowIntent);
                     }
                 }
         );

@@ -98,8 +98,10 @@ public class ContactThoughMessage extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        //Intent send_message_back_arrow_intent = new Intent(getBaseContext(), SavedAdvertStep2.class);
-                        //startActivity(send_message_back_arrow_intent);
+                        Intent myAdvertPropertyShowDetailIntent = new Intent(ContactThoughMessage.this, ShowAdvertProductDetails.class);
+                        myAdvertPropertyShowDetailIntent.putExtra("productString", productString);
+                        myAdvertPropertyShowDetailIntent.putExtra("adIdentity", adIdentity);
+                        startActivity(myAdvertPropertyShowDetailIntent);
                     }
                 }
         );

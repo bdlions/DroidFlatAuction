@@ -116,27 +116,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
         //maximumStaySpinner();
 
         listViewAvailablability = (ListView)findViewById(R.id.availabilities_listView);
-        /*final List<DTOAvailablability> availablabilities = new ArrayList<>();
-        availablabilities.add(new DTOAvailablability(false,"Daily"));
-        availablabilities.add(new DTOAvailablability(false,"Weekly"));
-        availablabilities.add(new DTOAvailablability(false,"Monthly"));
 
-        final AvailablabilityAdapter availablabilityAdapter = new AvailablabilityAdapter(this,availablabilities);
-        listViewAvailablability.setAdapter(availablabilityAdapter);
-        listViewAvailablability.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                DTOAvailablability availablabilityModel = availablabilities.get(i);
-                if(availablabilityModel.isSelected())
-                    availablabilityModel.setSelected(false);
-
-                else
-                    availablabilityModel.setSelected(true);
-
-                availablabilities.set(i,availablabilityModel);
-                availablabilityAdapter.updateRecords(availablabilities);
-            }
-        });*/
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -320,6 +300,11 @@ public class CreateAdvertStep3 extends AppCompatActivity
         if (checked) {
             etCreateProductAvailableTo.setText("");
             product.setAvailableTo("");
+            product.setOngoing(true);
+        }
+        else
+        {
+            product.setOngoing(false);
         }
     }
 
@@ -451,13 +436,15 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step3_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-                        create_advert_step3_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step3_back_arrow_intent);
+                        if(setInputToProduct())
+                        {
+                            Intent create_advert_step3_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step3_back_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step3_back_arrow_intent);
+                        }
                     }
                 }
         );
@@ -468,100 +455,82 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step3_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
-                        String availableFrom = etCreateProductAvailableFrom.getText().toString();
-                        String availableTo = etCreateProductAvailableTo.getText().toString();
-                        if(availableFrom != null && !availableFrom.equals(""))
+                        if(setInputToProduct())
                         {
-                            availableFrom = availableFrom.replaceAll("/", "-");
-                            String[] availableFromArray = availableFrom.split("-");
-                            if(availableFromArray.length != 3 || availableFromArray[2].length() != 4)
-                            {
-                                Toast.makeText(getBaseContext(),"Invalid available from date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            product.setAvailableFrom(availableFrom);
+                            Intent create_advert_step3_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            create_advert_step3_forward_arrow_intent.putExtra("productString", productString);
+                            startActivity(create_advert_step3_forward_arrow_intent);
                         }
-                        else
-                        {
-                            Toast.makeText(getBaseContext(),"Available from date is required" , Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        if(!product.isOngoing())
-                        {
-                            if(availableTo != null && !availableTo.equals(""))
-                            {
-                                availableTo = availableTo.replaceAll("/", "-");
-                                String[] availableToArray = availableTo.split("-");
-                                if(availableToArray.length != 3 || availableToArray[2].length() != 4)
-                                {
-                                    Toast.makeText(getBaseContext(),"Invalid available to date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-                                product.setAvailableTo(availableTo);
-                            }
-                            else
-                            {
-                                Toast.makeText(getBaseContext(),"Available to date is required." , Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                        }
-
-                        if(selectedMinStay != null)
-                        {
-                            product.setMinStay(selectedMinStay);
-                        }
-
-                        if(selectedMaxStay != null)
-                        {
-                            product.setMaxStay(selectedMaxStay);
-                        }
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-
-                        create_advert_step3_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step3_forward_arrow_intent);
                     }
                 }
         );
     }
 
-    /*public void minimumStaySpinner(){
-        sp_minimum_stay = (Spinner) findViewById(R.id.minimum_stay_spinner);
-        minimum_stay_adapter = ArrayAdapter.createFromResource(this,R.array.minimum_spinner_options,android.R.layout.simple_spinner_item);
-        minimum_stay_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_minimum_stay.setAdapter(minimum_stay_adapter);
-        sp_minimum_stay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
+    public boolean setInputToProduct()
+    {
+        String availableFrom = etCreateProductAvailableFrom.getText().toString();
+        String availableTo = etCreateProductAvailableTo.getText().toString();
+        if(availableFrom != null && !availableFrom.equals(""))
+        {
+            availableFrom = availableFrom.replaceAll("/", "-");
+            String[] availableFromArray = availableFrom.split("-");
+            if(availableFromArray.length != 3 || availableFromArray[2].length() != 4)
+            {
+                Toast.makeText(getBaseContext(),"Invalid available from date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                return false;
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+            product.setAvailableFrom(availableFrom);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Available from date is required" , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(!product.isOngoing())
+        {
+            if(availableTo != null && !availableTo.equals(""))
+            {
+                availableTo = availableTo.replaceAll("/", "-");
+                String[] availableToArray = availableTo.split("-");
+                if(availableToArray.length != 3 || availableToArray[2].length() != 4)
+                {
+                    Toast.makeText(getBaseContext(),"Invalid available to date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                product.setAvailableTo(availableTo);
             }
-        });
+            else
+            {
+                Toast.makeText(getBaseContext(),"Available to date is required." , Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+
+        if(selectedMinStay != null)
+        {
+            product.setMinStay(selectedMinStay);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Min Stay is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(selectedMaxStay != null)
+        {
+            product.setMaxStay(selectedMaxStay);
+        }
+        else
+        {
+            Toast.makeText(getBaseContext(),"Max Stay is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
     }
-    public void maximumStaySpinner(){
-        sp_maximum_stay = (Spinner) findViewById(R.id.maximum_stay_spinner);
-        maximum_stay_adapter = ArrayAdapter.createFromResource(this,R.array.maximum_spinner_options,android.R.layout.simple_spinner_item);
-        maximum_stay_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sp_maximum_stay.setAdapter(maximum_stay_adapter);
-        sp_maximum_stay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                //Toast.makeText(getBaseContext(), adapterView.getItemAtPosition(i) + " selected", Toast.LENGTH_SHORT).show();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-    }*/
 
     @Override
     public void onBackPressed() {
