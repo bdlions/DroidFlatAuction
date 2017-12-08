@@ -60,7 +60,7 @@ public class MyAdvertStep2 extends AppCompatActivity
             product = gson.fromJson(productString, Product.class);
             //product = (Product)getIntent().getExtras().get("productInfo");
             tv_view_product_title.setText(product.getTitle());
-            tv_view_product_price.setText("£"+product.getBasePrice());
+            tv_view_product_price.setText("£" + String.format("%.2f",  product.getBasePrice()));
             tv_view_product_description.setText(product.getDescription());
             Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetails);
         }

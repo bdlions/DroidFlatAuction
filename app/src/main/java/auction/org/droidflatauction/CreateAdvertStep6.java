@@ -61,6 +61,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
             case SELECT_PHOTO:
                 if(resultCode == RESULT_OK){
                     try {
+                        progressBarDialog.show();
                         Uri uri = imageReturnedIntent.getData();
                         String[] projection = { MediaStore.Images.Media.DATA };
 
@@ -75,7 +76,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         new BackgroundUploader().execute(picturePath, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
-                                imageUploadDialog.dismiss();
+                                //imageUploadDialog.dismiss();
                                 try
                                 {
                                     String img = (String)msg.obj;
@@ -91,10 +92,12 @@ public class CreateAdvertStep6 extends AppCompatActivity
                                 {
                                     Toast.makeText(getApplicationContext(), "Unable to upload image. Please try again later.", Toast.LENGTH_LONG).show();
                                 }
+                                progressBarDialog.dismiss();
                             }
                         });
                     } catch (Exception e) {
-                        imageUploadDialog.dismiss();
+                        //imageUploadDialog.dismiss();
+                        progressBarDialog.dismiss();
                         //e.printStackTrace();
                         Toast.makeText(getApplicationContext(), "Error:"+e.toString(), Toast.LENGTH_LONG).show();
                     }
@@ -119,6 +122,9 @@ public class CreateAdvertStep6 extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
+
+        progressBarDialog = new Dialog(CreateAdvertStep6.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
 
         llUploadProductPhoto = (LinearLayout)findViewById(R.id.ll_upload_product_photo);
         llEditProductPhoto = (LinearLayout)findViewById(R.id.ll_edit_product_photo);
@@ -212,6 +218,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                         Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                         photoPickerIntent.setType("image/*");
                         startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                        imageUploadDialog.dismiss();
                     }
                 });
                 Button declineButton = (Button) imageUploadDialog.findViewById(R.id.btn_cancel_product_photo_upload);
@@ -256,6 +263,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                 Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
                 photoPickerIntent.setType("image/*");
                 startActivityForResult(photoPickerIntent, SELECT_PHOTO);
+                imageUploadDialog.dismiss();
             }
         });
         Button declineButton = (Button) imageUploadDialog.findViewById(R.id.btn_cancel_product_photo_upload);

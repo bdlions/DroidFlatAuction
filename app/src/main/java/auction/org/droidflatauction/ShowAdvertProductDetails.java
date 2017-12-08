@@ -162,7 +162,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
             //product = (Product)getIntent().getExtras().get("productInfo");
             tvProductDetailsTitle.setText(product.getTitle());
-            tvProductDetailsPrice.setText("£"+product.getBasePrice());
+            tvProductDetailsPrice.setText("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
             tvProductDetailsDescription.setText(product.getDescription());
             Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivProductDetailsImage);
             tvProductDetailsTotalBids.setText(product.getTotalBids()+"");

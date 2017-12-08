@@ -261,7 +261,7 @@ public class PropertyBidList extends AppCompatActivity
                         product = responseProduct;
                         //set product info into interface
                         tvProductTitle.setText(product.getTitle());
-                        tvProductPrice.setText("£"+product.getBasePrice());
+                        tvProductPrice.setText("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivPropertyImage);
                         tvProductTotalBids.setText(product.getTotalBids()+"");
 
@@ -460,7 +460,7 @@ public class PropertyBidList extends AppCompatActivity
 
             /** Creating another textview **/
             price_list = new TextView(this);
-            price_list.setText("£"+bid.getPrice());
+            price_list.setText("£" + String.format("%.2f",  bid.getPrice()));
             price_list.setTextColor(Color.parseColor("#5a5a5a"));
             price_list.setPadding(5, 5, 5, 5);
             price_list.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
