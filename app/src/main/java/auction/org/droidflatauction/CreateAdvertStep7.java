@@ -182,6 +182,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
                         bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
                         bidStartTimeAdapter = new ArrayAdapter<BidTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
+                        bidStartTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         bidStartTimer.setAdapter(bidStartTimeAdapter);
                         bidStartTimer.setSelection(selectedBidStartTimePosition);
                         bidStartTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -199,6 +200,7 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
                         bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
                         bidEndTimeAdapter = new ArrayAdapter<BidTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
+                        bidEndTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         bidEndTimer.setAdapter(bidEndTimeAdapter);
                         bidEndTimer.setSelection(selectedBidEndTimePosition);
                         bidEndTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

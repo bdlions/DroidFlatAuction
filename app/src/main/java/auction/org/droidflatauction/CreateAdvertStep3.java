@@ -370,6 +370,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     }
 
                     stayAdapter = new ArrayAdapter<Stay>( CreateAdvertStep3.this, android.R.layout.simple_spinner_item, stayList);
+                    stayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     minStaySpinner = (Spinner) findViewById(R.id.minimum_stay_spinner);
                     minStaySpinner.setAdapter(stayAdapter);
                     if(selectedMinStay != null)

@@ -282,6 +282,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     }
 
                     productCategoryAdapter = new ArrayAdapter<ProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
+                    productCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     productCategorySpinner = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
                     productCategorySpinner.setAdapter(productCategoryAdapter);
                     if(selectedProductCategory != null)
@@ -368,6 +369,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     }
 
                     productSizeAdapter = new ArrayAdapter<ProductSize>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productSizeList);
+                    productSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     productSizeSpinner = (Spinner) findViewById(R.id.size_of_property_spinner);
                     productSizeSpinner.setAdapter(productSizeAdapter);
                     if(selectedProductSize != null)
@@ -454,6 +456,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     }
 
                     productTypeAdapter = new ArrayAdapter<ProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
+                    productTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     productTypeSpinner = (Spinner) findViewById(R.id.type_of_property_spinner);
                     productTypeSpinner.setAdapter(productTypeAdapter);
                     if(selectedProductType != null)

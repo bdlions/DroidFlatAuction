@@ -161,6 +161,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                     }
 
                     smokingAdapter = new ArrayAdapter<Smoking>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, smokingList);
+                    smokingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     smokingSpinner = (Spinner) findViewById(R.id.smoking_spinner);
                     smokingSpinner.setAdapter(smokingAdapter);
                     if(selectedSmoking != null)
@@ -243,6 +244,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                     }
 
                     occupationAdapter = new ArrayAdapter<Occupation>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, occupationList);
+                    occupationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     occupationSpinner = (Spinner) findViewById(R.id.occupation_spinner);
                     occupationSpinner.setAdapter(occupationAdapter);
                     if(selectedOccupation != null)
@@ -325,6 +327,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                     }
 
                     petAdapter = new ArrayAdapter<Pet>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, petList);
+                    petAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     petSpinner = (Spinner) findViewById(R.id.pets_spinner);
                     petSpinner.setAdapter(petAdapter);
                     if(selectedPet != null)

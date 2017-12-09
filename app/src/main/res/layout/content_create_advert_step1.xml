@@ -148,13 +148,12 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:layout_gravity="center_horizontal|center"
+                android:layout_alignParentBottom="true"
                 android:gravity="center_horizontal|center"
                 android:text="@string/footer_note"
                 android:background="#2874b9"
                 android:textColor="#fff"
                 android:textStyle="bold"/>
         </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
