@@ -135,9 +135,9 @@ public class ManageAdvertDashboard extends AppCompatActivity
                             imageList.add(R.drawable.property_image_01);
                             imgList.add(product.getImg());
                             titleList.add(product.getTitle());
-                            bedroomList.add("");
-                            bathroomList.add("");
-                            priceList.add("");
+                            bedroomList.add(product.getProductCategory().getTitle() + ", " + product.getProductSize().getTitle());
+                            bathroomList.add(product.getProductType().getTitle());
+                            priceList.add("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         }
                     }
                     progressBarDialog.dismiss();
@@ -217,9 +217,9 @@ public class ManageAdvertDashboard extends AppCompatActivity
                             imageList.add(R.drawable.property_image_01);
                             imgList.add(product.getImg());
                             titleList.add(product.getTitle());
-                            bedroomList.add("");
-                            bathroomList.add("");
-                            priceList.add("");
+                            bedroomList.add(product.getProductCategory().getTitle() + ", " + product.getProductSize().getTitle());
+                            bathroomList.add(product.getProductType().getTitle());
+                            priceList.add("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         }
                     }
                     progressBarDialog.dismiss();
