@@ -1,5 +1,6 @@
 package auction.org.droidflatauction;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +44,9 @@ public class CreateAdvertStep8 extends AppCompatActivity
     SessionManager session;
     NavigationManager navigationManager;
 
+    public int fetchProductInfoCounter = 0;
+    public Dialog progressBarDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +69,9 @@ public class CreateAdvertStep8 extends AppCompatActivity
         {
             System.out.println(ex.toString());
         }
+
+        progressBarDialog = new Dialog(CreateAdvertStep8.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
 
         onClickButtonBackArrowListener();
         onClickButtonSubmitListener();
@@ -105,12 +112,12 @@ public class CreateAdvertStep8 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step8_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep7.class);
+                        Intent manageAdvertStep8BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep7.class);
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
-                        create_advert_step8_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step8_back_arrow_intent);
+                        manageAdvertStep8BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep8BackArrowIntent);
                     }
                 }
         );
@@ -243,41 +250,42 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             packetHeader.setAction(ACTION.UPDATE_PRODUCT_INFO);
                         }
 
+                        progressBarDialog.show();
+
                         packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
                         packetHeader.setSessionId(session.getSessionId());
                         new BackgroundWork().execute(packetHeader, productString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
-                                SignInResponse signInResponse = null;
-                                String stringSignInResponse = null;
+                                progressBarDialog.dismiss();
+                                Product responseProduct = null;
+                                String stringResponseProduct = null;
                                 if(msg != null && msg.obj != null)
                                 {
-                                    stringSignInResponse = (String)msg.obj;
+                                    stringResponseProduct = (String)msg.obj;
                                 }
-                                if(stringSignInResponse != null)
+                                if(stringResponseProduct != null)
                                 {
                                     Gson gson = new Gson();
-                                    signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                                    responseProduct = gson.fromJson(stringResponseProduct, Product.class);
                                 }
-                                if(signInResponse != null && signInResponse.isSuccess())
+                                if(responseProduct != null && responseProduct.isSuccess())
                                 {
-                                    //right now success message is hardcoded. Later display message from server
-                                    if(product.getId() > 0)
+                                    Toast.makeText(getApplicationContext(), responseProduct.getMessage(), Toast.LENGTH_LONG).show();
+                                    //go to ad details page instead of manageAdvertDashboard page
+                                    if(responseProduct.getId() > 0)
                                     {
-                                        Toast.makeText(getApplicationContext(), "Ad is updated successfully.", Toast.LENGTH_LONG).show();
+                                        progressBarDialog.show();
+                                        fetchProductInfo(responseProduct.getId());
                                     }
-                                    else
-                                    {
-                                        Toast.makeText(getApplicationContext(), "Ad is created successfully.", Toast.LENGTH_LONG).show();
-                                    }
-                                    //go to my ads page
-                                    Intent create_advert_submit_button_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                                    startActivity(create_advert_submit_button_intent);
-                                    return;
+
+                                    //Intent create_advert_submit_button_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
+                                    //startActivity(create_advert_submit_button_intent);
+                                    //return;
                                 }
-                                else if(signInResponse != null && !signInResponse.isSuccess())
+                                else if(responseProduct != null && !responseProduct.isSuccess())
                                 {
-                                    Toast.makeText(getApplicationContext(), signInResponse.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), responseProduct.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                                 else
                                 {
@@ -289,6 +297,78 @@ public class CreateAdvertStep8 extends AppCompatActivity
                 }
         );
     }
+
+    public void fetchProductInfo(final int productId)
+    {
+        Product tempProduct = new Product();
+        tempProduct.setId(productId);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String tempProductString = gson.toJson(tempProduct);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    Product responseProduct = null;
+                    String productInfoString = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        productInfoString = (String) msg.obj;
+                    }
+                    if(productInfoString != null)
+                    {
+                        Gson gson = new Gson();
+                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                    }
+                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    {
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson2 = gsonBuilder.create();
+                        String productString = gson2.toJson(responseProduct);
+
+                        Intent my_advert_property_show_details_intent = new Intent(CreateAdvertStep8.this, ShowAdvertProductDetails.class);
+                        my_advert_property_show_details_intent.putExtra("productString", productString);
+                        my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
+                        startActivity(my_advert_property_show_details_intent);
+                    }
+                    else
+                    {
+                        fetchProductInfoCounter++;
+                        if (fetchProductInfoCounter <= 5)
+                        {
+                            fetchProductInfo(productId);
+                        }
+                        else
+                        {
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    fetchProductInfoCounter++;
+                    if (fetchProductInfoCounter <= 5)
+                    {
+                        fetchProductInfo(productId);
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

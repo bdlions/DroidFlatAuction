@@ -295,15 +295,13 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
-                        {
-                            Intent create_advert_step7_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson = gsonBuilder.create();
-                            String productString = gson.toJson(product);
-                            create_advert_step7_back_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step7_back_arrow_intent);
-                        }
+                        setInputToProduct();
+                        Intent manageAdvertStep7BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep6.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        manageAdvertStep7BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep7BackArrowIntent);
                     }
                 }
         );
@@ -314,21 +312,22 @@ public class CreateAdvertStep7 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
+                        if(validateInputProduct())
                         {
-                            Intent create_advert_step7_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep8.class);
+                            setInputToProduct();
+                            Intent manageAdvertStep7ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep8.class);
                             GsonBuilder gsonBuilder = new GsonBuilder();
                             Gson gson = gsonBuilder.create();
                             String productString = gson.toJson(product);
-                            create_advert_step7_forward_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step7_forward_arrow_intent);
+                            manageAdvertStep7ForwardArrowIntent.putExtra("productString", productString);
+                            startActivity(manageAdvertStep7ForwardArrowIntent);
                         }
                     }
                 }
         );
     }
 
-    public boolean setInputToProduct()
+    public boolean validateInputProduct()
     {
         String bidStartFrom = etCreateProductBidStartCalendar.getText().toString();
         String bidStartTo = etCreateProductBidEndCalendar.getText().toString();
@@ -339,10 +338,9 @@ public class CreateAdvertStep7 extends AppCompatActivity
             String[] bidStartFromArray = bidStartFrom.split("-");
             if(bidStartFromArray.length != 3 || bidStartFromArray[2].length() != 4)
             {
-                Toast.makeText(getBaseContext(),"Invalid bid Start date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),"Invalid bid Start date. Use dd-mm-yyyy format." , Toast.LENGTH_SHORT).show();
                 return false;
             }
-            product.setBidStartDate(bidStartFrom);
         }
         else
         {
@@ -356,19 +354,34 @@ public class CreateAdvertStep7 extends AppCompatActivity
             String[] bidStartToArray = bidStartTo.split("-");
             if(bidStartToArray.length != 3 || bidStartToArray[2].length() != 4)
             {
-                Toast.makeText(getBaseContext(),"Invalid bid end date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),"Invalid bid end date. Use dd-mm-yyyy format." , Toast.LENGTH_SHORT).show();
                 return false;
             }
-            product.setBidEndDate(bidStartTo);
         }
         else
         {
             Toast.makeText(getBaseContext(),"Bid End date is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
+        if(bidStartTimer == null)
+        {
+            Toast.makeText(getBaseContext(),"Bid Start Time is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(bidEndTimer == null)
+        {
+            Toast.makeText(getBaseContext(),"Bid End Time is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public void setInputToProduct()
+    {
+        product.setBidStartDate(etCreateProductBidStartCalendar.getText().toString());
+        product.setBidEndDate(etCreateProductBidEndCalendar.getText().toString());
         product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
         product.setBidEndTime(bidEndTimer.getSelectedItem().toString());
-        return true;
     }
 
     @Override

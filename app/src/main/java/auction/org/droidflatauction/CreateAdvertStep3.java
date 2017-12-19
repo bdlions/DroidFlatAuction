@@ -437,15 +437,13 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
-                        {
-                            Intent create_advert_step3_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson = gsonBuilder.create();
-                            String productString = gson.toJson(product);
-                            create_advert_step3_back_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step3_back_arrow_intent);
-                        }
+                        setInputToProduct();
+                        Intent manageAdvertStep3BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep2.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        manageAdvertStep3BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep3BackArrowIntent);
                     }
                 }
         );
@@ -456,21 +454,23 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
+                        if(validateInputProduct())
                         {
-                            Intent create_advert_step3_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
+                            setInputToProduct();
+                            Intent manageAdvertStep3ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep4.class);
                             GsonBuilder gsonBuilder = new GsonBuilder();
                             Gson gson = gsonBuilder.create();
                             String productString = gson.toJson(product);
-                            create_advert_step3_forward_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step3_forward_arrow_intent);
+                            manageAdvertStep3ForwardArrowIntent.putExtra("productString", productString);
+                            startActivity(manageAdvertStep3ForwardArrowIntent);
                         }
                     }
                 }
         );
     }
 
-    public boolean setInputToProduct()
+    //validating input fields
+    public boolean validateInputProduct()
     {
         String availableFrom = etCreateProductAvailableFrom.getText().toString();
         String availableTo = etCreateProductAvailableTo.getText().toString();
@@ -480,10 +480,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
             String[] availableFromArray = availableFrom.split("-");
             if(availableFromArray.length != 3 || availableFromArray[2].length() != 4)
             {
-                Toast.makeText(getBaseContext(),"Invalid available from date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(),"Invalid available from date. Use dd-mm-yyyy format." , Toast.LENGTH_SHORT).show();
                 return false;
             }
-            product.setAvailableFrom(availableFrom);
         }
         else
         {
@@ -498,10 +497,9 @@ public class CreateAdvertStep3 extends AppCompatActivity
                 String[] availableToArray = availableTo.split("-");
                 if(availableToArray.length != 3 || availableToArray[2].length() != 4)
                 {
-                    Toast.makeText(getBaseContext(),"Invalid available to date. Use mm-dd-yyyy format." , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(),"Invalid available to date. Use dd-mm-yyyy format." , Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                product.setAvailableTo(availableTo);
             }
             else
             {
@@ -510,26 +508,30 @@ public class CreateAdvertStep3 extends AppCompatActivity
             }
         }
 
-        if(selectedMinStay != null)
-        {
-            product.setMinStay(selectedMinStay);
-        }
-        else
+        if(selectedMinStay == null)
         {
             Toast.makeText(getBaseContext(),"Min Stay is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(selectedMaxStay != null)
-        {
-            product.setMaxStay(selectedMaxStay);
-        }
-        else
+        if(selectedMaxStay == null)
         {
             Toast.makeText(getBaseContext(),"Max Stay is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
+    }
+
+    //setting input fields into product info
+    public void setInputToProduct()
+    {
+        product.setAvailableFrom(etCreateProductAvailableFrom.getText().toString());
+        if(!product.isOngoing())
+        {
+            product.setAvailableTo(etCreateProductAvailableTo.getText().toString());
+        }
+        product.setMinStay(selectedMinStay);
+        product.setMaxStay(selectedMaxStay);
     }
 
 

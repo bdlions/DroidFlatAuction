@@ -109,15 +109,13 @@ public class CreateAdvertStep5 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
-                        {
-                            Intent create_advert_step5_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep4.class);
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson = gsonBuilder.create();
-                            String productString = gson.toJson(product);
-                            create_advert_step5_back_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step5_back_arrow_intent);
-                        }
+                        setInputToProduct();
+                        Intent manageAdvertStep5BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep4.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        manageAdvertStep5BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep5BackArrowIntent);
                     }
                 }
         );
@@ -128,31 +126,29 @@ public class CreateAdvertStep5 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
+                        if(validateInputProduct())
                         {
-                            Intent create_advert_step5_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep6.class);
+                            setInputToProduct();
+                            Intent manageAdvertStep5ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep6.class);
                             GsonBuilder gsonBuilder = new GsonBuilder();
                             Gson gson = gsonBuilder.create();
                             String productString = gson.toJson(product);
-                            create_advert_step5_forward_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step5_forward_arrow_intent);
+                            manageAdvertStep5ForwardArrowIntent.putExtra("productString", productString);
+                            startActivity(manageAdvertStep5ForwardArrowIntent);
                         }
                     }
                 }
         );
     }
 
-    public boolean setInputToProduct()
+    //validating input fields
+    public boolean validateInputProduct()
     {
         String title = etManageProductTitle.getText().toString();
         if(title == null || title.equals(""))
         {
             Toast.makeText(getBaseContext(),"Title is required." , Toast.LENGTH_SHORT).show();
             return false;
-        }
-        else
-        {
-            product.setTitle(title);
         }
 
         String description = etManageProductDescription.getText().toString();
@@ -161,16 +157,18 @@ public class CreateAdvertStep5 extends AppCompatActivity
             Toast.makeText(getBaseContext(),"Description is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
-        else
-        {
-            product.setDescription(description);
-        }
+        return true;
+    }
 
+    //setting input fields into product info
+    public void setInputToProduct()
+    {
+        product.setTitle(etManageProductTitle.getText().toString());
+        product.setDescription(etManageProductDescription.getText().toString());
         product.setFirstName(etManageProductUserFirstName.getText().toString());
         product.setLastName(etManageProductUserLastName.getText().toString());
         product.setCompanyName(etManageProductCompany.getText().toString());
         product.setPhone(etManageProductPhone.getText().toString());
-        return true;
     }
 
     @Override

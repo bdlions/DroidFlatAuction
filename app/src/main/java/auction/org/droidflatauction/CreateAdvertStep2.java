@@ -226,15 +226,13 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
-                        {
-                            Intent create_advert_step2_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson = gsonBuilder.create();
-                            String productString = gson.toJson(product);
-                            create_advert_step2_back_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step2_back_arrow_intent);
-                        }
+                        setInputToProduct();
+                        Intent manageAdvertStep2BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep1.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        manageAdvertStep2BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep2BackArrowIntent);
                     }
                 }
         );
@@ -245,34 +243,32 @@ public class CreateAdvertStep2 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
+                        if(validateInputProduct())
                         {
-                            Intent create_advert_step2_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
+                            setInputToProduct();
+                            Intent manageAdvertStep2ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep3.class);
                             GsonBuilder gsonBuilder = new GsonBuilder();
                             Gson gson = gsonBuilder.create();
                             String productString = gson.toJson(product);
-                            create_advert_step2_forward_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step2_forward_arrow_intent);
+                            manageAdvertStep2ForwardArrowIntent.putExtra("productString", productString);
+                            startActivity(manageAdvertStep2ForwardArrowIntent);
                         }
                     }
                 }
         );
     }
 
-    public boolean setInputToProduct()
+    //validating input fields
+    public boolean validateInputProduct()
     {
+        boolean isValid = true;
         String strAssignedPrice = etManageProductPrice.getText().toString();
         try
         {
             double basePrice = Double.parseDouble(strAssignedPrice);
-
             if (basePrice <= 0.0) {
                 Toast.makeText(getBaseContext(),"Invalid price " +strAssignedPrice, Toast.LENGTH_SHORT).show();
                 return false;
-            }
-            else
-            {
-                product.setBasePrice(basePrice);
             }
         }
         catch(Exception ex)
@@ -280,7 +276,22 @@ public class CreateAdvertStep2 extends AppCompatActivity
             Toast.makeText(getBaseContext(),"Invalid price " + strAssignedPrice, Toast.LENGTH_SHORT).show();
             return false;
         }
-        return true;
+        return isValid;
+    }
+
+    //setting input fields into product info
+    public void setInputToProduct()
+    {
+        String strAssignedPrice = etManageProductPrice.getText().toString();
+        try
+        {
+            double basePrice = Double.parseDouble(strAssignedPrice);
+            product.setBasePrice(basePrice);
+        }
+        catch(Exception ex)
+        {
+            Toast.makeText(getBaseContext(),"Invalid price " + strAssignedPrice, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void areaSpinner(){

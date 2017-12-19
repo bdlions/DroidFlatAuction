@@ -303,7 +303,11 @@ public class MemberDashboard extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String sessionId = session.getSessionId();
+
+                        Intent intentMemberPropertySearch = new Intent(getBaseContext(), MemberPropertySearch.class);
+                        startActivity(intentMemberPropertySearch);
+
+                        /*String sessionId = session.getSessionId();
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         packetHeader.setAction(ACTION.FETCH_LOCATION_LIST);
                         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
@@ -340,7 +344,7 @@ public class MemberDashboard extends AppCompatActivity
                                     System.out.println(ex.toString());
                                 }
                             }
-                        });
+                        });*/
 
                     }
                 }

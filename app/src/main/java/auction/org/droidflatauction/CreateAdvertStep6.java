@@ -324,12 +324,12 @@ public class CreateAdvertStep6 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step6_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
+                        Intent manageAdvertStep6BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep5.class);
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
-                        create_advert_step6_back_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step6_back_arrow_intent);
+                        manageAdvertStep6BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep6BackArrowIntent);
                     }
                 }
         );
@@ -341,14 +341,12 @@ public class CreateAdvertStep6 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
 
-                        Intent create_advert_step6_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep7.class);
-
+                        Intent manageAdvertStep6ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep7.class);
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
                         String productString = gson.toJson(product);
-
-                        create_advert_step6_forward_arrow_intent.putExtra("productString", productString);
-                        startActivity(create_advert_step6_forward_arrow_intent);
+                        manageAdvertStep6ForwardArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep6ForwardArrowIntent);
                     }
                 }
         );

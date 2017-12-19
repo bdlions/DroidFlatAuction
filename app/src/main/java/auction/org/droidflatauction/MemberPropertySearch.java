@@ -28,6 +28,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bdlions.dto.Location;
+import com.bdlions.dto.LocationList;
 import com.bdlions.dto.Product;
 import com.bdlions.dto.ProductList;
 import com.bdlions.dto.SearchParams;
@@ -45,7 +47,7 @@ import java.util.Arrays;
 public class MemberPropertySearch extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    String[] items;
+    public String[] items;
     ArrayList<String> listitems;
     ArrayAdapter<String> adapter;
     ListView listView;
@@ -53,6 +55,7 @@ public class MemberPropertySearch extends AppCompatActivity
     SessionManager session;
     SearchParams searchParams = new SearchParams();
     public int fetchProductListCounter = 0;
+    public int fetchLocationListCounter = 0;
 
     public Dialog progressBarDialog;
 
@@ -65,18 +68,20 @@ public class MemberPropertySearch extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
-        try
+        fetchLocationList();
+
+        /*try
         {
             items = (String[])getIntent().getExtras().get("items");
         }
         catch(Exception ex)
         {
 
-        }
+        }*/
 
         listView = (ListView) findViewById(R.id.listview);
         editText = (EditText) findViewById(R.id.txtsearch);
-        initList();
+        //initList();
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int before, int i2) {
@@ -109,6 +114,84 @@ public class MemberPropertySearch extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
+
+    public void fetchLocationList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_LOCATION_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    LocationList responseLocationList = null;
+                    String stringLocationList = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        stringLocationList = (String) msg.obj;
+                    }
+                    if(stringLocationList != null)
+                    {
+                        Gson gson = new Gson();
+                        responseLocationList = gson.fromJson(stringLocationList, LocationList.class);
+                    }
+                    if(responseLocationList != null && responseLocationList.isSuccess())
+                    {
+                        ArrayList<String> locationList = new ArrayList<String>();
+                        int totalLocations = responseLocationList.getLocations().size();
+                        items = new String[totalLocations];
+                        for(int counter = 0; counter < totalLocations; counter++)
+                        {
+                            Location location = responseLocationList.getLocations().get(counter);
+                            locationList.add(location.getSearchString());
+                            items[counter] = location.getSearchString();
+                        }
+
+                        listitems = new ArrayList<>(Arrays.asList(items));
+                        adapter = new ArrayAdapter<String>(MemberPropertySearch.this, R.layout.search_property_place_row, R.id.texitem, listitems);
+                        listView.setAdapter(adapter);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                progressBarDialog = new Dialog(MemberPropertySearch.this);
+                                progressBarDialog.setContentView(R.layout.progressbar);
+                                progressBarDialog.show();
+                                fetchProductList();
+                            }
+                        });
+                    }
+                    else
+                    {
+                        fetchLocationListCounter++;
+                        if (fetchLocationListCounter <= 5)
+                        {
+                            fetchLocationList();
+                        }
+                        else
+                        {
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    System.out.println(ex.toString());
+                    if (fetchLocationListCounter <= 5)
+                    {
+                        fetchLocationList();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
+    }
+
     public void searchItem(String textToSearch){
         for(String item : items){
             if(!item.contains(textToSearch)){
@@ -118,22 +201,21 @@ public class MemberPropertySearch extends AppCompatActivity
         adapter.notifyDataSetChanged();
     }
 
-public void initList(){
-    //items = new String[]{"London 123","London 124","London 125","London 126","London 127", "NewWork 123","NewWork 124","NewWork 125","NewWork 126","NewWork 127"};
-    listitems = new ArrayList<>(Arrays.asList(items));
-    adapter = new ArrayAdapter<String>(this, R.layout.search_property_place_row, R.id.texitem, listitems);
-    listView.setAdapter(adapter);
-    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            progressBarDialog = new Dialog(MemberPropertySearch.this);
-            progressBarDialog.setContentView(R.layout.progressbar);
-            progressBarDialog.show();
-
-            fetchProductList();
-        }
-    });
-}
+    public void initList(){
+        //items = new String[]{"London 123","London 124","London 125","London 126","London 127", "NewWork 123","NewWork 124","NewWork 125","NewWork 126","NewWork 127"};
+        listitems = new ArrayList<>(Arrays.asList(items));
+        adapter = new ArrayAdapter<String>(this, R.layout.search_property_place_row, R.id.texitem, listitems);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                progressBarDialog = new Dialog(MemberPropertySearch.this);
+                progressBarDialog.setContentView(R.layout.progressbar);
+                progressBarDialog.show();
+                fetchProductList();
+            }
+        });
+    }
 
     public void fetchProductList()
     {

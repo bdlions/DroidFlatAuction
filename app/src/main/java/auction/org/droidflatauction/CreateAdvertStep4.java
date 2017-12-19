@@ -374,15 +374,13 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
-                        {
-                            Intent create_advert_step4_back_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep3.class);
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson = gsonBuilder.create();
-                            String productString = gson.toJson(product);
-                            create_advert_step4_back_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step4_back_arrow_intent);
-                        }
+                        setInputToProduct();
+                        Intent manageAdvertStep4BackArrowIntent = new Intent(getBaseContext(), CreateAdvertStep3.class);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String productString = gson.toJson(product);
+                        manageAdvertStep4BackArrowIntent.putExtra("productString", productString);
+                        startActivity(manageAdvertStep4BackArrowIntent);
                     }
                 }
         );
@@ -393,50 +391,48 @@ public class CreateAdvertStep4 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if(setInputToProduct())
+                        if(validateInputProduct())
                         {
-                            Intent create_advert_step4_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep5.class);
+                            setInputToProduct();
+                            Intent manageAdvertStep4ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep5.class);
                             GsonBuilder gsonBuilder = new GsonBuilder();
                             Gson gson = gsonBuilder.create();
                             String productString = gson.toJson(product);
-                            create_advert_step4_forward_arrow_intent.putExtra("productString", productString);
-                            startActivity(create_advert_step4_forward_arrow_intent);
+                            manageAdvertStep4ForwardArrowIntent.putExtra("productString", productString);
+                            startActivity(manageAdvertStep4ForwardArrowIntent);
                         }
                     }
                 }
         );
     }
 
-    public boolean setInputToProduct()
+    //validating input fields
+    public boolean validateInputProduct()
     {
-        if(selectedSmoking != null)
-        {
-            product.setSmoking(selectedSmoking);
-        }
-        else
+        if(selectedSmoking == null)
         {
             Toast.makeText(getBaseContext(),"Smoking is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(selectedOccupation != null)
-        {
-            product.setOccupation(selectedOccupation);
-        }
-        else
+        if(selectedOccupation == null)
         {
             Toast.makeText(getBaseContext(),"Occupation is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(selectedPet != null)
-        {
-            product.setPet(selectedPet);
-        }
-        else
+        if(selectedPet == null)
         {
             Toast.makeText(getBaseContext(),"Pet is required." , Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
+    }
+
+    //setting input fields into product info
+    public void setInputToProduct()
+    {
+        product.setSmoking(selectedSmoking);
+        product.setOccupation(selectedOccupation);
+        product.setPet(selectedPet);
     }
 
 

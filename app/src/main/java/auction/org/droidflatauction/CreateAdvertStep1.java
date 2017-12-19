@@ -515,30 +515,48 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent create_advert_step1_forward_arrow_intent = new Intent(getBaseContext(), CreateAdvertStep2.class);
-
-                        if(selectedProductCategory != null)
+                        if(validateInputProduct())
                         {
-                            product.setProductCategory(selectedProductCategory);
+                            setInputToProduct();
+                            Intent manageAdvertStep1ForwardArrowIntent = new Intent(getBaseContext(), CreateAdvertStep2.class);
+                            GsonBuilder gsonBuilder = new GsonBuilder();
+                            Gson gson = gsonBuilder.create();
+                            String productString = gson.toJson(product);
+                            manageAdvertStep1ForwardArrowIntent.putExtra("productString",productString);
+                            startActivity(manageAdvertStep1ForwardArrowIntent);
                         }
-                        if(selectedProductSize != null)
-                        {
-                            product.setProductSize(selectedProductSize);
-                        }
-                        if(selectedProductType != null)
-                        {
-                            product.setProductType(selectedProductType);
-                        }
-
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(product);
-
-                        create_advert_step1_forward_arrow_intent.putExtra("productString",productString);
-                        startActivity(create_advert_step1_forward_arrow_intent);
                     }
                 }
         );
+    }
+
+    //validating input fields
+    public boolean validateInputProduct()
+    {
+        if(selectedProductCategory == null)
+        {
+            Toast.makeText(getBaseContext(),"Category is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(selectedProductSize == null)
+        {
+            Toast.makeText(getBaseContext(),"Size is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(selectedProductType == null)
+        {
+            Toast.makeText(getBaseContext(),"Type is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    //setting input fields into product info
+    public void setInputToProduct()
+    {
+        product.setProductCategory(selectedProductCategory);
+        product.setProductSize(selectedProductSize);
+        product.setProductType(selectedProductType);
     }
 
     /*public void iHaveForRentSpinner(){
