@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/dashboard"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_manage_advert"
+            android:icon="@drawable/manage_advert"
+            android:title="Manage Advert" />
+        <item
+            android:id="@+id/nav_message"
+            android:icon="@drawable/message"
+            android:title="Message" />
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/profile"
+            android:title="Profile" />
+        <item
+            android:id="@+id/nav_account_settings"
+            android:icon="@drawable/account_settings"
+            android:title="Account Settings" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/search"
+            android:title="Search" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/logout"
+            android:title="Logout" />
+    </group>
+
+    <item android:title="Support">
+        <menu>
+            <item
+                android:id="@+id/nav_email"
+                android:icon="@drawable/email"
+                android:title="Email" />
+            <item
+                android:id="@+id/nav_phone"
+                android:icon="@drawable/phone"
+                android:title="Phone" />
+        </menu>
+    </item>
+
+</menu>

@@ -49,9 +49,13 @@ public class NavigationManager {
         } else if (id == R.id.nav_logout) {
             session.logoutUser();
         } else if (id == R.id.nav_email) {
-
+            Intent member_email_intent = new Intent(_context, Email.class);
+            member_email_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            _context.startActivity(member_email_intent);
         } else if (id == R.id.nav_phone) {
-
+            Intent member_phone_intent = new Intent(_context, Phone.class);
+            member_phone_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            _context.startActivity(member_phone_intent);
         }
     }
 }

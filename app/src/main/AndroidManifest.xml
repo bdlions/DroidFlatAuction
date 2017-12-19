@@ -250,6 +250,14 @@
             android:name=".Test"
             android:label="@string/title_activity_test"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Email"
+            android:label="@string/title_activity_email"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Phone"
+            android:label="@string/title_activity_phone"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

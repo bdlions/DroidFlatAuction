@@ -2,7 +2,6 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -15,27 +14,25 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
+import android.widget.EditText;
 
-public class ProfileDashboard extends AppCompatActivity
+public class Phone extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private  static Button user_profile_btn,edit_profile_btn;
     SessionManager session;
+    private static EditText etPhone;
+    private  static Button btn_call;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_dashboard);
+        setContentView(R.layout.activity_phone);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
-        onClickButtonUserProfileListener();
-        onClickButtonEditProfileListener();
-
+        etPhone = (EditText) findViewById(R.id.et_phone);
+        btn_call = (Button) findViewById(R.id.phone_call_button);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -46,30 +43,7 @@ public class ProfileDashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
     }
-    public void onClickButtonUserProfileListener(){
-        user_profile_btn = (Button) findViewById(R.id.user_profile);
-        user_profile_btn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                   public void onClick(View v) {
-                        Intent user_profile_intent = new Intent(getBaseContext(), UserProfile.class);
-                        startActivity(user_profile_intent);
-                    }
-                }
-        );
-    }
-    public void onClickButtonEditProfileListener(){
-        edit_profile_btn = (Button) findViewById(R.id.edit_profile);
-        edit_profile_btn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent edit_user_profile_intent = new Intent(getBaseContext(), EditUserProfile.class);
-                        startActivity(edit_user_profile_intent);
-                    }
-                }
-        );
-    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -83,7 +57,7 @@ public class ProfileDashboard extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.profile_dashboard, menu);
+        getMenuInflater().inflate(R.menu.phone, menu);
         return true;
     }
 
@@ -95,8 +69,8 @@ public class ProfileDashboard extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       // if (id == R.id.action_settings) {
-        //    return true;
+      //  if (id == R.id.action_settings) {
+       //     return true;
        // }
 
         return super.onOptionsItemSelected(item);
@@ -107,7 +81,6 @@ public class ProfileDashboard extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_dashboard) {
             Intent member_bashboard_intent = new Intent(getBaseContext(), MemberDashboard.class);
             startActivity(member_bashboard_intent);

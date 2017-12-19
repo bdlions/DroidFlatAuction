@@ -1019,9 +1019,11 @@ public class EditUserProfile extends AppCompatActivity
             //Intent member_logout_intent = new Intent(getBaseContext(), NonMemberHome.class);
             //startActivity(member_logout_intent);
         } else if (id == R.id.nav_email) {
-
+            Intent member_email_intent = new Intent(getBaseContext(), Email.class);
+            startActivity(member_email_intent);
         } else if (id == R.id.nav_phone) {
-
+            Intent member_phone_intent = new Intent(getBaseContext(), Phone.class);
+            startActivity(member_phone_intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

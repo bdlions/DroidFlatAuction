@@ -184,4 +184,6 @@ favourite properties, receive email alerts for new results and much more.</strin
     <string name="title_activity_show_advert_product_details">RoomBidRent</string>
     <string name="title_activity_demo_pagination">RoomBidRent</string>
     <string name="title_activity_test">RoomBidRent</string>
+    <string name="title_activity_email">RoomBidRent</string>
+    <string name="title_activity_phone">RoomBidRent</string>
 </resources>
