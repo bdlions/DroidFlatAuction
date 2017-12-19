@@ -18,8 +18,6 @@ import android.widget.EditText;
 
 public class Email extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    private static EditText etEmailAddress;
-    private  static Button btn_send;
     SessionManager session;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +28,6 @@ public class Email extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
-
-        etEmailAddress = (EditText) findViewById(R.id.et_email_address);
-        btn_send = (Button) findViewById(R.id.email_send_button);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

@@ -19,8 +19,6 @@ import android.widget.EditText;
 public class Phone extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     SessionManager session;
-    private static EditText etPhone;
-    private  static Button btn_call;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,9 +28,6 @@ public class Phone extends AppCompatActivity
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
-
-        etPhone = (EditText) findViewById(R.id.et_phone);
-        btn_call = (Button) findViewById(R.id.phone_call_button);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
