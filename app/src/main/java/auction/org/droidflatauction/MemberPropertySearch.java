@@ -5,12 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -26,23 +20,18 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.Toast;
-
-import com.bdlions.dto.Location;
-import com.bdlions.dto.LocationList;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductList;
-import com.bdlions.dto.SearchParams;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
-import java.lang.reflect.Array;
+import org.bdlions.auction.dto.DTOSearchParam;
+import org.bdlions.auction.entity.EntityLocation;
+import org.bdlions.auction.entity.EntityProduct;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MemberPropertySearch extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -53,7 +42,7 @@ public class MemberPropertySearch extends AppCompatActivity
     ListView listView;
     EditText editText;
     SessionManager session;
-    SearchParams searchParams = new SearchParams();
+    DTOSearchParam searchParams = new DTOSearchParam();
     public int fetchProductListCounter = 0;
     public int fetchLocationListCounter = 0;
 
@@ -127,25 +116,28 @@ public class MemberPropertySearch extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    LocationList responseLocationList = null;
-                    String stringLocationList = null;
+                    List<EntityLocation> locations = null;
+                    String clientListResponseString = null;
+                    ClientListResponse clientListResponse = null;
                     if(msg != null && msg.obj != null)
                     {
-                        stringLocationList = (String) msg.obj;
+                        clientListResponseString = (String) msg.obj;
                     }
-                    if(stringLocationList != null)
+                    if(clientListResponseString != null)
                     {
                         Gson gson = new Gson();
-                        responseLocationList = gson.fromJson(stringLocationList, LocationList.class);
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
-                    if(responseLocationList != null && responseLocationList.isSuccess())
+                    if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
+                        locations = (List<EntityLocation>)clientListResponse.getList();
+
                         ArrayList<String> locationList = new ArrayList<String>();
-                        int totalLocations = responseLocationList.getLocations().size();
+                        int totalLocations = locations.size();
                         items = new String[totalLocations];
                         for(int counter = 0; counter < totalLocations; counter++)
                         {
-                            Location location = responseLocationList.getLocations().get(counter);
+                            EntityLocation location = locations.get(counter);
                             locationList.add(location.getSearchString());
                             items[counter] = location.getSearchString();
                         }
@@ -235,9 +227,8 @@ public class MemberPropertySearch extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    ProductList response = gson.fromJson(resultString, ProductList.class);
-                    System.out.println(response);
-                    ArrayList<Product> productList = response.getProducts();
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
+                    List<EntityProduct> productList = (List<EntityProduct>)response.getList();
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
                     ArrayList<Integer> productIdList = new ArrayList<Integer>();
@@ -250,7 +241,7 @@ public class MemberPropertySearch extends AppCompatActivity
                         int totalProducts = productList.size();
                         for(int productCounter = 0; productCounter < totalProducts; productCounter++)
                         {
-                            Product product = productList.get(productCounter);
+                            EntityProduct product = productList.get(productCounter);
                             productIdList.add(product.getId());
                             imgList.add(product.getImg());
                             imageList.add(R.drawable.property_image_01);

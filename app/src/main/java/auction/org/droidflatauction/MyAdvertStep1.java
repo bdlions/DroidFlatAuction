@@ -1,15 +1,10 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,27 +14,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductList;
-import com.bdlions.dto.User;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-import org.json.JSONObject;
-
+import org.bdlions.auction.dto.DTOProduct;
+import org.bdlions.auction.entity.EntityProduct;
 import java.util.ArrayList;
 
 public class MyAdvertStep1 extends AppCompatActivity
@@ -121,7 +106,7 @@ public class MyAdvertStep1 extends AppCompatActivity
 
     public void fetchProductInfo(final int productId)
     {
-        Product tempProduct = new Product();
+        EntityProduct tempProduct = new EntityProduct();
         tempProduct.setId(productId);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -137,19 +122,21 @@ public class MyAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    Product responseProduct = null;
-                    String productInfoString = null;
-                    if(msg != null && msg.obj != null)
+                    DTOProduct responseProduct = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
+                    if(msg != null  && msg.obj != null)
                     {
-                        productInfoString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(productInfoString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        responseProduct = (DTOProduct)clientResponse.getResult();
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson2 = gsonBuilder.create();
                         String productString = gson2.toJson(responseProduct);

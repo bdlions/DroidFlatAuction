@@ -1,12 +1,9 @@
-
 package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,33 +13,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.widget.TableRow.LayoutParams;
-import android.widget.Toast;
-
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductBid;
-import com.bdlions.dto.ProductBidList;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-
 import org.auction.udp.BackgroundWork;
-
-import java.util.ArrayList;
+import org.bdlions.auction.dto.DTOBid;
+import org.bdlions.auction.dto.DTOProduct;
+import org.bdlions.auction.entity.EntityBid;
+import org.bdlions.auction.entity.EntityProduct;
 import java.util.HashMap;
+import java.util.List;
 
 public class PropertyBidList extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -77,10 +68,11 @@ public class PropertyBidList extends AppCompatActivity
 
     public int fetchProductInfoCounter = 0;
     public int fetchBidListCounter = 0;
-    Product product;
+    EntityProduct product;
     public int adIdentity;
     HashMap<Integer, String> userIdNameMap = new HashMap<>();
-
+    DTOProduct dtoProduct;
+    private String productString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,11 +91,33 @@ public class PropertyBidList extends AppCompatActivity
 
         try
         {
+            dtoProduct = new DTOProduct();
             adIdentity = getIntent().getExtras().getInt("adIdentity");
-            int productId = getIntent().getExtras().getInt("productId");
-            product = new Product();
-            product.setId(productId);
-            fetchProductInfo();
+            //int productId = getIntent().getExtras().getInt("productId");
+            //product = new EntityProduct();
+            //product.setId(productId);
+            //fetchProductInfo();
+
+            productString = getIntent().getExtras().getString("productString");
+            Gson gson = new Gson();
+            dtoProduct = gson.fromJson(productString, DTOProduct.class);
+
+            if(dtoProduct != null && dtoProduct.getEntityProduct() != null)
+            {
+                product = dtoProduct.getEntityProduct();
+                //set product info into interface
+                tvProductTitle.setText(product.getTitle());
+                tvProductPrice.setText("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
+                Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivPropertyImage);
+                tvProductTotalBids.setText(product.getTotalBids()+"");
+
+                //call server to get bid list
+                fetchBidList();
+            }
+            else
+            {
+                return;
+            }
         }
         catch(Exception ex)
         {
@@ -190,7 +204,7 @@ public class PropertyBidList extends AppCompatActivity
 
                             @Override
                             public void run() {
-                                long tempTime = product.getTime();
+                                long tempTime = dtoProduct.getAuctionEndTimeLeft();
                                 String timeLeft = "";
                                 if (tempTime > 0)
                                 {
@@ -213,7 +227,7 @@ public class PropertyBidList extends AppCompatActivity
                                     {
                                         timeLeft = timeLeft + tempTime + " secs ";
                                     }
-                                    product.setTime(product.getTime() - 1);
+                                    dtoProduct.setAuctionEndTimeLeft(dtoProduct.getAuctionEndTimeLeft() - 1);
                                     tvProductBidListBidTimeLeft.setText(timeLeft);
                                 }
                             }
@@ -227,112 +241,35 @@ public class PropertyBidList extends AppCompatActivity
         }.start();
     }
 
-    public void fetchProductInfo()
-    {
-        Product tempProduct = new Product();
-        tempProduct.setId(product.getId());
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        Gson gson = gsonBuilder.create();
-        String tempProductString = gson.toJson(tempProduct);
-
-        String sessionId = session.getSessionId();
-        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
-        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-        packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                try
-                {
-                    Product responseProduct = null;
-                    String productInfoString = null;
-                    if(msg != null && msg.obj != null)
-                    {
-                        productInfoString = (String) msg.obj;
-                    }
-                    if(productInfoString != null)
-                    {
-                        Gson gson = new Gson();
-                        responseProduct = gson.fromJson(productInfoString, Product.class);
-                    }
-                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
-                    {
-                        product = responseProduct;
-                        //set product info into interface
-                        tvProductTitle.setText(product.getTitle());
-                        tvProductPrice.setText("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.productImagePath_328_212+product.getImg()).into(ivPropertyImage);
-                        tvProductTotalBids.setText(product.getTotalBids()+"");
-
-                        //call server to get bid list
-                        fetchBidList();
-                    }
-                    else
-                    {
-                        fetchProductInfoCounter++;
-                        if (fetchProductInfoCounter <= 5)
-                        {
-                            fetchProductInfo();
-                        }
-                    }
-                }
-                catch(Exception ex)
-                {
-                    System.out.println(ex.toString());
-                    fetchProductInfoCounter++;
-                    if (fetchProductInfoCounter <= 5)
-                    {
-                        fetchProductInfo();
-                    }
-                }
-            }
-        });
-    }
-
     public void fetchBidList()
     {
-        Product tempProduct = new Product();
-        tempProduct.setId(product.getId());
+        DTOBid dtoBid = new DTOBid();
+        EntityBid entityBid = new EntityBid();
+        entityBid.setProductId(dtoProduct.getEntityProduct().getId());
+        dtoBid.setEntityBid(entityBid);
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-        String tempProductString = gson.toJson(tempProduct);
+        String dtoBidString = gson.toJson(dtoBid);
 
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_BID_LIST);
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_BID_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, tempProductString, new Handler(){
+        new BackgroundWork().execute(packetHeader, dtoBidString, new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 try
                 {
-                    ProductBidList productBidList = null;
-                    String bidListString = null;
-                    if(msg != null && msg.obj != null)
-                    {
-                        bidListString = (String) msg.obj;
-                    }
-                    if(bidListString != null)
-                    {
-                        Gson gson = new Gson();
-                        productBidList = gson.fromJson(bidListString, ProductBidList.class);
-                    }
-                    if(productBidList != null && productBidList.isSuccess())
-                    {
-                        //set bid list
-                        ArrayList<ProductBid> bidList = productBidList.getProductBidList();
-                        showBidList(bidList);
-                    }
-                    else
-                    {
-                        fetchBidListCounter++;
-                        if (fetchBidListCounter <= 5)
-                        {
-                            fetchBidList();
-                        }
-                    }
+                    String resultString = (String)msg.obj;
+                    Gson gson = new Gson();
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
+                    System.out.println(response);
+                    List<EntityBid> bidList = (List<EntityBid>)response.getList();
+                    showBidList(bidList);
+
+
                 }
                 catch(Exception ex)
                 {
@@ -419,23 +356,11 @@ public class PropertyBidList extends AppCompatActivity
                 LayoutParams.WRAP_CONTENT));
     }
 
-    public void showBidList(ArrayList<ProductBid> bidList) {
+    public void showBidList(List<EntityBid> bidList) {
         int totalBids = bidList.size();
-        for (int i = 0; i < totalBids; i++)
-        {
-            ProductBid bid = bidList.get(i);
-            if(bid.getUser().getFirstName() == null || bid.getUser().getLastName() == null)
-            {
-                continue;
-            }
-            if(bid.getUser().getId() > 0 && !userIdNameMap.containsKey(bid.getUser().getId()))
-            {
-                userIdNameMap.put(bid.getUser().getId(), bid.getUser().getFirstName()+" " + bid.getUser().getLastName());
-            }
-        }
 
         for (int i = 0; i < totalBids; i++) {
-            ProductBid bid = bidList.get(i);
+            EntityBid bid = bidList.get(i);
             /** Create a TableRow dynamically **/
             tr = new TableRow(this);
             tr.setLayoutParams(new LayoutParams(
@@ -444,14 +369,7 @@ public class PropertyBidList extends AppCompatActivity
 
             /** Creating a TextView to add to the row **/
             bidder_name = new TextView(this);
-            if(bid.getUser().getFirstName() != null && bid.getUser().getLastName() != null)
-            {
-                bidder_name.setText(bid.getUser().getFirstName() + " " + bid.getUser().getLastName());
-            }
-            else if(userIdNameMap.containsKey(bid.getUser().getId()))
-            {
-                bidder_name.setText(userIdNameMap.get(bid.getUser().getId()));
-            }
+            bidder_name.setText(bid.getFullName());
 
             bidder_name.setTextColor(Color.parseColor("#5a5a5a"));
             bidder_name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);

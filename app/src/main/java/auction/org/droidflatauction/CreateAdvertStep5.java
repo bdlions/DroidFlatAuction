@@ -17,15 +17,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.bdlions.dto.Product;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.bdlions.auction.entity.EntityProduct;
 
 public class CreateAdvertStep5 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static EditText etManageProductTitle, etManageProductDescription, etManageProductUserFirstName,etManageProductUserLastName, etManageProductCompany, etManageProductPhone;
-    Product product;
+    EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
 
@@ -53,7 +54,7 @@ public class CreateAdvertStep5 extends AppCompatActivity
         {
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
 
             if(product.getTitle() != null)
             {

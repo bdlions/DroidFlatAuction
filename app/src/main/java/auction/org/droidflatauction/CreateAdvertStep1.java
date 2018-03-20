@@ -24,14 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductCategory;
-import com.bdlions.dto.ProductCategoryList;
-import com.bdlions.dto.ProductSize;
-import com.bdlions.dto.ProductSizeList;
-import com.bdlions.dto.ProductType;
-import com.bdlions.dto.ProductTypeList;
-import com.bdlions.dto.User;
+import com.bdlions.dto.response.ClientListResponse;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
@@ -39,6 +33,10 @@ import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityProduct;
+import org.bdlions.auction.entity.EntityProductCategory;
+import org.bdlions.auction.entity.EntityProductSize;
+import org.bdlions.auction.entity.EntityProductType;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,21 +48,21 @@ public class CreateAdvertStep1 extends AppCompatActivity
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner productCategorySpinner, productSizeSpinner, productTypeSpinner;
     //ArrayAdapter<CharSequence> i_have_for_rent_adapter,size_of_property_adapter,type_of_property_adapter;
-    Product product;
+    EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
 
-    ArrayAdapter<ProductType> productTypeAdapter;
-    ArrayAdapter<ProductSize> productSizeAdapter;
-    ArrayAdapter<ProductCategory> productCategoryAdapter;
+    ArrayAdapter<EntityProductType> productTypeAdapter;
+    ArrayAdapter<EntityProductSize> productSizeAdapter;
+    ArrayAdapter<EntityProductCategory> productCategoryAdapter;
 
-    public List<ProductType> productTypeList = new ArrayList<>();
-    public List<ProductSize> productSizeList = new ArrayList<>();
-    public List<ProductCategory> productCategoryList = new ArrayList<>();
+    public List<EntityProductType> productTypeList = new ArrayList<>();
+    public List<EntityProductSize> productSizeList = new ArrayList<>();
+    public List<EntityProductCategory> productCategoryList = new ArrayList<>();
 
-    ProductType selectedProductType;
-    ProductSize selectedProductSize;
-    ProductCategory selectedProductCategory;
+    EntityProductType selectedProductType;
+    EntityProductSize selectedProductSize;
+    EntityProductCategory selectedProductCategory;
 
     public Dialog progressBarDialog;
 
@@ -84,14 +82,14 @@ public class CreateAdvertStep1 extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getBaseContext());
 
-        product = new Product();
+        product = new EntityProduct();
         //-------------if this activity is called by product id then handle it ----------------------------------
         //-------------if this activity is called from back arrow of step2 then handle it -----------------------
         try
         {
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
 
             progressBarDialog = new Dialog(CreateAdvertStep1.this);
             progressBarDialog.setContentView(R.layout.progressbar);
@@ -140,7 +138,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
      * */
     public void fetchProductInfo()
     {
-        Product tempProduct = new Product();
+        EntityProduct tempProduct = new EntityProduct();
         tempProduct.setId(product.getId());
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -156,20 +154,20 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    Product responseProduct = null;
-                    String productInfoString = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null && msg.obj != null)
                     {
-                        productInfoString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(productInfoString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        product = responseProduct;
+                        product = (EntityProduct) clientResponse.getResult();
 
                         //formatting date to user display format
                         String availableFrom = product.getAvailableFrom();
@@ -185,17 +183,17 @@ public class CreateAdvertStep1 extends AppCompatActivity
                             product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
                         }
 
-                        String bidStartFrom = product.getBidStartDate();
-                        String bidStartTo = product.getBidEndDate();
+                        String bidStartFrom = product.getAuctionStartDate();
+                        String bidStartTo = product.getAuctionEndDate();
                         if(bidStartFrom != null && !bidStartFrom.equals(""))
                         {
                             String[] bidStartFromArray = bidStartFrom.split("-");
-                            product.setBidStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
+                            product.setAuctionStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
                         }
                         if(bidStartTo != null && !bidStartTo.equals(""))
                         {
                             String[] bidStartToArray = bidStartTo.split("-");
-                            product.setBidEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
+                            product.setAuctionEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
                         }
 
                         fetchProductCategoryList();
@@ -245,26 +243,27 @@ public class CreateAdvertStep1 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                ProductCategoryList pCategoryList = null;
-                String productCategoryListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    productCategoryListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(productCategoryListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pCategoryList = gson.fromJson(productCategoryListString, ProductCategoryList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pCategoryList != null && pCategoryList.isSuccess() && pCategoryList.getProductCategories() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    productCategoryList = pCategoryList.getProductCategories();
+                    productCategoryList = (List<EntityProductCategory>)clientListResponse.getList();
                     int selectedCategoryPosition = 0;
 
                     //setting default product category
-                    if(product != null && product.getId() == 0 && product.getProductCategory() == null && productCategoryList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getCategoryId() == 0 && productCategoryList.size() > 0)
                     {
-                        product.setProductCategory(productCategoryList.get(0));
+                        product.setCategoryId(productCategoryList.get(0).getId());
+                        product.setCategoryTitle(productCategoryList.get(0).getTitle());
                     }
                     //setting product selected category
                     else
@@ -272,7 +271,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         int categoryCounter = productCategoryList.size();
                         for(int counter = 0; counter < categoryCounter; counter++ )
                         {
-                            if(productCategoryList.get(counter).getId() == product.getProductCategory().getId())
+                            if(productCategoryList.get(counter).getId() == product.getCategoryId())
                             {
                                 selectedProductCategory = productCategoryList.get(counter);
                                 selectedCategoryPosition = counter;
@@ -281,7 +280,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         }
                     }
 
-                    productCategoryAdapter = new ArrayAdapter<ProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
+                    productCategoryAdapter = new ArrayAdapter<EntityProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
                     productCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     productCategorySpinner = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
                     productCategorySpinner.setAdapter(productCategoryAdapter);
@@ -294,7 +293,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedProductCategory = (ProductCategory)productCategorySpinner.getSelectedItem();
+                                    selectedProductCategory = (EntityProductCategory)productCategorySpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -335,31 +334,32 @@ public class CreateAdvertStep1 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                ProductSizeList pSizeList = null;
-                String productSizeListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    productSizeListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(productSizeListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pSizeList = gson.fromJson(productSizeListString, ProductSizeList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pSizeList != null && pSizeList.isSuccess() && pSizeList.getProductSizes() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    productSizeList = pSizeList.getProductSizes();
+                    productSizeList = (List<EntityProductSize>)clientListResponse.getList();
                     int selectedSizePosition = 0;
-                    if(product != null && product.getId() == 0 && product.getProductSize() == null && productSizeList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getSizeId() == 0 && productSizeList.size() > 0)
                     {
-                        product.setProductSize(productSizeList.get(0));
+                        product.setSizeId(productSizeList.get(0).getId());
+                        product.setSizeTitle(productSizeList.get(0).getTitle());
                     }
                     else
                     {
                         int sizeCounter = productSizeList.size();
                         for(int counter = 0; counter < sizeCounter; counter++ )
                         {
-                            if(productSizeList.get(counter).getId() == product.getProductSize().getId())
+                            if(productSizeList.get(counter).getId() == product.getSizeId())
                             {
                                 selectedProductSize = productSizeList.get(counter);
                                 selectedSizePosition = counter;
@@ -368,7 +368,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         }
                     }
 
-                    productSizeAdapter = new ArrayAdapter<ProductSize>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productSizeList);
+                    productSizeAdapter = new ArrayAdapter<EntityProductSize>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productSizeList);
                     productSizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     productSizeSpinner = (Spinner) findViewById(R.id.size_of_property_spinner);
                     productSizeSpinner.setAdapter(productSizeAdapter);
@@ -381,7 +381,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
 
-                                    selectedProductSize = (ProductSize)productSizeSpinner.getSelectedItem();
+                                    selectedProductSize = (EntityProductSize)productSizeSpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -422,31 +422,32 @@ public class CreateAdvertStep1 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                ProductTypeList pTypeList = null;
-                String productTypeListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    productTypeListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(productTypeListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pTypeList = gson.fromJson(productTypeListString, ProductTypeList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pTypeList != null && pTypeList.isSuccess() && pTypeList.getProductTypes() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    productTypeList = pTypeList.getProductTypes();
+                    productTypeList = (List<EntityProductType>)clientListResponse.getList();
                     int selectedTypePosition = 0;
-                    if(product != null && product.getId() == 0 && product.getProductType() == null && productTypeList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getTypeId() == 0 && productTypeList.size() > 0)
                     {
-                        product.setProductType(productTypeList.get(0));
+                        product.setTypeId(productTypeList.get(0).getId());
+                        product.setTypeTitle(productTypeList.get(0).getTitle());
                     }
                     else
                     {
                         int typeCounter = productTypeList.size();
                         for(int counter = 0; counter < typeCounter; counter++ )
                         {
-                            if(productTypeList.get(counter).getId() == product.getProductType().getId())
+                            if(productTypeList.get(counter).getId() == product.getTypeId())
                             {
                                 selectedProductType = productTypeList.get(counter);
                                 selectedTypePosition = counter;
@@ -455,7 +456,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         }
                     }
 
-                    productTypeAdapter = new ArrayAdapter<ProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
+                    productTypeAdapter = new ArrayAdapter<EntityProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
                     productTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     productTypeSpinner = (Spinner) findViewById(R.id.type_of_property_spinner);
                     productTypeSpinner.setAdapter(productTypeAdapter);
@@ -468,7 +469,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedProductType = (ProductType)productTypeSpinner.getSelectedItem();
+                                    selectedProductType = (EntityProductType) productTypeSpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -554,9 +555,12 @@ public class CreateAdvertStep1 extends AppCompatActivity
     //setting input fields into product info
     public void setInputToProduct()
     {
-        product.setProductCategory(selectedProductCategory);
-        product.setProductSize(selectedProductSize);
-        product.setProductType(selectedProductType);
+        product.setCategoryId(selectedProductCategory.getId());
+        product.setCategoryTitle(selectedProductCategory.getTitle());
+        product.setSizeId(selectedProductSize.getId());
+        product.setSizeTitle(selectedProductSize.getTitle());
+        product.setTypeId(selectedProductType.getId());
+        product.setTypeTitle(selectedProductType.getTitle());
     }
 
     /*public void iHaveForRentSpinner(){

@@ -24,19 +24,16 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bdlions.dto.Amenity;
-import com.bdlions.dto.AmenityList;
-import com.bdlions.dto.Availability;
-import com.bdlions.dto.AvailabilityList;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.Stay;
-import com.bdlions.dto.StayList;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityAvailability;
+import org.bdlions.auction.entity.EntityProduct;
+import org.bdlions.auction.entity.EntityStay;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,17 +47,17 @@ public class CreateAdvertStep3 extends AppCompatActivity
     private static CheckBox cbManageProductOngoing;
 
 
-    Product product;
+    EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
 
     private static Spinner minStaySpinner, maxStaySpinner;
 
-    public List<Stay> stayList = new ArrayList<>();
+    public List<EntityStay> stayList = new ArrayList<>();
 
-    ArrayAdapter<Stay> stayAdapter;
+    ArrayAdapter<EntityStay> stayAdapter;
 
-    Stay selectedMinStay, selectedMaxStay;
+    EntityStay selectedMinStay, selectedMaxStay;
 
     public int fetchStayCounter = 0, fetchAvailabilityListCounter = 0;
 
@@ -86,7 +83,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
         try {
             String productString = (String) getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
 
             if(product.getAvailableFrom() != null)
             {
@@ -96,15 +93,15 @@ public class CreateAdvertStep3 extends AppCompatActivity
             {
                 etCreateProductAvailableTo.setText(product.getAvailableTo());
             }
-            if(product.isOngoing())
+            if(product.isOnGoing())
             {
                 etCreateProductAvailableTo.setText("");
                 cbManageProductOngoing.setChecked(true);
             }
-            if(product.getId() == 0 && product.getAvailabilities() == null)
+            /*if(product.getId() == 0 && product.getAvailabilities() == null)
             {
                 product.setAvailabilities(new ArrayList<Availability>());
-            }
+            }*/
         } catch (Exception ex) {
             System.out.println(ex.toString());
         }
@@ -144,29 +141,43 @@ public class CreateAdvertStep3 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    AvailabilityList availabilityList = null;
-                    String availabilityListString = null;
-                    if(msg != null  && msg.obj != null)
+                    List<EntityAvailability> availabilityList = null;
+                    String clientListResponseString = null;
+                    ClientListResponse clientListResponse = null;
+                    if(msg != null && msg.obj != null)
                     {
-                        availabilityListString = (String) msg.obj;
+                        clientListResponseString = (String) msg.obj;
                     }
-                    if(availabilityListString != null)
+                    if(clientListResponseString != null)
                     {
                         Gson gson = new Gson();
-                        availabilityList = gson.fromJson(availabilityListString, AvailabilityList.class);
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
-                    if(availabilityList != null && availabilityList.isSuccess())
+                    if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
-                        //progressBarDialog.dismiss();
-                        ArrayList<Integer> availabilityListId = new ArrayList<Integer>();
-                        for(int counter = 0; counter < product.getAvailabilities().size(); counter++)
+                        availabilityList = (List<EntityAvailability>)clientListResponse.getList();
+                        progressBarDialog.dismiss();
+                        final ArrayList<Integer> availabilityListId = new ArrayList<Integer>();
+                        String productAvailabilityIds = product.getAvailabilityIds();
+                        if(productAvailabilityIds != null && !productAvailabilityIds.equals(""))
                         {
-                            availabilityListId.add(product.getAvailabilities().get(counter).getId());
+                            String[] productAvailabilityIdArray = productAvailabilityIds.split(",");
+                            for(int counter = 0; counter < productAvailabilityIdArray.length; counter++)
+                            {
+                                try
+                                {
+                                    availabilityListId.add(Integer.parseInt(productAvailabilityIdArray[counter]));
+                                }
+                                catch(Exception ex)
+                                {
+
+                                }
+                            }
                         }
                         final List<DTOAvailablability> availabilities = new ArrayList<>();
-                        for(int counter = 0; counter < availabilityList.getAvailabilities().size(); counter++ )
+                        for(int counter = 0; counter < availabilityList.size(); counter++ )
                         {
-                            Availability availability = availabilityList.getAvailabilities().get(counter);
+                            EntityAvailability availability = availabilityList.get(counter);
                             DTOAvailablability dtoAvailablability = new DTOAvailablability(false,availability.getTitle());
                             if(availabilityListId.contains(availability.getId()))
                             {
@@ -182,39 +193,78 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         listViewAvailablability.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                DTOAvailablability dtoAvailablability = availabilities.get(i);
-                                if(dtoAvailablability.isSelected())
+                                DTOAvailablability dtoAvailability = availabilities.get(i);
+                                if(dtoAvailability.isSelected())
                                 {
-                                    dtoAvailablability.setSelected(false);
+                                    dtoAvailability.setSelected(false);
                                 }
                                 else
                                 {
-                                    dtoAvailablability.setSelected(true);
+                                    dtoAvailability.setSelected(true);
                                 }
-                                Availability availability = new Availability();
-                                availability.setId(dtoAvailablability.getId());
-                                List<Availability> tempAvailabilityList = new ArrayList<Availability>();
+
+                                List<String> tempAvailabilityIdList = new ArrayList<String>();
+                                List<String> tempAvailabilityTitleList = new ArrayList<String>();
+                                String availabilityIds = product.getAvailabilityIds();
+                                String availabilityTitles = product.getAvailabilityTitles();
                                 boolean isExists = false;
-                                if(product.getAvailabilities() != null && product.getAvailabilities().size() > 0)
+                                if(availabilityIds != null && !availabilityIds.equals("") && availabilityTitles != null && !availabilityTitles.equals(""))
                                 {
-                                    for (int counter = 0; counter < product.getAvailabilities().size(); counter++)
+                                    String[] availabilityIdArray = availabilityIds.split(",");
+                                    String[] availabilityTitleArray = availabilityTitles.split(",");
+                                    if(availabilityIdArray != null && availabilityIdArray.length > 0 && availabilityTitleArray != null && availabilityTitleArray.length > 0)
                                     {
-                                        if (product.getAvailabilities().get(counter).getId() == availability.getId())
+                                        for(int counter = 0; counter < availabilityIdArray.length; counter++)
                                         {
-                                            isExists = true;
-                                        }
-                                        else
-                                        {
-                                            tempAvailabilityList.add(product.getAvailabilities().get(counter));
+                                            int tempId = 0;
+                                            try
+                                            {
+                                                tempId = Integer.parseInt(availabilityIdArray[counter]);
+                                            }
+                                            catch(Exception ex)
+                                            {
+
+                                            }
+                                            if(tempId == dtoAvailability.getId())
+                                            {
+                                                isExists = true;
+                                            }
+                                            else
+                                            {
+                                                if(counter < availabilityTitleArray.length)
+                                                {
+                                                    tempAvailabilityIdList.add(availabilityIdArray[counter]);
+                                                    tempAvailabilityTitleList.add(availabilityTitleArray[counter]);
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
-                                if (!isExists)
+                                if(!isExists)
                                 {
-                                    tempAvailabilityList.add(availability);
+                                    tempAvailabilityIdList.add(dtoAvailability.getId()+"");
+                                    tempAvailabilityTitleList.add(dtoAvailability.getTitle());
                                 }
-                                product.setAvailabilities(tempAvailabilityList);
-                                availabilities.set(i,dtoAvailablability);
+                                String availabilityIdString = "";
+                                String availabilityTitleString = "";
+                                for(int counter = 0; counter < tempAvailabilityIdList.size(); counter++)
+                                {
+                                    if(counter > 0)
+                                    {
+                                        availabilityIdString = availabilityIdString + "," + tempAvailabilityIdList.get(counter) ;
+                                        availabilityTitleString = availabilityTitleString + "," + tempAvailabilityTitleList.get(counter);
+                                    }
+                                    else
+                                    {
+                                        availabilityIdString = tempAvailabilityIdList.get(counter);
+                                        availabilityTitleString = tempAvailabilityTitleList.get(counter);
+                                    }
+                                }
+                                product.setAmenityIds(availabilityIdString);
+                                product.setAmenityTitles(availabilityTitleString);
+
+                                availabilities.set(i,dtoAvailability);
                                 availablabilityAdapter.updateRecords(availabilities);
                             }
                         });
@@ -300,11 +350,11 @@ public class CreateAdvertStep3 extends AppCompatActivity
         if (checked) {
             etCreateProductAvailableTo.setText("");
             product.setAvailableTo("");
-            product.setOngoing(true);
+            product.setOnGoing(true);
         }
         else
         {
-            product.setOngoing(false);
+            product.setOnGoing(false);
         }
     }
 
@@ -318,31 +368,32 @@ public class CreateAdvertStep3 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                StayList pStayList = null;
-                String stayListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    stayListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(stayListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pStayList = gson.fromJson(stayListString, StayList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pStayList != null && pStayList.isSuccess() && pStayList.getStays() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    stayList = pStayList.getStays();
+                    stayList = (List<EntityStay>)clientListResponse.getList();
                     int selectedMinStayPosition = 0;
-                    if(product != null && product.getId() == 0 && product.getMinStay() == null && stayList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getMaxStayId() == 0 && stayList.size() > 0)
                     {
-                        product.setMinStay(stayList.get(0));
+                        product.setMinStayId(stayList.get(0).getId());
+                        product.setMinStayTitle(stayList.get(0).getTitle());
                     }
                     else
                     {
                         int minStayCounter = stayList.size();
                         for(int counter = 0; counter < minStayCounter; counter++ )
                         {
-                            if(stayList.get(counter).getId() == product.getMinStay().getId())
+                            if(stayList.get(counter).getId() == product.getMinStayId())
                             {
                                 selectedMinStay = stayList.get(counter);
                                 selectedMinStayPosition = counter;
@@ -351,16 +402,17 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         }
                     }
                     int selectedMaxStayPosition = 0;
-                    if(product != null && product.getId() == 0 && product.getMaxStay() == null && stayList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getMaxStayId() == 0 && stayList.size() > 0)
                     {
-                        product.setMaxStay(stayList.get(0));
+                        product.setMaxStayId(stayList.get(0).getId());
+                        product.setMaxStayTitle(stayList.get(0).getTitle());
                     }
                     else
                     {
                         int maxStayCounter = stayList.size();
                         for(int counter = 0; counter < maxStayCounter; counter++ )
                         {
-                            if(stayList.get(counter).getId() == product.getMaxStay().getId())
+                            if(stayList.get(counter).getId() == product.getMaxStayId())
                             {
                                 selectedMaxStay = stayList.get(counter);
                                 selectedMaxStayPosition = counter;
@@ -369,7 +421,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                         }
                     }
 
-                    stayAdapter = new ArrayAdapter<Stay>( CreateAdvertStep3.this, android.R.layout.simple_spinner_item, stayList);
+                    stayAdapter = new ArrayAdapter<EntityStay>( CreateAdvertStep3.this, android.R.layout.simple_spinner_item, stayList);
                     stayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     minStaySpinner = (Spinner) findViewById(R.id.minimum_stay_spinner);
                     minStaySpinner.setAdapter(stayAdapter);
@@ -382,7 +434,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedMinStay = (Stay)minStaySpinner.getSelectedItem();
+                                    selectedMinStay = (EntityStay)minStaySpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -402,8 +454,8 @@ public class CreateAdvertStep3 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedMaxStay = (Stay)maxStaySpinner.getSelectedItem();
-                                    System.out.println(selectedMaxStay.getTitle());
+                                    selectedMaxStay = (EntityStay) maxStaySpinner.getSelectedItem();
+                                    //System.out.println(selectedMaxStay.getTitle());
                                 }
 
                                 @Override
@@ -489,7 +541,7 @@ public class CreateAdvertStep3 extends AppCompatActivity
             Toast.makeText(getBaseContext(),"Available from date is required" , Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(!product.isOngoing())
+        if(!product.isOnGoing())
         {
             if(availableTo != null && !availableTo.equals(""))
             {
@@ -526,12 +578,14 @@ public class CreateAdvertStep3 extends AppCompatActivity
     public void setInputToProduct()
     {
         product.setAvailableFrom(etCreateProductAvailableFrom.getText().toString());
-        if(!product.isOngoing())
+        if(!product.isOnGoing())
         {
             product.setAvailableTo(etCreateProductAvailableTo.getText().toString());
         }
-        product.setMinStay(selectedMinStay);
-        product.setMaxStay(selectedMaxStay);
+        product.setMinStayId(selectedMinStay.getId());
+        product.setMinStayTitle(selectedMinStay.getTitle());
+        product.setMaxStayId(selectedMaxStay.getId());
+        product.setMaxStayTitle(selectedMaxStay.getTitle());
     }
 
 

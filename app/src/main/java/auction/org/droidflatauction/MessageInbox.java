@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,15 +17,14 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-
-import com.bdlions.dto.MessageText;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.dto.DTOMessageBody;
+import org.bdlions.auction.entity.EntityMessageBody;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,16 +99,17 @@ public class MessageInbox extends AppCompatActivity
 
     public void fetchMessageInfo(final int messageId)
     {
-        com.bdlions.dto.Message requestMessage = new com.bdlions.dto.Message();
-        requestMessage.setId(messageId);
+        DTOMessageBody dtoMessageBody = new DTOMessageBody();
+        EntityMessageBody entityMessageBody = new EntityMessageBody();
+        entityMessageBody.setMessageHeaderId(messageId);
+        dtoMessageBody.setEntityMessageBody(entityMessageBody);
+
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-        String messageString = gson.toJson(requestMessage);
-
+        String messageString = gson.toJson(dtoMessageBody);
         String sessionId = session.getSessionId();
-
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_MESSAGE_INFO);
+        packetHeader.setAction(ACTION.FETCH_MESSAGE_BODY_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, messageString, new Handler(){
@@ -121,42 +119,42 @@ public class MessageInbox extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    com.bdlions.dto.Message responseMessage = gson.fromJson(resultString, com.bdlions.dto.Message.class);
-                    System.out.println(responseMessage.getSubject());
-                    if(responseMessage.getMessageTextList() != null)
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
+                    System.out.println(response);
+                    List<DTOMessageBody> messageTextList = (List<DTOMessageBody>)response.getList();
+
+                    int messageTextListCounter = messageTextList.size();
+                    ArrayList<String> messageBodyList = new ArrayList<String>();
+                    ArrayList<String> userNameList = new ArrayList<String>();
+                    ArrayList<Integer> imageList = new ArrayList<Integer>();
+                    ArrayList<String> imgList = new ArrayList<String>();
+                    ArrayList<String> timeList = new ArrayList<String>();
+                    for(int counter = 0 ; counter < messageTextListCounter ; counter++)
                     {
-                        List<MessageText> messageTextList = responseMessage.getMessageTextList();
-                        int messageTextListCounter = messageTextList.size();
-                        ArrayList<String> messageBodyList = new ArrayList<String>();
-                        ArrayList<String> userNameList = new ArrayList<String>();
-                        ArrayList<Integer> imageList = new ArrayList<Integer>();
-                        ArrayList<String> imgList = new ArrayList<String>();
-                        ArrayList<String> timeList = new ArrayList<String>();
-                        for(int counter = 0 ; counter < messageTextListCounter ; counter++)
+                        DTOMessageBody messageText = messageTextList.get(counter);
+                        messageBodyList.add(messageText.getEntityMessageBody().getMessage());
+                        if(messageText.getEntityUser() != null)
                         {
-                            MessageText messageText = messageTextList.get(counter);
-                            messageBodyList.add(messageText.getBody());
-                            if(messageText.getUser() != null)
-                            {
-                                userNameList.add(messageText.getUser().getFirstName() + messageText.getUser().getLastName());
-                            }
-                            else
-                            {
-                                userNameList.add("");
-                            }
-                            imageList.add(R.drawable.user);
-                            imgList.add(messageText.getUser().getImg());
-                            timeList.add(messageText.getCreatedTime());
+                            userNameList.add(messageText.getEntityUser().getFirstName() + messageText.getEntityUser().getLastName());
+                            imgList.add(messageText.getEntityUser().getImg());
                         }
-                        Intent message_inbox_row_intent = new Intent(MessageInbox.this, MessageShow.class);
-                        message_inbox_row_intent.putExtra("userNameList", userNameList);
-                        message_inbox_row_intent.putExtra("imageList", imageList);
-                        message_inbox_row_intent.putExtra("imgList", imgList);
-                        message_inbox_row_intent.putExtra("messageBodyList", messageBodyList);
-                        message_inbox_row_intent.putExtra("timeList", timeList);
-                        message_inbox_row_intent.putExtra("messageId", responseMessage.getId());
-                        startActivity(message_inbox_row_intent);
+                        else
+                        {
+                            userNameList.add("");
+                            imgList.add("");
+                        }
+                        imageList.add(R.drawable.user);
+                        timeList.add(messageText.getCreatedTime());
                     }
+                    Intent message_inbox_row_intent = new Intent(MessageInbox.this, MessageShow.class);
+                    message_inbox_row_intent.putExtra("userNameList", userNameList);
+                    message_inbox_row_intent.putExtra("imageList", imageList);
+                    message_inbox_row_intent.putExtra("imgList", imgList);
+                    message_inbox_row_intent.putExtra("messageBodyList", messageBodyList);
+                    message_inbox_row_intent.putExtra("timeList", timeList);
+                    message_inbox_row_intent.putExtra("messageId", messageId);
+                    startActivity(message_inbox_row_intent);
+
                     progressBarDialog.dismiss();
                 }
                 catch(Exception ex)

@@ -1,6 +1,7 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
+import android.content.Entity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,17 +18,18 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.bdlions.dto.AccountSettingFA;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductList;
+//import com.bdlions.dto.AccountSettingFA;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityProduct;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ManageAdvertDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -79,7 +81,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                         Intent create_advert_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(new Product());
+                        String productString = gson.toJson(new EntityProduct());
                         create_advert_intent.putExtra("productString", productString);
                         startActivity(create_advert_intent);
                     }
@@ -105,7 +107,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
+        packetHeader.setAction(ACTION.FETCH_USER_PRODUCT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
@@ -115,9 +117,9 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
                     System.out.println(response);
-                    ArrayList<Product> productList = response.getProducts();
+                    List<EntityProduct> productList = (List<EntityProduct>)response.getList();
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
                     ArrayList<Integer> productIdList = new ArrayList<Integer>();
@@ -130,13 +132,13 @@ public class ManageAdvertDashboard extends AppCompatActivity
                         int totalProducts = productList.size();
                         for(int productCounter = 0; productCounter < totalProducts; productCounter++)
                         {
-                            Product product = productList.get(productCounter);
+                            EntityProduct product = productList.get(productCounter);
                             productIdList.add(product.getId());
                             imageList.add(R.drawable.property_image_01);
                             imgList.add(product.getImg());
                             titleList.add(product.getTitle());
-                            bedroomList.add(product.getProductCategory().getTitle() + ", " + product.getProductSize().getTitle());
-                            bathroomList.add(product.getProductType().getTitle());
+                            bedroomList.add(product.getCategoryTitle() + ", " + product.getSizeTitle());
+                            bathroomList.add(product.getTypeTitle());
                             priceList.add("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         }
                     }
@@ -197,9 +199,9 @@ public class ManageAdvertDashboard extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    ProductList response = gson.fromJson(resultString, ProductList.class);
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
                     System.out.println(response);
-                    ArrayList<Product> productList = response.getProducts();
+                    List<EntityProduct> productList = (List<EntityProduct>)response.getList();
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
                     ArrayList<Integer> productIdList = new ArrayList<Integer>();
@@ -212,13 +214,13 @@ public class ManageAdvertDashboard extends AppCompatActivity
                         int totalProducts = productList.size();
                         for(int productCounter = 0; productCounter < totalProducts; productCounter++)
                         {
-                            Product product = productList.get(productCounter);
+                            EntityProduct product = productList.get(productCounter);
                             productIdList.add(product.getId());
                             imageList.add(R.drawable.property_image_01);
                             imgList.add(product.getImg());
                             titleList.add(product.getTitle());
-                            bedroomList.add(product.getProductCategory().getTitle() + ", " + product.getProductSize().getTitle());
-                            bathroomList.add(product.getProductType().getTitle());
+                            bedroomList.add(product.getCategoryTitle() + ", " + product.getSizeTitle());
+                            bathroomList.add(product.getTypeTitle());
                             priceList.add("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         }
                     }
@@ -279,7 +281,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
 
     public void fetchIndividualAdBids()
     {
-        String sessionId = session.getSessionId();
+        /*String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
@@ -340,7 +342,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     }
                 }
             }
-        });
+        });*/
     }
 
     public void onClickButtonStatsAdListener(){
@@ -360,7 +362,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
 
     public void fetchStats()
     {
-        String sessionId = session.getSessionId();
+        /*String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_MY_PRODUCT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
@@ -418,7 +420,7 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     }
                 }
             }
-        });
+        });*/
     }
 
     public void onClickButtonRankingAdListener(){

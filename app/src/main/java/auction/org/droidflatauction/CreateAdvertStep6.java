@@ -27,16 +27,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.bdlions.dto.Product;
-import com.bdlions.dto.response.GeneralResponse;
-import com.bdlions.util.ACTION;
-import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundUploader;
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityProduct;
 
 
 public class CreateAdvertStep6 extends AppCompatActivity
@@ -44,7 +41,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
     private static ImageButton ib_back_arrow,ib_forward_arrow;
     private static ImageView ivEditProductPhoto, ivUploadProductPhoto;
     private static Button btnUploadProductPhoto;
-    Product product;
+    EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
     private static LinearLayout llUploadProductPhoto,llEditProductPhoto;
@@ -137,7 +134,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
         {
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
         }
         catch(Exception ex)
         {

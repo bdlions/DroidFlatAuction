@@ -5,11 +5,8 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bdlions.dto.User;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.dto.response.SignInResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
@@ -17,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityUser;
 
 public class Test extends AppCompatActivity {
     private  static TextView tvTest;
@@ -48,33 +46,35 @@ public class Test extends AppCompatActivity {
         {
             String sessionId = session.getSessionId();
             org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-            packetHeader.setAction(ACTION.FETCH_APP_DASHBOARD_USER_INFO);
+            packetHeader.setAction(ACTION.FETCH_USER_PROFILE_INFO);
             packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
             packetHeader.setSessionId(sessionId);
             new BackgroundWork().execute(packetHeader, "{}", new Handler(){
                 @Override
                 public void handleMessage(Message msg) {
-                    User user = null;
-                    String userString = null;
+                    EntityUser entityUser = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null  && msg.obj != null)
                     {
-                        userString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(userString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        user = gson.fromJson(userString, User.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(user != null && user.isSuccess())
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        entityUser = (EntityUser) clientResponse.getResult();
                         if(session.getUserId() == 0)
                         {
-                            session.setUserId(user.getId());
+                            session.setUserId(entityUser.getId());
                         }
-                        editTest.setText(userString);
+                        editTest.setText(entityUser.getEmail());
                         return;
                     }
-                    else if(user != null && !user.isSuccess())
+                    else if(clientResponse != null && !clientResponse.isSuccess())
                     {
                         reAttemptAutoLogin++;
                         if(reAttemptAutoLogin <= reAttemptAutoLoginMaxCounter)
@@ -146,7 +146,7 @@ public class Test extends AppCompatActivity {
                 session.logoutUser();
             }
 
-            User user = new User();
+            EntityUser user = new EntityUser();
             user.setUserName(email);
             user.setPassword(password);
             GsonBuilder gsonBuilder = new GsonBuilder();

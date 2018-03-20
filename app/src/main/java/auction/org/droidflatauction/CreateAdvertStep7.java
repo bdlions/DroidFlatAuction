@@ -26,20 +26,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bdlions.dto.BidTime;
-import com.bdlions.dto.Image;
-import com.bdlions.dto.ListBidTime;
-import com.bdlions.dto.Location;
-import com.bdlions.dto.Occupation;
-import com.bdlions.dto.Pet;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductCategory;
-import com.bdlions.dto.ProductCategoryList;
-import com.bdlions.dto.ProductSize;
-import com.bdlions.dto.ProductType;
-import com.bdlions.dto.Smoking;
-import com.bdlions.dto.SmokingList;
-import com.bdlions.dto.Stay;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.dto.response.SignInResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
@@ -47,6 +34,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityProduct;
+import org.bdlions.auction.entity.EntityTime;
+import org.w3c.dom.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,17 +47,17 @@ public class CreateAdvertStep7 extends AppCompatActivity
     private static EditText etCreateProductBidStartCalendar,etCreateProductBidEndCalendar;
     private static Spinner bidStartTimer,bidEndTimer;
     ArrayAdapter<CharSequence> bidStartTimerAdapter,bidEndTimerAdapter;
-    ArrayAdapter<BidTime> bidStartTimeAdapter,bidEndTimeAdapter;
-    Product product;
+    ArrayAdapter<EntityTime> bidStartTimeAdapter,bidEndTimeAdapter;
+    EntityProduct product;
     String productString;
     SessionManager session;
     NavigationManager navigationManager;
 
     public Dialog progressBarDialog;
 
-    public List<BidTime> bidTimes = new ArrayList<>();
-    public BidTime selectedBidStartTime = new BidTime();
-    public BidTime selectedBidEndTime = new BidTime();
+    public List<EntityTime> bidTimes = new ArrayList<>();
+    public EntityTime selectedBidStartTime = new EntityTime();
+    public EntityTime selectedBidEndTime = new EntityTime();
     public int fetchProductBidTimeCounter = 0;
 
 
@@ -90,15 +80,15 @@ public class CreateAdvertStep7 extends AppCompatActivity
         {
             String prodString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(prodString, Product.class);
+            product = gson.fromJson(prodString, EntityProduct.class);
 
-            if(product.getBidStartDate() != null)
+            if(product.getAuctionStartDate() != null)
             {
-                etCreateProductBidStartCalendar.setText(product.getBidStartDate());
+                etCreateProductBidStartCalendar.setText(product.getAuctionStartDate());
             }
-            if(product.getBidEndDate() != null)
+            if(product.getAuctionEndDate() != null)
             {
-                etCreateProductBidEndCalendar.setText(product.getBidEndDate());
+                etCreateProductBidEndCalendar.setText(product.getAuctionEndDate());
             }
             progressBarDialog = new Dialog(CreateAdvertStep7.this);
             progressBarDialog.setContentView(R.layout.progressbar);
@@ -131,49 +121,41 @@ public class CreateAdvertStep7 extends AppCompatActivity
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_BID_TIME_LIST);
+        packetHeader.setAction(ACTION.FETCH_TIME_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                ListBidTime listBidTime = null;
-                String listBidTimeString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    listBidTimeString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(listBidTimeString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    listBidTime = gson.fromJson(listBidTimeString, ListBidTime.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(listBidTime != null && listBidTime.isSuccess() && listBidTime.getBidTimes() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
                     progressBarDialog.dismiss();
-                    bidTimes = listBidTime.getBidTimes();
+                    bidTimes = (List<EntityTime>)clientListResponse.getList();
                     if(bidTimes.size() > 0)
                     {
                         int selectedBidStartTimePosition = 0;
                         int selectedBidEndTimePosition = 0;
                         selectedBidStartTime = bidTimes.get(0);
                         selectedBidEndTime = bidTimes.get(0);
-                        if(product.getBidStartTime() == null)
-                        {
-                            product.setBidStartTime("");
-                        }
-                        if(product.getBidEndTime() == null)
-                        {
-                            product.setBidEndTime("");
-                        }
                         for(int counter = 0; counter < bidTimes.size(); counter++)
                         {
-                            if(product.getBidStartTime().equals(bidTimes.get(counter).getTitle()))
+                            if(product.getAuctionStartTimeId() == bidTimes.get(counter).getId())
                             {
                                 selectedBidStartTime = bidTimes.get(counter);
                                 selectedBidStartTimePosition = counter;
                             }
-                            if(product.getBidEndTime().equals(bidTimes.get(counter).getTitle()))
+                            if(product.getAuctionEndTimeId() == bidTimes.get(counter).getId())
                             {
                                 selectedBidEndTime = bidTimes.get(counter);
                                 selectedBidEndTimePosition = counter;
@@ -181,15 +163,15 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         }
 
                         bidStartTimer = (Spinner) findViewById(R.id.bid_start_timer_spinner);
-                        bidStartTimeAdapter = new ArrayAdapter<BidTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
+                        bidStartTimeAdapter = new ArrayAdapter<EntityTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
                         bidStartTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         bidStartTimer.setAdapter(bidStartTimeAdapter);
                         bidStartTimer.setSelection(selectedBidStartTimePosition);
                         bidStartTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                selectedBidStartTime = (BidTime) bidStartTimer.getSelectedItem();
-                                product.setBidStartTime(selectedBidStartTime.getTitle());
+                                selectedBidStartTime = (EntityTime) bidStartTimer.getSelectedItem();
+                                product.setAuctionStartTimeId(selectedBidStartTime.getId());
                             }
 
                             @Override
@@ -199,15 +181,15 @@ public class CreateAdvertStep7 extends AppCompatActivity
                         });
 
                         bidEndTimer = (Spinner) findViewById(R.id.bid_end_timer_spinner);
-                        bidEndTimeAdapter = new ArrayAdapter<BidTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
+                        bidEndTimeAdapter = new ArrayAdapter<EntityTime>( CreateAdvertStep7.this, android.R.layout.simple_spinner_item, bidTimes);
                         bidEndTimeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         bidEndTimer.setAdapter(bidEndTimeAdapter);
                         bidEndTimer.setSelection(selectedBidEndTimePosition);
                         bidEndTimer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                selectedBidEndTime = (BidTime) bidStartTimer.getSelectedItem();
-                                product.setBidEndTime(selectedBidEndTime.getTitle());
+                                selectedBidEndTime = (EntityTime) bidStartTimer.getSelectedItem();
+                                product.setAuctionEndTimeId(selectedBidEndTime.getId());
                             }
 
                             @Override
@@ -378,10 +360,12 @@ public class CreateAdvertStep7 extends AppCompatActivity
 
     public void setInputToProduct()
     {
-        product.setBidStartDate(etCreateProductBidStartCalendar.getText().toString());
-        product.setBidEndDate(etCreateProductBidEndCalendar.getText().toString());
-        product.setBidStartTime(bidStartTimer.getSelectedItem().toString());
-        product.setBidEndTime(bidEndTimer.getSelectedItem().toString());
+        product.setAuctionStartDate(etCreateProductBidStartCalendar.getText().toString());
+        product.setAuctionEndDate(etCreateProductBidEndCalendar.getText().toString());
+        EntityTime startTime = (EntityTime)bidStartTimer.getSelectedItem();
+        product.setAuctionStartTimeId(startTime.getId());
+        EntityTime endTime = (EntityTime)bidEndTimer.getSelectedItem();
+        product.setAuctionEndTimeId(endTime.getId());
     }
 
     @Override

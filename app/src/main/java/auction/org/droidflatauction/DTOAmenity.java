@@ -1,12 +1,11 @@
 package auction.org.droidflatauction;
-
-import com.bdlions.dto.Amenity;
+import org.bdlions.auction.entity.EntityAmenity;
 
 /**
  * Created by bdlions on 29/08/2017.
  */
 
-public class DTOAmenity extends Amenity{
+public class DTOAmenity extends EntityAmenity{
     boolean isSelected;
     String  amenity;
 

@@ -7,14 +7,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.bdlions.dto.User;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.bdlions.auction.entity.EntityUser;
 
 public class SignUpStep2 extends AppCompatActivity {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
-    private User user;
+    private EntityUser entityUser;
     private static EditText etEmail;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,13 +19,7 @@ public class SignUpStep2 extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up_step2);
 
         etEmail = (EditText) findViewById(R.id.et_sign_up_email);
-        //String userString = getIntent().getExtras().getString("userString");
-
-        user = (User)getIntent().getExtras().get("user");
-
-        //Gson gson = new Gson();
-        //user = gson.fromJson(userString, User.class);
-
+        entityUser = (EntityUser)getIntent().getExtras().get("entityUser");
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
     }
@@ -39,7 +30,7 @@ public class SignUpStep2 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent sing_up_step2_back_arrow_intent = new Intent(getBaseContext(), SignUpStep1.class);
-                        sing_up_step2_back_arrow_intent.putExtra("user",user);
+                        sing_up_step2_back_arrow_intent.putExtra("entityUser",entityUser);
                         startActivity(sing_up_step2_back_arrow_intent);
                     }
                 }
@@ -52,19 +43,14 @@ public class SignUpStep2 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String email = etEmail.getText().toString();
-                        user.setEmail(email);
+                        entityUser.setEmail(email);
                         if(email == null || email.equals(""))
                         {
                             Toast.makeText(SignUpStep2.this, "Please assign valid email.",Toast.LENGTH_SHORT).show();
                             return;
                         }
                         Intent sign_up_step2_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep3.class);
-
-
-                        //GsonBuilder gsonBuilder = new GsonBuilder();
-                        //Gson gson = gsonBuilder.create();
-                        //String userString = gson.toJson(user);
-                        sign_up_step2_forward_arrow_intent.putExtra("user", user);
+                        sign_up_step2_forward_arrow_intent.putExtra("entityUser", entityUser);
                         startActivity(sign_up_step2_forward_arrow_intent);
                     }
                 }

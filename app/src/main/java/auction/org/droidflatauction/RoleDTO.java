@@ -1,12 +1,12 @@
 package auction.org.droidflatauction;
 
-import com.bdlions.dto.Role;
+import org.bdlions.auction.entity.EntityRole;
 
 /**
  * Created by bdlions on 09/09/2017.
  */
 
-public class RoleDTO extends Role
+public class RoleDTO extends EntityRole
 {
     boolean isSelected;
     String  role;

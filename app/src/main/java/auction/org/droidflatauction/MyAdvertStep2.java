@@ -2,8 +2,6 @@ package auction.org.droidflatauction;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,8 +15,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.bdlions.dto.Product;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,6 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+import org.bdlions.auction.entity.EntityProduct;
 
 public class MyAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -34,7 +31,7 @@ public class MyAdvertStep2 extends AppCompatActivity
     private static TextView tv_view_product_title, tv_view_product_price, tv_view_product_description, tv_property_total_bids;
     private  static Button propperty_content_edit_btn;
     private static ImageView ivProductDetails;
-    private Product product;
+    private EntityProduct product;
     private String productString;
     SessionManager session;
 
@@ -57,7 +54,7 @@ public class MyAdvertStep2 extends AppCompatActivity
         {
             productString = getIntent().getExtras().getString("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
             //product = (Product)getIntent().getExtras().get("productInfo");
             tv_view_product_title.setText(product.getTitle());
             tv_view_product_price.setText("£" + String.format("%.2f",  product.getBasePrice()));

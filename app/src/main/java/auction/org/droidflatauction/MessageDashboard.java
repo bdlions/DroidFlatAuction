@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,16 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-
-import com.bdlions.dto.MessageList;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductList;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.dto.DTOMessageHeader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,10 +101,9 @@ public class MessageDashboard extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    MessageList response = gson.fromJson(resultString, MessageList.class);
-
-                    List<com.bdlions.dto.Message> messageList = response.getMessageList();
-
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
+                    System.out.println(response);
+                    List<DTOMessageHeader> messageList = (List<DTOMessageHeader>)response.getList();
 
                     ArrayList<Integer> messageIdList = new ArrayList<Integer>();
                     ArrayList<String> userNameList = new ArrayList<String>();
@@ -118,18 +111,17 @@ public class MessageDashboard extends AppCompatActivity
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
 
-
                     if(messageList != null)
                     {
                         int totalMessages = messageList.size();
                         for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
                         {
-                            com.bdlions.dto.Message message = messageList.get(messageCounter);
-                            messageIdList.add(message.getId());
-                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
-                            subjectList.add(message.getSubject());
+                            DTOMessageHeader message = messageList.get(messageCounter);
+                            messageIdList.add(message.getEntityMessageHeader().getId());
+                            userNameList.add(message.getSender().getFirstName() + " " + message.getSender().getLastName());
+                            subjectList.add(message.getEntityMessageHeader().getSubject());
                             imageList.add(R.drawable.user);
-                            imgList.add(message.getFrom().getImg());
+                            imgList.add(message.getSender().getImg());
                         }
                     }
                     progressBarDialog.dismiss();
@@ -188,9 +180,9 @@ public class MessageDashboard extends AppCompatActivity
                 {
                     String resultString = (String)msg.obj;
                     Gson gson = new Gson();
-                    MessageList response = gson.fromJson(resultString, MessageList.class);
-
-                    List<com.bdlions.dto.Message> messageList = response.getMessageList();
+                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
+                    System.out.println(response);
+                    List<DTOMessageHeader> messageList = (List<DTOMessageHeader>)response.getList();
 
 
                     ArrayList<Integer> messageIdList = new ArrayList<Integer>();
@@ -204,12 +196,12 @@ public class MessageDashboard extends AppCompatActivity
                         int totalMessages = messageList.size();
                         for(int messageCounter = 0; messageCounter < totalMessages; messageCounter++)
                         {
-                            com.bdlions.dto.Message message = messageList.get(messageCounter);
-                            messageIdList.add(message.getId());
-                            userNameList.add(message.getFrom().getFirstName() + " " + message.getFrom().getLastName());
-                            subjectList.add(message.getSubject());
+                            DTOMessageHeader message = messageList.get(messageCounter);
+                            messageIdList.add(message.getEntityMessageHeader().getId());
+                            userNameList.add(message.getSender().getFirstName() + " " + message.getSender().getLastName());
+                            subjectList.add(message.getEntityMessageHeader().getSubject());
                             imageList.add(R.drawable.user);
-                            imgList.add(message.getFrom().getImg());
+                            imgList.add(message.getSender().getImg());
                         }
                     }
                     progressBarDialog.dismiss();

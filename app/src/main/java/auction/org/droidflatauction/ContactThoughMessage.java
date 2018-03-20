@@ -3,8 +3,6 @@ package auction.org.droidflatauction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,20 +18,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bdlions.dto.Message;
-import com.bdlions.dto.MessageText;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.User;
 import com.bdlions.dto.response.GeneralResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
-
-import java.util.ArrayList;
+import org.bdlions.auction.dto.DTOMessageHeader;
+import org.bdlions.auction.entity.EntityMessageBody;
+import org.bdlions.auction.entity.EntityMessageHeader;
+import org.bdlions.auction.entity.EntityProduct;
 
 public class ContactThoughMessage extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,7 +38,7 @@ public class ContactThoughMessage extends AppCompatActivity
     private  static Button btnMessageSend;
     SessionManager session;
     NavigationManager navigationManager;
-    Product product;
+    EntityProduct product;
     String productString;
     int adIdentity;
     public int sendContactMessageCounter = 0;
@@ -69,10 +64,10 @@ public class ContactThoughMessage extends AppCompatActivity
             adIdentity = getIntent().getExtras().getInt("adIdentity");
             productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
 
             //-------------------------set user name and subject
-            tvPropertyOwner.setText(product.getUser().getFirstName() + " " + product.getUser().getLastName());
+            tvPropertyOwner.setText(product.getFirstName() + " " + product.getLastName());
             tvMessageSubject.setText("Re : "+product.getTitle());
         }
         catch(Exception ex)
@@ -125,31 +120,33 @@ public class ContactThoughMessage extends AppCompatActivity
 
     public void sendContactMessage()
     {
+        //message text is required to send message
         String body = etMessageText.getText().toString();
-        MessageText messageText = new MessageText();
-        //set message text
-        messageText.setBody(body);
+        if(body == null || body.isEmpty())
+        {
+            Toast.makeText(ContactThoughMessage.this, "Please add message text.",Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Message message = new Message();
-        Product tempProduct = new Product();
-        tempProduct.setUser(new User());
-        tempProduct.setId(product.getId());
-        tempProduct.getUser().setId(product.getUser().getId());
-        message.setProduct(tempProduct);
-        message.setSubject("Re : "+product.getTitle());
-        message.setMessageTextList(new ArrayList<MessageText>());
-        message.getMessageTextList().add(messageText);
+        DTOMessageHeader dtoMessageHeader = new DTOMessageHeader();
+        EntityMessageBody entityMessageBody = new EntityMessageBody();
+        entityMessageBody.setMessage(body);
+        dtoMessageHeader.setEntityMessageBody(entityMessageBody);
+
+        EntityMessageHeader entityMessageHeader = new EntityMessageHeader();
+        entityMessageHeader.setSubject("Re : " + this.product.getTitle());
+        dtoMessageHeader.setEntityMessageHeader(entityMessageHeader);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-        String tempMessageString = gson.toJson(message);
+        String dtoMessageHeaderString = gson.toJson(dtoMessageHeader);
 
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.ADD_MESSAGE_INFO);
+        packetHeader.setAction(ACTION.ADD_PRODUCT_MESSAGE);
         packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, tempMessageString, new Handler(){
+        new BackgroundWork().execute(packetHeader, dtoMessageHeaderString, new Handler(){
             @Override
             public void handleMessage(android.os.Message msg) {
                 try

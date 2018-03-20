@@ -11,11 +11,7 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
-
-import com.bdlions.dto.User;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import org.bdlions.auction.entity.EntityUser;
 import java.util.Calendar;
 
 public class SignUpStep4 extends AppCompatActivity {
@@ -23,7 +19,7 @@ public class SignUpStep4 extends AppCompatActivity {
     private static ImageButton ib_back_arrow,ib_forward_arrow;
     private static EditText et_sign_up_birthday;
     private DatePickerDialog.OnDateSetListener datePickerSetListener;
-    private User user;
+    private EntityUser entityUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +30,7 @@ public class SignUpStep4 extends AppCompatActivity {
         //Gson gson = new Gson();
         //user = gson.fromJson(userString, User.class);
 
-        user = (User)getIntent().getExtras().get("user");
+        entityUser = (EntityUser)getIntent().getExtras().get("entityUser");
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
@@ -47,7 +43,7 @@ public class SignUpStep4 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent sing_up_step4_back_arrow_intent = new Intent(getBaseContext(), SignUpStep3.class);
-                        sing_up_step4_back_arrow_intent.putExtra("user",user);
+                        sing_up_step4_back_arrow_intent.putExtra("entityUser",entityUser);
                         startActivity(sing_up_step4_back_arrow_intent);
                     }
                 }
@@ -67,7 +63,7 @@ public class SignUpStep4 extends AppCompatActivity {
                         //Gson gson = gsonBuilder.create();
                         //String userString = gson.toJson(user);
 
-                        sign_up_step4_forward_arrow_intent.putExtra("user", user);
+                        sign_up_step4_forward_arrow_intent.putExtra("entityUser", entityUser);
 
                         startActivity(sign_up_step4_forward_arrow_intent);
                     }

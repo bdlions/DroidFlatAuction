@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,15 +17,14 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-
-import com.bdlions.dto.Product;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.dto.DTOProduct;
+import org.bdlions.auction.entity.EntityProduct;
 import java.util.ArrayList;
 
 public class SavedAdvertStep1 extends AppCompatActivity
@@ -86,42 +83,6 @@ public class SavedAdvertStep1 extends AppCompatActivity
                 progressBarDialog.setContentView(R.layout.progressbar);
                 progressBarDialog.show();
                 fetchProductInfo(productId);
-
-                /*Product product = new Product();
-                product.setId(productId);
-                GsonBuilder gsonBuilder = new GsonBuilder();
-                Gson gson = gsonBuilder.create();
-                String productString = gson.toJson(product);
-
-                //String sessionId = session.getSessionId();
-                org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                packetHeader.setAction(ACTION.FETCH_PRODUCT_INFO);
-                packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
-                packetHeader.setSessionId(session.getSessionId());
-                new BackgroundWork().execute(packetHeader, productString, new Handler(){
-                    @Override
-                    public void handleMessage(Message msg) {
-                        try
-                        {
-                            String resultString = (String)msg.obj;
-                            Gson gson = new Gson();
-                            Product responseProduct = gson.fromJson(resultString, Product.class);
-                            System.out.println(responseProduct.getTitle());
-
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson2 = gsonBuilder.create();
-                            String productString = gson2.toJson(responseProduct);
-
-                            Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
-                            saved_advert_property_show_details_intent.putExtra("productString", productString);
-                            startActivity(saved_advert_property_show_details_intent);
-                        }
-                        catch(Exception ex)
-                        {
-                            System.out.println(ex.toString());
-                        }
-                    }
-                });*/
             }
         });
 
@@ -137,7 +98,7 @@ public class SavedAdvertStep1 extends AppCompatActivity
 
     public void fetchProductInfo(final int productId)
     {
-        Product tempProduct = new Product();
+        EntityProduct tempProduct = new EntityProduct();
         tempProduct.setId(productId);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -153,19 +114,21 @@ public class SavedAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    Product responseProduct = null;
-                    String productInfoString = null;
-                    if(msg != null && msg.obj != null)
+                    DTOProduct responseProduct = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
+                    if(msg != null  && msg.obj != null)
                     {
-                        productInfoString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(productInfoString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        responseProduct = (DTOProduct)clientResponse.getResult();
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson2 = gsonBuilder.create();
                         String productString = gson2.toJson(responseProduct);

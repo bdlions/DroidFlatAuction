@@ -1,11 +1,9 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +12,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.bdlions.dto.User;
 import com.bdlions.dto.response.SignInResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
@@ -22,9 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
-import org.bdlions.client.reqeust.threads.IServerCallback;
-import org.bdlions.transport.packet.*;
-import org.w3c.dom.Text;
+import org.bdlions.auction.entity.EntityUser;
 
 public class SignIn extends AppCompatActivity {
     private  static ImageButton login_ib_back_arrow;
@@ -34,6 +29,8 @@ public class SignIn extends AppCompatActivity {
     String identity, password;
     public Dialog progressBarDialog;
     private static String message = "";
+    public int reAttemptLogin = 0;
+    public int reAttemptLoginMaxCounter = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,145 +69,90 @@ public class SignIn extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         progressBarDialog.show();
-                        try
-                        {
-                            identity = etIdentity.getText().toString();
-                            password = etPassword.getText().toString();
-                            User user = new User();
-                            user.setUserName(identity);
-                            user.setPassword(password);
-                            GsonBuilder gsonBuilder = new GsonBuilder();
-                            Gson gson = gsonBuilder.create();
-                            String userString = gson.toJson(user);
-                            org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                            packetHeader.setAction(ACTION.SIGN_IN);
-                            packetHeader.setRequestType(REQUEST_TYPE.AUTH);
-                            //new BackgroundWork().execute(packetHeader, "{\"userName\": \"" + "bdlions@gmail.com" + "\", \"password\": \"" + "password" + "\"}", new IServerCallback() {
-                            new BackgroundWork().execute(packetHeader, userString, new Handler(){
-                                @Override
-                                public void handleMessage(Message msg) {
-                                    progressBarDialog.dismiss();
-                                    SignInResponse signInResponse = null;
-                                    String stringSignInResponse = null;
-                                    if(msg != null && msg.obj != null)
-                                    {
-                                        stringSignInResponse = (String)msg.obj;
-                                    }
-                                    if(stringSignInResponse != null)
-                                    {
-                                        Gson gson = new Gson();
-                                        signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
-                                    }
-
-                                    if(signInResponse != null && signInResponse.isSuccess())
-                                    {
-                                        session.createLoginSession(identity, signInResponse.getSessionId());
-                                        session.setEmail(etIdentity.getText().toString());
-                                        session.setPassword(etPassword.getText().toString());
-                                        //navigate to member dashboard
-                                        Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
-                                        login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        startActivity(login_intent);
-                                        //Intent login_intent = new Intent(getBaseContext(), Test.class);
-                                        //login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                        //startActivity(login_intent);
-                                    }
-                                    else if(signInResponse != null && !signInResponse.isSuccess())
-                                    {
-                                        Toast.makeText(getBaseContext(), signInResponse.getMessage(), Toast.LENGTH_SHORT).show();
-
-                                        /*message = signInResponse.getMessage();
-                                        runOnUiThread(new Runnable() {
-                                            public void run() {
-                                                Toast.makeText(getBaseContext(), "Invalid datafrom the server.Error:"+message, Toast.LENGTH_SHORT).show();
-                                            }
-                                        });*/
-
-                                        /*AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
-                                        sign_in_builder.setMessage(signInResponse.getMessage())
-                                                .setCancelable(false)
-                                                .setPositiveButton("", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        finish();
-                                                    }
-                                                })
-                                                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        dialogInterface.cancel();
-                                                    }
-                                                });
-
-                                        AlertDialog sign_in_alert = sign_in_builder.create();
-                                        sign_in_alert.setTitle("Alert!!!");
-                                        sign_in_alert.show();*/
-                                    }
-                                    else
-                                    {
-                                        Toast.makeText(getBaseContext(), "Unable to process request. Please try again later.", Toast.LENGTH_SHORT).show();
-
-                                        /*runOnUiThread(new Runnable() {
-                                            public void run() {
-                                                Toast.makeText(getBaseContext(), "Unable to process request. Please try again later.", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });*/
-
-                                        /*AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
-                                        sign_in_builder.setMessage("Unable to process request. Please try again later.")
-                                                .setCancelable(false)
-                                                .setPositiveButton("", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        finish();
-                                                    }
-                                                })
-                                                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        dialogInterface.cancel();
-                                                    }
-                                                });
-                                        AlertDialog sign_in_alert = sign_in_builder.create();
-                                        sign_in_alert.setTitle("Alert!!!");
-                                        sign_in_alert.show();*/
-
-                                    }
-                                }
-                            });
-                        }
-                        catch(Exception ex)
-                        {
-                            progressBarDialog.dismiss();
-                            Toast.makeText(getBaseContext(), "Unable to process request. Please try again later..", Toast.LENGTH_SHORT).show();
-
-                            /*runOnUiThread(new Runnable() {
-                                public void run() {
-                                    Toast.makeText(getBaseContext(), "Unable to process request. Please try again later..", Toast.LENGTH_SHORT).show();
-                                }
-                            });*/
-
-                            /*AlertDialog.Builder  sign_in_builder = new AlertDialog.Builder(SignIn.this);
-                            sign_in_builder.setMessage("Unable to process request. Please try again.")
-                                    .setCancelable(false)
-                                    .setPositiveButton("", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            finish();
-                                        }
-                                    })
-                                    .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            dialogInterface.cancel();
-                                        }
-                                    });
-                            AlertDialog sign_in_alert = sign_in_builder.create();
-                            sign_in_alert.setTitle("Alert!!!");
-                            sign_in_alert.show();*/
-                        }
+                        login();
                     }
                 }
         );
+    }
+
+    public void login()
+    {
+        try
+        {
+            identity = etIdentity.getText().toString();
+            password = etPassword.getText().toString();
+            EntityUser entityUser = new EntityUser();
+            entityUser.setUserName(identity);
+            entityUser.setPassword(password);
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            String entityUserString = gson.toJson(entityUser);
+            org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+            packetHeader.setAction(ACTION.SIGN_IN);
+            packetHeader.setRequestType(REQUEST_TYPE.AUTH);
+            new BackgroundWork().execute(packetHeader, entityUserString, new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+
+                    SignInResponse signInResponse = null;
+                    String stringSignInResponse = null;
+                    if(msg != null && msg.obj != null)
+                    {
+                        stringSignInResponse = (String)msg.obj;
+                    }
+                    if(stringSignInResponse != null)
+                    {
+                        Gson gson = new Gson();
+                        signInResponse = gson.fromJson(stringSignInResponse, SignInResponse.class);
+                    }
+
+                    if(signInResponse != null && signInResponse.isSuccess())
+                    {
+                        progressBarDialog.dismiss();
+                        session.createLoginSession(identity, signInResponse.getSessionId());
+                        session.setEmail(etIdentity.getText().toString());
+                        session.setPassword(etPassword.getText().toString());
+                        //navigate to member dashboard
+                        Intent login_intent = new Intent(getBaseContext(), MemberDashboard.class);
+                        login_intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(login_intent);
+                    }
+                    else
+                    {
+                        reAttemptLogin++;
+                        if(reAttemptLogin <= reAttemptLoginMaxCounter)
+                        {
+                            login();
+                        }
+                        else
+                        {
+
+                            progressBarDialog.dismiss();
+                            if(signInResponse != null && !signInResponse.isSuccess())
+                            {
+                                Toast.makeText(getBaseContext(), signInResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                Toast.makeText(getBaseContext(), "Unable to process request. Please try again later.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                    /*else if(signInResponse != null && !signInResponse.isSuccess())
+                    {
+                        Toast.makeText(getBaseContext(), signInResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Toast.makeText(getBaseContext(), "Unable to process request. Please try again later.", Toast.LENGTH_SHORT).show();
+                    }*/
+                }
+            });
+        }
+        catch(Exception ex)
+        {
+            progressBarDialog.dismiss();
+            Toast.makeText(getBaseContext(), "Unable to process request. Please try again later..", Toast.LENGTH_SHORT).show();
+        }
     }
 }

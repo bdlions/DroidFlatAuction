@@ -24,20 +24,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.bdlions.dto.Role;
-import com.bdlions.dto.RoleList;
-import com.bdlions.dto.User;
+import com.bdlions.dto.response.ClientListResponse;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.dto.response.GeneralResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-
 import org.auction.udp.BackgroundUploader;
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.dto.DTOUser;
+import org.bdlions.auction.entity.EntityRole;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +50,8 @@ public class EditUserProfile extends AppCompatActivity
 
     ListView listViewRole;
 
-    public User user;
-    public List<Role> userRoleList = new ArrayList<>();
+    public DTOUser user;
+    public List<EntityRole> userRoleList = new ArrayList<>();
 
     public int fetchProfileCounter = 0;
     public int fetchRoleListCounter = 0;
@@ -89,17 +87,17 @@ public class EditUserProfile extends AppCompatActivity
                                     String img = (String)msg.obj;
                                     if(imgUploadType == Constants.IMG_UPLOAD_TYPE_PROFILE_PICTURE)
                                     {
-                                        user.setImg(img);
+                                        user.getEntityUser().setImg(img);
                                         updateUserProfilePicture();
                                     }
                                     else if(imgUploadType == Constants.IMG_UPLOAD_TYPE_AGENT_LOGO)
                                     {
-                                        user.setAgentLogo(img);
+                                        user.getEntityUser().setAgentLogo(img);
                                         updateUserAgentLogo();
                                     }
                                     else if(imgUploadType == Constants.IMG_UPLOAD_TYPE_PROFILE_DOCUMENT)
                                     {
-                                        user.setDocument(img);
+                                        user.getEntityUser().setDocument(img);
                                         updateUserProfileDocument();
                                     }
                                 }
@@ -180,29 +178,31 @@ public class EditUserProfile extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    String userString = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null  && msg.obj != null)
                     {
-                        userString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(userString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        user = gson.fromJson(userString, User.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(user != null && user.isSuccess())
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        userRoleList = user.getRoleList();
+                        user = (DTOUser) clientResponse.getResult();
+                        userRoleList = user.getRoles();
 
-                        btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
-                        btnEditProfileEmail.setText(user.getEmail());
-                        btnEditProfilePassword.setText(user.getPassword());
-                        btnEditProfileCell.setText(user.getCellNo());
-                        btnEditProfileBusinessName.setText(user.getBusinessName());
-                        btnEditProfileAddress.setText(user.getAddress());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivEditProfileDocument);
+                        btnEditProfileName.setText(user.getEntityUser().getFirstName()+" "+user.getEntityUser().getLastName());
+                        btnEditProfileEmail.setText(user.getEntityUser().getEmail());
+                        btnEditProfilePassword.setText(user.getEntityUser().getPassword());
+                        btnEditProfileCell.setText(user.getEntityUser().getCell());
+                        btnEditProfileBusinessName.setText(user.getEntityUser().getBusinessName());
+                        btnEditProfileAddress.setText(user.getEntityUser().getAddress());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getEntityUser().getImg()).into(ivEditProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getEntityUser().getAgentLogo()).into(ivEditProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getEntityUser().getDocument()).into(ivEditProfileDocument);
                         fetchRoleList();
                     }
                     else
@@ -249,19 +249,21 @@ public class EditUserProfile extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    RoleList roleList = null;
-                    String roleListString = null;
-                    if(msg != null  && msg.obj != null)
+                    List<EntityRole> roleList = null;
+                    String clientListResponseString = null;
+                    ClientListResponse clientListResponse = null;
+                    if(msg != null && msg.obj != null)
                     {
-                        roleListString = (String) msg.obj;
+                        clientListResponseString = (String) msg.obj;
                     }
-                    if(roleListString != null)
+                    if(clientListResponseString != null)
                     {
                         Gson gson = new Gson();
-                        roleList = gson.fromJson(roleListString, RoleList.class);
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
-                    if(roleList != null && roleList.isSuccess())
+                    if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
+                        roleList = (List<EntityRole>)clientListResponse.getList();
                         progressBarDialog.dismiss();
                         ArrayList<Integer> userRoleListId = new ArrayList<Integer>();
                         for(int counter = 0; counter < userRoleList.size(); counter++)
@@ -269,9 +271,9 @@ public class EditUserProfile extends AppCompatActivity
                             userRoleListId.add(userRoleList.get(counter).getId());
                         }
                         final List<RoleDTO> roles = new ArrayList<>();
-                        for(int counter = 0; counter < roleList.getRoles().size(); counter++ )
+                        for(int counter = 0; counter < roleList.size(); counter++ )
                         {
-                            Role role = roleList.getRoles().get(counter);
+                            EntityRole role = roleList.get(counter);
                             RoleDTO roleDTO = new RoleDTO(false,role.getDescription());
                             if(userRoleListId.contains(role.getId()))
                             {
@@ -292,7 +294,7 @@ public class EditUserProfile extends AppCompatActivity
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 RoleDTO roleModel = roles.get(i);
 
-                                Role role = new Role();
+                                EntityRole role = new EntityRole();
                                 role.setId(roleModel.getId());
 
                                 if(roleModel.isSelected())
@@ -304,7 +306,7 @@ public class EditUserProfile extends AppCompatActivity
                                     roleModel.setSelected(true);
                                 }
 
-                                List<Role> tempRoleList = new ArrayList<Role>();
+                                List<EntityRole> tempRoleList = new ArrayList<EntityRole>();
                                 boolean isExists = false;
                                 if(userRoleList != null && userRoleList.size() > 0)
                                 {
@@ -325,7 +327,7 @@ public class EditUserProfile extends AppCompatActivity
                                     tempRoleList.add(role);
                                 }
                                 userRoleList = tempRoleList;
-                                user.setRoleList(userRoleList);
+                                user.setRoles(userRoleList);
 
                                 roles.set(i,roleModel);
                                 roleAdapter.updateRecords(roles);
@@ -385,28 +387,28 @@ public class EditUserProfile extends AppCompatActivity
                 progressBarDialog.dismiss();
                 try
                 {
-                    GeneralResponse response = null;
-                    String responseString = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null  && msg.obj != null)
                     {
-                        responseString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(responseString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        response = gson.fromJson(responseString, GeneralResponse.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(response != null && response.isSuccess())
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        btnEditProfileName.setText(user.getFirstName()+" "+user.getLastName());
-                        btnEditProfileEmail.setText(user.getEmail());
-                        btnEditProfilePassword.setText(user.getPassword());
-                        btnEditProfileCell.setText(user.getCellNo());
-                        btnEditProfileBusinessName.setText(user.getBusinessName());
-                        btnEditProfileAddress.setText(user.getAddress());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivEditProfileDocument);
+                        btnEditProfileName.setText(user.getEntityUser().getFirstName()+" "+user.getEntityUser().getLastName());
+                        btnEditProfileEmail.setText(user.getEntityUser().getEmail());
+                        btnEditProfilePassword.setText(user.getEntityUser().getPassword());
+                        btnEditProfileCell.setText(user.getEntityUser().getCell());
+                        btnEditProfileBusinessName.setText(user.getEntityUser().getBusinessName());
+                        btnEditProfileAddress.setText(user.getEntityUser().getAddress());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getEntityUser().getImg()).into(ivEditProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getEntityUser().getAgentLogo()).into(ivEditProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getEntityUser().getDocument()).into(ivEditProfileDocument);
                         Toast.makeText(EditUserProfile.this, "Profile is updated successfully!",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -451,7 +453,7 @@ public class EditUserProfile extends AppCompatActivity
                     }
                     if(response != null && response.isSuccess())
                     {
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivEditProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getEntityUser().getImg()).into(ivEditProfilePhoto);
                         Toast.makeText(EditUserProfile.this, "Profile picture is uploaded successfully!",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -496,7 +498,7 @@ public class EditUserProfile extends AppCompatActivity
                     }
                     if(response != null && response.isSuccess())
                     {
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivEditProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getEntityUser().getAgentLogo()).into(ivEditProfileAgentLogo);
                         Toast.makeText(EditUserProfile.this, "Agent logo is uploaded successfully!",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -541,7 +543,7 @@ public class EditUserProfile extends AppCompatActivity
                     }
                     if(response != null && response.isSuccess())
                     {
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivEditProfileDocument);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getEntityUser().getDocument()).into(ivEditProfileDocument);
                         Toast.makeText(EditUserProfile.this, "Profile document is uploaded successfully!",Toast.LENGTH_SHORT).show();
                     }
                     else
@@ -568,13 +570,13 @@ public class EditUserProfile extends AppCompatActivity
 
                 final EditText etFirstName = (EditText) dialog.findViewById(R.id.user_first_name);
                 final EditText etLastName = (EditText) dialog.findViewById(R.id.user_last_name);
-                if(user != null && user.getFirstName() != null)
+                if(user != null && user.getEntityUser().getFirstName() != null)
                 {
-                    etFirstName.setText(user.getFirstName());
+                    etFirstName.setText(user.getEntityUser().getFirstName());
                 }
-                if(user != null && user.getLastName() != null)
+                if(user != null && user.getEntityUser().getLastName() != null)
                 {
-                    etLastName.setText(user.getLastName());
+                    etLastName.setText(user.getEntityUser().getLastName());
                 }
 
                 dialog.show();
@@ -595,8 +597,8 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
-                            user.setFirstName(firstName);
-                            user.setLastName(lastName);
+                            user.getEntityUser().setFirstName(firstName);
+                            user.getEntityUser().setLastName(lastName);
                             dialog.dismiss();
 
                             progressBarDialog = new Dialog(EditUserProfile.this);
@@ -628,9 +630,9 @@ public class EditUserProfile extends AppCompatActivity
                 dialog.setContentView(R.layout.edit_user_cell_number_popup);
                 dialog.setTitle("Change Your Cell Number");
                 final EditText etCellNo = (EditText) dialog.findViewById(R.id.user_cell);
-                if(user != null && user.getCellNo()!= null)
+                if(user != null && user.getEntityUser().getCell()!= null)
                 {
-                    etCellNo.setText(user.getCellNo());
+                    etCellNo.setText(user.getEntityUser().getCell());
                 }
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_cell_edit_submit_button);
@@ -644,7 +646,7 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
-                            user.setCellNo(cellNo);
+                            user.getEntityUser().setCell(cellNo);
                             dialog.dismiss();
 
                             progressBarDialog = new Dialog(EditUserProfile.this);
@@ -687,7 +689,7 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
-                            user.setPassword(etPassword.getText().toString());
+                            user.getEntityUser().setPassword(etPassword.getText().toString());
                             dialog.dismiss();
 
                             progressBarDialog = new Dialog(EditUserProfile.this);
@@ -718,9 +720,9 @@ public class EditUserProfile extends AppCompatActivity
                 dialog.setContentView(R.layout.edit_user_email_popup);
                 dialog.setTitle("Change Your Email");
                 final EditText etEmail = (EditText) dialog.findViewById(R.id.user_email);
-                if(user != null && user.getEmail()!= null)
+                if(user != null && user.getEntityUser().getEmail()!= null)
                 {
-                    etEmail.setText(user.getEmail());
+                    etEmail.setText(user.getEntityUser().getEmail());
                 }
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_email_edit_submit_button);
@@ -734,7 +736,7 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
-                            user.setEmail(etEmail.getText().toString());
+                            user.getEntityUser().setEmail(etEmail.getText().toString());
                             dialog.dismiss();
 
                             progressBarDialog = new Dialog(EditUserProfile.this);
@@ -764,9 +766,9 @@ public class EditUserProfile extends AppCompatActivity
                 dialog.setContentView(R.layout.edit_user_business_name_popup);
                 dialog.setTitle("Change Your Business Name");
                 final EditText etBusinessName = (EditText) dialog.findViewById(R.id.user_business_name);
-                if(user != null && user.getEmail()!= null)
+                if(user != null && user.getEntityUser().getBusinessName()!= null)
                 {
-                    etBusinessName.setText(user.getBusinessName());
+                    etBusinessName.setText(user.getEntityUser().getBusinessName());
                 }
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_business_name_edit_submit_button);
@@ -780,7 +782,7 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
-                            user.setBusinessName(etBusinessName.getText().toString());
+                            user.getEntityUser().setBusinessName(etBusinessName.getText().toString());
                             dialog.dismiss();
 
                             progressBarDialog = new Dialog(EditUserProfile.this);
@@ -809,9 +811,9 @@ public class EditUserProfile extends AppCompatActivity
                 dialog.setContentView(R.layout.edit_user_address_popup);
                 dialog.setTitle("Change Your Address");
                 final EditText etAddress = (EditText) dialog.findViewById(R.id.user_address);
-                if(user != null && user.getAddress()!= null)
+                if(user != null && user.getEntityUser().getAddress()!= null)
                 {
-                    etAddress.setText(user.getAddress());
+                    etAddress.setText(user.getEntityUser().getAddress());
                 }
                 dialog.show();
                 Button submitButton = (Button) dialog.findViewById(R.id.user_address_edit_submit_button);
@@ -825,7 +827,7 @@ public class EditUserProfile extends AppCompatActivity
                         }
                         else
                         {
-                            user.setAddress(etAddress.getText().toString());
+                            user.getEntityUser().setAddress(etAddress.getText().toString());
                             dialog.dismiss();
 
                             progressBarDialog = new Dialog(EditUserProfile.this);

@@ -1,11 +1,7 @@
 package auction.org.droidflatauction;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,20 +12,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bdlions.dto.Product;
 import com.google.gson.Gson;
+import org.bdlions.auction.entity.EntityProduct;
 
 public class SavedAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private static TextView tv_property_total_bids, tv_view_saved_product_title, tv_view_saved_product_price, tv_view_saved_product_description;
     private  static Button btn_propperty_place_bid_button,btn_propperty_contact_button;
-    private Product product;
+    private EntityProduct product;
     private String productString;
     SessionManager session;
 
@@ -50,7 +43,7 @@ public class SavedAdvertStep2 extends AppCompatActivity
         {
             productString = getIntent().getExtras().getString("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
             tv_view_saved_product_title.setText(product.getTitle());
             tv_view_saved_product_price.setText("£" + String.format("%.2f",  product.getBasePrice()));
             tv_view_saved_product_description.setText(product.getDescription());

@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,24 +14,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bdlions.dto.Role;
-import com.bdlions.dto.User;
-import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
-
 import org.auction.udp.BackgroundWork;
-import org.bdlions.client.reqeust.threads.IServerCallback;
-import org.bdlions.transport.packet.IPacketHeader;
-
+import org.bdlions.auction.dto.DTOUser;
+import org.bdlions.auction.entity.EntityRole;
 import java.util.List;
 
 public class UserProfile extends AppCompatActivity
@@ -96,22 +87,28 @@ public class UserProfile extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    User user = null;
-                    String userString = null;
+                    DTOUser user = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null  && msg.obj != null)
                     {
-                        userString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(userString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        user = gson.fromJson(userString, User.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(user != null && user.isSuccess())
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        user = (DTOUser) clientResponse.getResult();
+                        if(user == null | user.getEntityUser() == null)
+                        {
+                            return;
+                        }
                         String roleString = "";
                         String agentString = "";
-                        List<Role> roleList = user.getRoleList();
+                        List<EntityRole> roleList = user.getRoles();
 
                         if(roleList != null && roleList.size() > 0)
                         {
@@ -128,19 +125,19 @@ public class UserProfile extends AppCompatActivity
                             }
                         }
 
-                        tvProfileBusinessName.setText(user.getBusinessName());
-                        tvProfileAddress.setText(user.getAddress());
+                        tvProfileBusinessName.setText(user.getEntityUser().getBusinessName());
+                        tvProfileAddress.setText(user.getEntityUser().getAddress());
 
 
 
-                        tvProfileFullName.setText(user.getFirstName()+" "+user.getLastName());
-                        tvProfileEmail.setText(user.getEmail());
-                        tvProfileTelephone.setText(user.getCellNo());
+                        tvProfileFullName.setText(user.getEntityUser().getFirstName()+" "+user.getEntityUser().getLastName());
+                        tvProfileEmail.setText(user.getEntityUser().getEmail());
+                        tvProfileTelephone.setText(user.getEntityUser().getCell());
                         tvProfileRole.setText(roleString);
 
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(ivProfilePhoto);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getAgentLogo()).into(ivProfileAgentLogo);
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getDocument()).into(ivProfileDocument);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getEntityUser().getImg()).into(ivProfilePhoto);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getEntityUser().getAgentLogo()).into(ivProfileAgentLogo);
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getEntityUser().getDocument()).into(ivProfileDocument);
                         progressBarDialog.dismiss();
                     }
                     else

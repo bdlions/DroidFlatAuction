@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,18 +18,13 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.bdlions.dto.Image;
-import com.bdlions.dto.Location;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.entity.EntityProduct;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -39,7 +32,7 @@ public class CreateAdvertStep8 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private  static ImageButton ib_back_arrow;
     private  static Button btn_submit;
-    Product product;
+    EntityProduct product;
     String productString;
     SessionManager session;
     NavigationManager navigationManager;
@@ -63,7 +56,7 @@ public class CreateAdvertStep8 extends AppCompatActivity
         {
             String prodString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(prodString, Product.class);
+            product = gson.fromJson(prodString, EntityProduct.class);
         }
         catch(Exception ex)
         {
@@ -172,34 +165,36 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             product.setAvailableTo(currentDate);
                         }
 
-                        String bidStartFrom = product.getBidStartDate();
-                        String bidStartTo = product.getBidEndDate();
+                        String bidStartFrom = product.getAuctionStartDate();
+                        String bidStartTo = product.getAuctionEndDate();
                         if(bidStartFrom != null && !bidStartFrom.equals(""))
                         {
                             //if user uses / instead of - then convert symbol
                             bidStartFrom = bidStartFrom.replaceAll("/", "-");
                             String[] bidStartFromArray = bidStartFrom.split("-");
-                            product.setBidStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
+                            product.setAuctionStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
                         }
                         else
                         {
-                            product.setBidStartDate(currentDate);
+                            product.setAuctionStartDate(currentDate);
                         }
                         if(bidStartTo != null && !bidStartTo.equals(""))
                         {
                             //if user uses / instead of - then convert symbol
                             bidStartTo = bidStartTo.replaceAll("/", "-");
                             String[] bidStartToArray = bidStartTo.split("-");
-                            product.setBidEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
+                            product.setAuctionEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
                         }
                         else
                         {
-                            product.setBidEndDate(currentDate);
+                            product.setAuctionEndDate(currentDate);
                         }
 
-                        Location location = new Location();
-                        location.setId(1);
-                        product.setLocation(location);
+                        //Location location = new Location();
+                        //location.setId(1);
+                        //product.setLocation(location);
+                        product.setLocationId(1);
+
 
                         //Stay minStay = new Stay();
                         //minStay.setId(1);
@@ -225,14 +220,12 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             if(product.getImg() == null || product.getImg().equals(""))
                             {
                                 product.setImg("a.jpg");
+                                product.setImages("a.jpg");
                             }
-                            Image image1 = new Image();
-                            image1.setId(1);
-                            image1.setTitle(product.getImg());
-
-                            Image[] images = new Image[1];
-                            images[0] = image1;
-                            product.setImages(images);
+                            else
+                            {
+                                product.setImages(product.getImg());
+                            }
                         }
 
 
@@ -243,7 +236,7 @@ public class CreateAdvertStep8 extends AppCompatActivity
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         if(product.getId() == 0)
                         {
-                            packetHeader.setAction(ACTION.ADD_PRODUCT);
+                            packetHeader.setAction(ACTION.ADD_PRODUCT_INFO);
                         }
                         else
                         {
@@ -258,34 +251,32 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             @Override
                             public void handleMessage(Message msg) {
                                 progressBarDialog.dismiss();
-                                Product responseProduct = null;
-                                String stringResponseProduct = null;
+                                EntityProduct responseProduct = null;
+                                ClientResponse clientResponse = new ClientResponse();
+                                String stringClientResponse = null;
                                 if(msg != null && msg.obj != null)
                                 {
-                                    stringResponseProduct = (String)msg.obj;
+                                    stringClientResponse = (String)msg.obj;
                                 }
-                                if(stringResponseProduct != null)
+                                if(stringClientResponse != null)
                                 {
                                     Gson gson = new Gson();
-                                    responseProduct = gson.fromJson(stringResponseProduct, Product.class);
+                                    clientResponse = gson.fromJson(stringClientResponse, ClientResponse.class);
                                 }
-                                if(responseProduct != null && responseProduct.isSuccess())
+                                if(clientResponse != null && clientResponse.isSuccess())
                                 {
-                                    Toast.makeText(getApplicationContext(), responseProduct.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), clientResponse.getMessage(), Toast.LENGTH_LONG).show();
                                     //go to ad details page instead of manageAdvertDashboard page
-                                    if(responseProduct.getId() > 0)
+                                    responseProduct = (EntityProduct) clientResponse.getResult();
+                                    if(responseProduct != null && responseProduct.getId() > 0)
                                     {
                                         progressBarDialog.show();
                                         fetchProductInfo(responseProduct.getId());
                                     }
-
-                                    //Intent create_advert_submit_button_intent = new Intent(getBaseContext(), ManageAdvertDashboard.class);
-                                    //startActivity(create_advert_submit_button_intent);
-                                    //return;
                                 }
-                                else if(responseProduct != null && !responseProduct.isSuccess())
+                                else if(clientResponse != null && !clientResponse.isSuccess())
                                 {
-                                    Toast.makeText(getApplicationContext(), responseProduct.getMessage(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), clientResponse.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                                 else
                                 {
@@ -300,7 +291,7 @@ public class CreateAdvertStep8 extends AppCompatActivity
 
     public void fetchProductInfo(final int productId)
     {
-        Product tempProduct = new Product();
+        EntityProduct tempProduct = new EntityProduct();
         tempProduct.setId(productId);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -316,19 +307,21 @@ public class CreateAdvertStep8 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    Product responseProduct = null;
-                    String productInfoString = null;
+                    EntityProduct responseProduct = null;
+                    ClientResponse clientResponse = new ClientResponse();
+                    String stringClientResponse = null;
                     if(msg != null && msg.obj != null)
                     {
-                        productInfoString = (String) msg.obj;
+                        stringClientResponse = (String)msg.obj;
                     }
-                    if(productInfoString != null)
+                    if(stringClientResponse != null)
                     {
                         Gson gson = new Gson();
-                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                        clientResponse = gson.fromJson(stringClientResponse, ClientResponse.class);
                     }
-                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        responseProduct = (EntityProduct)clientResponse.getResult();
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson2 = gsonBuilder.create();
                         String productString = gson2.toJson(responseProduct);

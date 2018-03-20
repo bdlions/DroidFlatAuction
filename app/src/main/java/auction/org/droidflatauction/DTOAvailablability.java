@@ -1,12 +1,11 @@
 package auction.org.droidflatauction;
-
-import com.bdlions.dto.Availability;
+import org.bdlions.auction.entity.EntityAvailability;
 
 /**
  * Created by bdlions on 29/08/2017.
  */
 
-public class DTOAvailablability extends Availability{
+public class DTOAvailablability extends EntityAvailability{
     boolean isSelected;
     String  availablability;
 

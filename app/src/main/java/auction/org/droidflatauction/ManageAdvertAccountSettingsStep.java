@@ -21,7 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.bdlions.dto.AccountSettingFA;
+//import com.bdlions.dto.AccountSettingFA;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
@@ -34,7 +34,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     private  static Button btn_submit;
     public EditText etSettingDefaultBidPerClick, etSettingDailyBudget;
-    public AccountSettingFA accountSettingFA;
+    //public AccountSettingFA accountSettingFA;
     SessionManager session;
     NavigationManager navigationManager;
 
@@ -52,7 +52,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         session = new SessionManager(getApplicationContext());
         navigationManager = new NavigationManager(getApplicationContext());
 
-        accountSettingFA = new AccountSettingFA();
+        //accountSettingFA = new AccountSettingFA();
 
         etSettingDefaultBidPerClick = (EditText) findViewById(R.id.et_setting_default_bid_per_click);
         etSettingDailyBudget = (EditText) findViewById(R.id.et_setting_daily_budget);
@@ -77,7 +77,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
 
     public void fetchAccountSettingFA()
     {
-        String sessionId = session.getSessionId();
+        /*String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_ACCOUNT_SETTING_FA);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
@@ -115,7 +115,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                     }
                 }
             }
-        });
+        });*/
     }
 
     public void onClickButtonBackArrowListener(){
@@ -131,7 +131,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
         );
     }
     public void onClickButtonSubmitListener(){
-        btn_submit = (Button) findViewById(R.id.account_settings_advert_submit_button);
+        /*btn_submit = (Button) findViewById(R.id.account_settings_advert_submit_button);
         btn_submit.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -187,7 +187,7 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
                         });
                     }
                 }
-        );
+        );*/
     }
     @Override
     public void onBackPressed() {

@@ -1,14 +1,10 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,11 +18,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bdlions.dto.Location;
-import com.bdlions.dto.LocationList;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductList;
-import com.bdlions.dto.User;
+import org.bdlions.auction.entity.EntityUser;
+
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.dto.response.SignInResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
@@ -35,10 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
-import org.w3c.dom.Text;
 
-import java.sql.Array;
-import java.util.ArrayList;
 
 public class MemberDashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -96,35 +87,37 @@ public class MemberDashboard extends AppCompatActivity
         {
             String sessionId = session.getSessionId();
             org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-            packetHeader.setAction(ACTION.FETCH_APP_DASHBOARD_USER_INFO);
+            packetHeader.setAction(ACTION.FETCH_USER_PROFILE_INFO);
             packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
             packetHeader.setSessionId(sessionId);
             new BackgroundWork().execute(packetHeader, "{}", new Handler(){
                 @Override
                 public void handleMessage(Message msg) {
-                    User user = null;
-                    String userString = null;
+                    EntityUser entityUser = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null  && msg.obj != null)
                     {
-                        userString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(userString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        user = gson.fromJson(userString, User.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(user != null && user.isSuccess())
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        entityUser = (EntityUser) clientResponse.getResult();
                         progressBarDialog.dismiss();
                         if(session.getUserId() == 0)
                         {
-                            session.setUserId(user.getId());
+                            session.setUserId(entityUser.getId());
                         }
-                        tv_md_user_full_name.setText(user.getFirstName()+" "+user.getLastName());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getImg()).into(iv_profile_photo);
+                        tv_md_user_full_name.setText(entityUser.getFirstName()+" "+entityUser.getLastName());
+                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+entityUser.getImg()).into(iv_profile_photo);
                         return;
                     }
-                    else if(user != null && !user.isSuccess())
+                    else if(clientResponse != null && !clientResponse.isSuccess())
                     {
                         reAttemptAutoLogin++;
                         if(reAttemptAutoLogin <= reAttemptAutoLoginMaxCounter)
@@ -200,16 +193,16 @@ public class MemberDashboard extends AppCompatActivity
                 session.logoutUser();
             }
 
-            User user = new User();
-            user.setUserName(email);
-            user.setPassword(password);
+            EntityUser entityUser = new EntityUser();
+            entityUser.setUserName(email);
+            entityUser.setPassword(password);
             GsonBuilder gsonBuilder = new GsonBuilder();
             Gson gson = gsonBuilder.create();
-            String userString = gson.toJson(user);
+            String entityUserString = gson.toJson(entityUser);
             org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
             packetHeader.setAction(ACTION.SIGN_IN);
             packetHeader.setRequestType(REQUEST_TYPE.AUTH);
-            new BackgroundWork().execute(packetHeader, userString, new Handler(){
+            new BackgroundWork().execute(packetHeader, entityUserString, new Handler(){
                 @Override
                 public void handleMessage(Message msg) {
                     SignInResponse signInResponse = null;

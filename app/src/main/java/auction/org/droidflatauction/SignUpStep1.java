@@ -8,10 +8,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.bdlions.dto.User;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+import org.bdlions.auction.entity.EntityUser;
 
 public class SignUpStep1 extends AppCompatActivity {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
@@ -47,11 +44,10 @@ public class SignUpStep1 extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Intent sign_up_step1_forward_arrow_intent = new Intent(getBaseContext(), SignUpStep2.class);
-                        User user = new User();
+                        EntityUser entityUser = new EntityUser();
                         String firstName = etFirstName.getText().toString();
                         String lastName = etLastName.getText().toString();
-                        user.setFirstName(firstName);
-                        user.setLastName(lastName);
+
 
                         if(firstName == null || firstName.equals(""))
                         {
@@ -63,11 +59,13 @@ public class SignUpStep1 extends AppCompatActivity {
                             Toast.makeText(SignUpStep1.this, "Please assign valid last name.",Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        entityUser.setFirstName(firstName);
+                        entityUser.setLastName(lastName);
                         //GsonBuilder gsonBuilder = new GsonBuilder();
                         //Gson gson = gsonBuilder.create();
                         //String userString = gson.toJson(user);
                         //sign_up_step1_forward_arrow_intent.putExtra("userString",userString);
-                        sign_up_step1_forward_arrow_intent.putExtra("user",user);
+                        sign_up_step1_forward_arrow_intent.putExtra("entityUser",entityUser);
                         startActivity(sign_up_step1_forward_arrow_intent);
                     }
                 }

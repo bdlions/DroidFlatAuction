@@ -21,19 +21,14 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
-
-import com.bdlions.dto.Amenity;
-import com.bdlions.dto.AmenityList;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.Role;
-import com.bdlions.dto.RoleList;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.entity.EntityAmenity;
+import org.bdlions.auction.entity.EntityProduct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +39,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
     private static EditText etManageProductPrice;
     ArrayAdapter<CharSequence> area_adapter;
     public ListView listViewAmenity;
-    Product product;
+    EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
     public Dialog progressBarDialog;
@@ -67,12 +62,12 @@ public class CreateAdvertStep2 extends AppCompatActivity
         {
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
             etManageProductPrice.setText(product.getBasePrice()+"");
-            if(product.getId() == 0 && product.getAmenities() == null)
+            /*if(product.getId() == 0 && product.getAmenities() == null)
             {
                 product.setAmenities(new ArrayList<Amenity>());
-            }
+            }*/
         }
         catch(Exception ex)
         {
@@ -106,7 +101,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_PRODUCT_AMENITY_LIST);
+        packetHeader.setAction(ACTION.FETCH_AMENITY_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
@@ -114,29 +109,44 @@ public class CreateAdvertStep2 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    AmenityList amenityList = null;
-                    String amenityListString = null;
-                    if(msg != null  && msg.obj != null)
+                    List<EntityAmenity> amenityList = null;
+                    String clientListResponseString = null;
+                    ClientListResponse clientListResponse = null;
+                    if(msg != null && msg.obj != null)
                     {
-                        amenityListString = (String) msg.obj;
+                        clientListResponseString = (String) msg.obj;
                     }
-                    if(amenityListString != null)
+                    if(clientListResponseString != null)
                     {
                         Gson gson = new Gson();
-                        amenityList = gson.fromJson(amenityListString, AmenityList.class);
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
-                    if(amenityList != null && amenityList.isSuccess())
+                    if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
+                        amenityList = (List<EntityAmenity>)clientListResponse.getList();
                         progressBarDialog.dismiss();
-                        ArrayList<Integer> amenityListId = new ArrayList<Integer>();
-                        for(int counter = 0; counter < product.getAmenities().size(); counter++)
+                        final ArrayList<Integer> amenityListId = new ArrayList<Integer>();
+                        String productAmenityIds = product.getAmenityIds();
+                        if(productAmenityIds != null && !productAmenityIds.equals(""))
                         {
-                            amenityListId.add(product.getAmenities().get(counter).getId());
+                            String[] productAmenityIdArray = productAmenityIds.split(",");
+                            for(int counter = 0; counter < productAmenityIdArray.length; counter++)
+                            {
+                                try
+                                {
+                                    amenityListId.add(Integer.parseInt(productAmenityIdArray[counter]));
+                                }
+                                catch(Exception ex)
+                                {
+
+                                }
+                            }
                         }
+
                         final List<DTOAmenity> amenities = new ArrayList<>();
-                        for(int counter = 0; counter < amenityList.getAmenities().size(); counter++ )
+                        for(int counter = 0; counter < amenityList.size(); counter++ )
                         {
-                            Amenity amenity = amenityList.getAmenities().get(counter);
+                            EntityAmenity amenity = amenityList.get(counter);
                             DTOAmenity dtoAmenity = new DTOAmenity(false,amenity.getTitle());
                             if(amenityListId.contains(amenity.getId()))
                             {
@@ -161,29 +171,67 @@ public class CreateAdvertStep2 extends AppCompatActivity
                                 {
                                     dtoAmenity.setSelected(true);
                                 }
-                                Amenity amenity = new Amenity();
-                                amenity.setId(dtoAmenity.getId());
-                                List<Amenity> tempAmenityList = new ArrayList<Amenity>();
+
+                                List<String> tempAmenityIdList = new ArrayList<String>();
+                                List<String> tempAmenityTitleList = new ArrayList<String>();
+                                String amenityIds = product.getAmenityIds();
+                                String amenityTitles = product.getAmenityTitles();
                                 boolean isExists = false;
-                                if(product.getAmenities() != null && product.getAmenities().size() > 0)
+                                if(amenityIds != null && !amenityIds.equals("") && amenityTitles != null && !amenityTitles.equals(""))
                                 {
-                                    for (int counter = 0; counter < product.getAmenities().size(); counter++)
+                                    String[] amenityIdArray = amenityIds.split(",");
+                                    String[] amenityTitleArray = amenityTitles.split(",");
+                                    if(amenityIdArray != null && amenityIdArray.length > 0 && amenityTitleArray != null && amenityTitleArray.length > 0)
                                     {
-                                        if (product.getAmenities().get(counter).getId() == amenity.getId())
+                                        for(int counter = 0; counter < amenityIdArray.length; counter++)
                                         {
-                                            isExists = true;
-                                        }
-                                        else
-                                        {
-                                            tempAmenityList.add(product.getAmenities().get(counter));
+                                            int tempId = 0;
+                                            try
+                                            {
+                                                tempId = Integer.parseInt(amenityIdArray[counter]);
+                                            }
+                                            catch(Exception ex)
+                                            {
+
+                                            }
+                                            if(tempId == dtoAmenity.getId())
+                                            {
+                                                isExists = true;
+                                            }
+                                            else
+                                            {
+                                                if(counter < amenityTitleArray.length)
+                                                {
+                                                    tempAmenityIdList.add(amenityIdArray[counter]);
+                                                    tempAmenityTitleList.add(amenityTitleArray[counter]);
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
-                                if (!isExists)
+                                if(!isExists)
                                 {
-                                    tempAmenityList.add(amenity);
+                                    tempAmenityIdList.add(dtoAmenity.getId()+"");
+                                    tempAmenityTitleList.add(dtoAmenity.getTitle());
                                 }
-                                product.setAmenities(tempAmenityList);
+                                String amenityIdString = "";
+                                String amenityTitleString = "";
+                                for(int counter = 0; counter < tempAmenityIdList.size(); counter++)
+                                {
+                                    if(counter > 0)
+                                    {
+                                        amenityIdString = amenityIdString + "," + tempAmenityIdList.get(counter) ;
+                                        amenityTitleString = amenityTitleString + "," + tempAmenityTitleList.get(counter);
+                                    }
+                                    else
+                                    {
+                                        amenityIdString = tempAmenityIdList.get(counter);
+                                        amenityTitleString = tempAmenityTitleList.get(counter);
+                                    }
+                                }
+                                product.setAmenityIds(amenityIdString);
+                                product.setAmenityTitles(amenityTitleString);
                                 amenities.set(i,dtoAmenity);
                                 amenityAdapter.updateRecords(amenities);
                             }

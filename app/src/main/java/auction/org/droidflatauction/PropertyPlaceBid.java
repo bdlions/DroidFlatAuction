@@ -4,9 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.util.Property;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,16 +17,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductBid;
 import com.bdlions.dto.response.GeneralResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.dto.DTOProduct;
+import org.bdlions.auction.entity.EntityBid;
+
 
 public class PropertyPlaceBid extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -37,7 +33,7 @@ public class PropertyPlaceBid extends AppCompatActivity
     SessionManager session;
     private static Button btnPostBid;
     private static EditText etBidDirectly;
-    public Product product;
+    public DTOProduct product;
     int adIdentity;
     String productString;
     public int addProductBidCounter = 0;
@@ -60,7 +56,7 @@ public class PropertyPlaceBid extends AppCompatActivity
             adIdentity = getIntent().getExtras().getInt("adIdentity");
             productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, DTOProduct.class);
         }
         catch(Exception ex)
         {
@@ -107,15 +103,19 @@ public class PropertyPlaceBid extends AppCompatActivity
 
     public void placeDirectBid()
     {
-        ProductBid productBid = new ProductBid();
-        Product tempProduct = new Product();
-        tempProduct.setId(product.getId());
-        productBid.setProduct(tempProduct);
-        //set bid directly price
+        EntityBid entityBid = new EntityBid();
+        entityBid.setProductId(product.getEntityProduct().getId());
+        entityBid.setProductTitle(product.getEntityProduct().getTitle());
+
         try
         {
             Double bidAmount = Double.parseDouble(etBidDirectly.getText().toString());
-            productBid.setPrice(bidAmount);
+            if(bidAmount <=0)
+            {
+                Toast.makeText(PropertyPlaceBid.this, "Please assign value for a bid.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            entityBid.setPrice(bidAmount);
         }
         catch(Exception ex)
         {
@@ -124,7 +124,7 @@ public class PropertyPlaceBid extends AppCompatActivity
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-        String tempProductBidString = gson.toJson(productBid);
+        String tempProductBidString = gson.toJson(entityBid);
 
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();

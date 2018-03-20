@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,27 +18,14 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.bdlions.dto.Image;
-import com.bdlions.dto.Location;
-import com.bdlions.dto.MessageText;
-import com.bdlions.dto.Occupation;
-import com.bdlions.dto.Pet;
-import com.bdlions.dto.ProductCategory;
-import com.bdlions.dto.ProductSize;
-import com.bdlions.dto.ProductType;
-import com.bdlions.dto.Smoking;
-import com.bdlions.dto.Stay;
-import com.bdlions.dto.response.SignInResponse;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.entity.EntityMessageBody;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MessageShow extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,7 +43,7 @@ public class MessageShow extends AppCompatActivity
     ArrayList<String> imgList = new ArrayList<String>();
     ArrayList<String> timeList = new ArrayList<String>();
 
-    public com.bdlions.dto.Message message;
+    EntityMessageBody message;
 
     SessionManager session;
 
@@ -78,8 +63,8 @@ public class MessageShow extends AppCompatActivity
         btnInboxSendMessage = (Button) findViewById(R.id.btn_inbox_send_message);
         onClickButtonSendMessageListener();
 
-        message = new com.bdlions.dto.Message();
-        message.setId(getIntent().getExtras().getInt("messageId"));
+        message = new EntityMessageBody();
+        message.setMessageHeaderId(getIntent().getExtras().getInt("messageId"));
 
         messageBodyList = (ArrayList<String>)getIntent().getExtras().get("messageBodyList");
         userNameList = (ArrayList<String>)getIntent().getExtras().get("userNameList");
@@ -115,18 +100,14 @@ public class MessageShow extends AppCompatActivity
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MessageText messageText = new MessageText();
-                        messageText.setBody(etInboxSendMessageBody.getText().toString());
-                        messageText.setMessageId(message.getId());
-                        List<MessageText> messageTextList = new ArrayList<>();
-                        messageTextList.add(messageText);
-                        message.setMessageTextList(messageTextList);
                         String body = etInboxSendMessageBody.getText().toString();
                         if(body.equals(""))
                         {
                             Toast.makeText(MessageShow.this, "Please add message!",Toast.LENGTH_SHORT).show();
                             return;
                         }
+                        message.setMessage(body);
+                        message.setUserId(session.getUserId());
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
@@ -134,19 +115,28 @@ public class MessageShow extends AppCompatActivity
 
 
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-                        packetHeader.setAction(ACTION.ADD_MESSAGE_TEXT);
+                        packetHeader.setAction(ACTION.ADD_MESSAGE_BODY);
                         packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
                         packetHeader.setSessionId(session.getSessionId());
                         new BackgroundWork().execute(packetHeader, messageString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
-                                String resultString = (String)msg.obj;
-                                Gson gson = new Gson();
-                                com.bdlions.dto.Message response = gson.fromJson(resultString, com.bdlions.dto.Message.class);
-                                if(response.isSuccess())
+                                ClientResponse clientResponse = null;
+                                String clientResponseString = null;
+                                if(msg != null  && msg.obj != null)
+                                {
+                                    clientResponseString = (String) msg.obj;
+                                }
+                                if(clientResponseString != null)
+                                {
+                                    Gson gson = new Gson();
+                                    clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
+                                }
+                                if(clientResponse != null && clientResponse.isSuccess())
                                 {
                                     Toast.makeText(getApplicationContext(), "Message is sent successfully.", Toast.LENGTH_LONG).show();
                                     etInboxSendMessageBody.setText("");
+                                    message = new EntityMessageBody();
                                 }
                                 else
                                 {

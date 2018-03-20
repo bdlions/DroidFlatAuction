@@ -1,14 +1,10 @@
 package auction.org.droidflatauction;
 
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,11 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bdlions.dto.Amenity;
-import com.bdlions.dto.Availability;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.Role;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.dto.response.SignInResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
@@ -40,10 +32,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
-
 import org.auction.udp.BackgroundWork;
-
-import java.util.ArrayList;
+import org.bdlions.auction.dto.DTOProduct;
+import org.bdlions.auction.dto.DTOUser;
+import org.bdlions.auction.entity.EntityProduct;
+import org.bdlions.auction.entity.EntityRole;
+import org.bdlions.auction.entity.EntityUser;
 import java.util.List;
 
 public class ShowAdvertProductDetails extends AppCompatActivity
@@ -53,12 +47,14 @@ public class ShowAdvertProductDetails extends AppCompatActivity
     private  static Button proppertyContentEditBtn, proppertyPlaceBidBtn, proppertyContactBtn;
     private static ImageView ivProductDetailsImage,ivProductAgentLogo,ivProductSave;
     private static LinearLayout llProductAgent,llProductCompanyName;
-    private Product product;
+    private EntityProduct product;
+    DTOProduct dtoProduct;
     private String productString;
     SessionManager session;
     public static RelativeLayout myAdvertBtnRow,savedAdvertBtnRow;
     public int adIdentity;
     public Dialog progressBarDialog;
+    public int fetchProfileCounter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,41 +106,15 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             adIdentity = getIntent().getExtras().getInt("adIdentity");
             productString = getIntent().getExtras().getString("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
-
-            boolean isAgent = false;
-            List<Role> roleList = product.getUser().getRoleList();
-            if(roleList != null && roleList.size() > 0)
+            dtoProduct = gson.fromJson(productString, DTOProduct.class);
+            if(dtoProduct != null && dtoProduct.getEntityProduct() != null)
             {
-                for(int counter = 0; counter < roleList.size(); counter++)
-                {
-                    Role role = roleList.get(counter);
-                    if(role.getId() == Constants.USER_TYPE_ID_AGENT)
-                    {
-                        isAgent = true;
-                    }
-                }
+                product = dtoProduct.getEntityProduct();
             }
-
-            //isAgent = true;
-            if(isAgent)
+            else
             {
-                //show agent logo, business name and address
-                //Toast.makeText(ShowAdvertProductDetails.this, "Agent: " + isAgent,Toast.LENGTH_LONG).show();
-                Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+product.getUser().getAgentLogo()).into(ivProductAgentLogo);
-                tvProductBusinessName.setText(product.getUser().getBusinessName());
-                tvProductAddress.setText(product.getUser().getAddress());
-                llProductAgent.setVisibility(View.VISIBLE);
-                llProductCompanyName.setVisibility(View.GONE);
-            } else
-            {
-                //show company name
-                //Toast.makeText(ShowAdvertProductDetails.this, "NonAgent: " + isAgent,Toast.LENGTH_LONG).show();
-                tvProductCompanyName.setText(product.getCompanyName());
-                llProductAgent.setVisibility(View.GONE);
-                llProductCompanyName.setVisibility(View.VISIBLE);
+                return;
             }
-
 
             //formatting date to user display format
             String availableFrom = product.getAvailableFrom();
@@ -168,7 +138,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             tvProductDetailsTotalBids.setText(product.getTotalBids()+"");
             //tvProductDetailsBidTimeLeft.setText("7 Hours 24 Mins 12 Seconds");
             tvProductDetailsAvailableFrom.setText(product.getAvailableFrom());
-            if(product.isOngoing())
+            if(product.isOnGoing())
             {
                 tvProductDetailsAvailableTo.setText("Ongoing");
             }
@@ -177,58 +147,51 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                 tvProductDetailsAvailableTo.setText(product.getAvailableTo());
             }
 
-            String availabilityString = "";
-            List<Availability> availabilityList = product.getAvailabilities();
-            if(availabilityList != null && availabilityList.size() > 0)
-            {
-                for(int counter = 0; counter < availabilityList.size(); counter++)
-                {
-                    if(counter == 0)
-                    {
-                        availabilityString = availabilityList.get(counter).getTitle();
-                    }
-                    else
-                    {
-                        availabilityString = availabilityString + ", " +availabilityList.get(counter).getTitle();
-                    }
-                }
-            }
-            tvProductDetailsAvailability.setText(availabilityString);
-            tvProductDetailsMinTerm.setText(product.getMinStay().getTitle());
-            tvProductDetailsMaxTerm.setText(product.getMaxStay().getTitle());
-            tvProductDetailsSmoking.setText(product.getSmoking().getTitle());
+            tvProductDetailsAvailability.setText(product.getAvailabilityTitles());
+            tvProductDetailsMinTerm.setText(product.getMinStayTitle());
+            tvProductDetailsMaxTerm.setText(product.getMaxStayTitle());
+            tvProductDetailsSmoking.setText(product.getSmokingTitle());
 
-            List<Amenity> amenityList = product.getAmenities();
-            if(amenityList != null && amenityList.size() > 0)
+            String amenityIds = product.getAmenityIds();
+            String[] amenityIdArray = amenityIds.split(",");
+            if(amenityIdArray != null && amenityIdArray.length > 0)
             {
-                for(int counter = 0; counter < amenityList.size(); counter++)
+                for(int counter = 0; counter < amenityIdArray.length; counter++)
                 {
-                    Amenity amenity = amenityList.get(counter);
-                    if(amenity.getId()  == 1)
+                    int amenityId = 0;
+                    try
+                    {
+                        amenityId = Integer.parseInt(amenityIdArray[counter]);
+                    }
+                    catch(Exception ex)
+                    {
+
+                    }
+                    if(amenityId  == 1)
                     {
                         tvProductDetailsAmenityParking.setText("Yes");
                     }
-                    if(amenity.getId()  == 2)
+                    if(amenityId  == 2)
                     {
                         tvProductDetailsAmenityBalcony.setText("Yes");
                     }
-                    if(amenity.getId()  == 3)
+                    if(amenityId  == 3)
                     {
                         tvProductDetailsAmenityGarden.setText("Yes");
                     }
-                    if(amenity.getId()  == 4)
+                    if(amenityId  == 4)
                     {
                         tvProductDetailsAmenityDisabledAccess.setText("Yes");
                     }
-                    if(amenity.getId()  == 5)
+                    if(amenityId  == 5)
                     {
                         tvProductDetailsAmenityGarage.setText("Yes");
                     }
                 }
             }
 
-            tvProductDetailsPets.setText(product.getPet().getTitle());
-            tvProductDetailsOccupation.setText(product.getOccupation().getTitle());
+            tvProductDetailsPets.setText(product.getPetTitle());
+            tvProductDetailsOccupation.setText(product.getOccupationTitle());
         }
         catch(Exception ex)
         {
@@ -247,7 +210,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             myAdvertBtnRow.setVisibility(View.VISIBLE);
             savedAdvertBtnRow.setVisibility(View.GONE);
             ivProductSave.setVisibility(View.GONE);
-            if(product.getTime() == 0){
+            if(dtoProduct.getAuctionEndTimeLeft() == 0){
                 tvProductDetailsBidTimeLeft.setVisibility(View.GONE);
             }
         }
@@ -255,7 +218,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
             myAdvertBtnRow.setVisibility(View.GONE);
             savedAdvertBtnRow.setVisibility(View.VISIBLE);
             ivProductSave.setVisibility(View.VISIBLE);
-            if(product.getTime() == 0){
+            if(dtoProduct.getAuctionEndTimeLeft() == 0){
                 //Toast.makeText(ShowAdvertProductDetails.this, "Time is finished! " + product.getTime(),Toast.LENGTH_SHORT).show();
                 proppertyPlaceBidBtn.setVisibility(View.GONE);
                 tvProductDetailsBidTimeLeft.setVisibility(View.GONE);
@@ -314,6 +277,108 @@ public class ShowAdvertProductDetails extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         executeTimer();
+        this.fetchUserProfile(product.getUserId());
+    }
+
+    public void fetchUserProfile(final int userId)
+    {
+        progressBarDialog = new Dialog(ShowAdvertProductDetails.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
+
+        EntityUser entityUser = new EntityUser();
+        entityUser.setId(userId);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String userString = gson.toJson(entityUser);
+
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_USER_INFO);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+                    DTOUser user = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
+                    if(msg != null  && msg.obj != null)
+                    {
+                        clientResponseString = (String) msg.obj;
+                    }
+                    if(clientResponseString != null)
+                    {
+                        Gson gson = new Gson();
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
+                    }
+                    if(clientResponse != null && clientResponse.isSuccess())
+                    {
+                        user = (DTOUser) clientResponse.getResult();
+                        if(user == null | user.getEntityUser() == null)
+                        {
+                            return;
+                        }
+                        progressBarDialog.dismiss();
+                        boolean isAgent = false;
+                        List<EntityRole> roleList = user.getRoles();
+                        if(roleList != null && roleList.size() > 0)
+                        {
+                            for(int counter = 0; counter < roleList.size(); counter++)
+                            {
+                                EntityRole role = roleList.get(counter);
+                                if(role.getId() == Constants.USER_TYPE_ID_AGENT)
+                                {
+                                    isAgent = true;
+                                }
+                            }
+                        }
+
+                        //isAgent = true;
+                        if(isAgent)
+                        {
+                            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getEntityUser().getAgentLogo()).into(ivProductAgentLogo);
+                            tvProductBusinessName.setText(user.getEntityUser().getBusinessName());
+                            tvProductAddress.setText(user.getEntityUser().getAddress());
+                            llProductAgent.setVisibility(View.VISIBLE);
+                            llProductCompanyName.setVisibility(View.GONE);
+                        }
+                        else
+                        {
+                            tvProductCompanyName.setText(product.getCompanyName());
+                            llProductAgent.setVisibility(View.GONE);
+                            llProductCompanyName.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    else
+                    {
+                        fetchProfileCounter++;
+                        if (fetchProfileCounter <= 5)
+                        {
+                            fetchUserProfile(userId);
+                        }
+                        else
+                        {
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    fetchProfileCounter++;
+                    if (fetchProfileCounter <= 5)
+                    {
+                        fetchUserProfile(userId);
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
     }
 
     public void executeTimer()
@@ -326,7 +391,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
 
                             @Override
                             public void run() {
-                                long tempTime = product.getTime();
+                                long tempTime = dtoProduct.getAuctionEndTimeLeft();
                                 String timeLeft = "";
                                 if (tempTime > 0)
                                 {
@@ -349,7 +414,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                                     {
                                         timeLeft = timeLeft + tempTime + " secs ";
                                     }
-                                    product.setTime(product.getTime() - 1);
+                                    dtoProduct.setAuctionEndTimeLeft(dtoProduct.getAuctionEndTimeLeft() - 1);
                                     tvProductDetailsBidTimeLeft.setText(timeLeft);
                                 }
                             }
@@ -418,7 +483,7 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
                         Intent property_total_bids_intent = new Intent(getBaseContext(), PropertyBidList.class);
-                        property_total_bids_intent.putExtra("productId", product.getId());
+                        property_total_bids_intent.putExtra("productString", productString);
                         property_total_bids_intent.putExtra("adIdentity", adIdentity);
                         startActivity(property_total_bids_intent);
                     }

@@ -22,23 +22,17 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.bdlions.dto.Occupation;
-import com.bdlions.dto.OccupationList;
-import com.bdlions.dto.Pet;
-import com.bdlions.dto.PetList;
-import com.bdlions.dto.Product;
-import com.bdlions.dto.ProductCategory;
-import com.bdlions.dto.ProductCategoryList;
-import com.bdlions.dto.ProductSize;
-import com.bdlions.dto.ProductType;
-import com.bdlions.dto.Smoking;
-import com.bdlions.dto.SmokingList;
+import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.EntityOccupation;
+import org.bdlions.auction.entity.EntityPet;
+import org.bdlions.auction.entity.EntityProduct;
+import org.bdlions.auction.entity.EntitySmoking;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,21 +45,21 @@ public class CreateAdvertStep4 extends AppCompatActivity
     private static Spinner smokingSpinner,petSpinner, occupationSpinner;
 
     ArrayAdapter<CharSequence> smoking_adapter,occupation_adapter,pets_adapter;
-    Product product;
+    EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
 
-    ArrayAdapter<Smoking> smokingAdapter;
-    ArrayAdapter<Pet> petAdapter;
-    ArrayAdapter<Occupation> occupationAdapter;
+    ArrayAdapter<EntitySmoking> smokingAdapter;
+    ArrayAdapter<EntityPet> petAdapter;
+    ArrayAdapter<EntityOccupation> occupationAdapter;
 
-    public List<Smoking> smokingList = new ArrayList<>();
-    public List<Pet> petList = new ArrayList<>();
-    public List<Occupation> occupationList = new ArrayList<>();
+    public List<EntitySmoking> smokingList = new ArrayList<>();
+    public List<EntityPet> petList = new ArrayList<>();
+    public List<EntityOccupation> occupationList = new ArrayList<>();
 
-    Smoking selectedSmoking;
-    Pet selectedPet;
-    Occupation selectedOccupation;
+    EntitySmoking selectedSmoking;
+    EntityPet selectedPet;
+    EntityOccupation selectedOccupation;
 
     public int fetchSmokingCounter = 0;
     public int fetchPetCounter = 0;
@@ -89,7 +83,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
         {
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, Product.class);
+            product = gson.fromJson(productString, EntityProduct.class);
         }
         catch(Exception ex)
         {
@@ -126,32 +120,33 @@ public class CreateAdvertStep4 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                SmokingList pSmokingList = null;
-                String smokingListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    smokingListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(smokingListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pSmokingList = gson.fromJson(smokingListString, SmokingList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pSmokingList != null && pSmokingList.isSuccess() && pSmokingList.getSmokings() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    smokingList = pSmokingList.getSmokings();
+                    smokingList = (List<EntitySmoking>)clientListResponse.getList();
                     int selectedSmokingPosition = 0;
 
-                    if(product != null && product.getId() == 0 && product.getSmoking() == null && smokingList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getSmokingId() == 0 && smokingList.size() > 0)
                     {
-                        product.setSmoking(smokingList.get(0));
+                        product.setSmokingId(smokingList.get(0).getId());
+                        product.setSmokingTitle(smokingList.get(0).getTitle());
                     }
                     else
                     {
                         int smokingCounter = smokingList.size();
                         for(int counter = 0; counter < smokingCounter; counter++ )
                         {
-                            if(smokingList.get(counter).getId() == product.getSmoking().getId())
+                            if(smokingList.get(counter).getId() == product.getSmokingId())
                             {
                                 selectedSmoking = smokingList.get(counter);
                                 selectedSmokingPosition = counter;
@@ -160,7 +155,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                         }
                     }
 
-                    smokingAdapter = new ArrayAdapter<Smoking>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, smokingList);
+                    smokingAdapter = new ArrayAdapter<EntitySmoking>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, smokingList);
                     smokingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     smokingSpinner = (Spinner) findViewById(R.id.smoking_spinner);
                     smokingSpinner.setAdapter(smokingAdapter);
@@ -173,7 +168,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedSmoking = (Smoking)smokingSpinner.getSelectedItem();
+                                    selectedSmoking = (EntitySmoking)smokingSpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -210,31 +205,32 @@ public class CreateAdvertStep4 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                OccupationList pOccupationList = null;
-                String occupationListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    occupationListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(occupationListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pOccupationList = gson.fromJson(occupationListString, OccupationList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pOccupationList != null && pOccupationList.isSuccess() && pOccupationList.getOccupations() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    occupationList = pOccupationList.getOccupations();
+                    occupationList = (List<EntityOccupation>)clientListResponse.getList();
                     int selectedOccupationPosition = 0;
-                    if(product != null && product.getId() == 0 && product.getOccupation() == null && occupationList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getOccupationId() == 0 && occupationList.size() > 0)
                     {
-                        product.setOccupation(occupationList.get(0));
+                        product.setOccupationId(occupationList.get(0).getId());
+                        product.setOccupationTitle(occupationList.get(0).getTitle());
                     }
                     else
                     {
                         int occupationCounter = occupationList.size();
                         for(int counter = 0; counter < occupationCounter; counter++ )
                         {
-                            if(occupationList.get(counter).getId() == product.getOccupation().getId())
+                            if(occupationList.get(counter).getId() == product.getOccupationId())
                             {
                                 selectedOccupation = occupationList.get(counter);
                                 selectedOccupationPosition = counter;
@@ -243,7 +239,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                         }
                     }
 
-                    occupationAdapter = new ArrayAdapter<Occupation>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, occupationList);
+                    occupationAdapter = new ArrayAdapter<EntityOccupation>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, occupationList);
                     occupationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     occupationSpinner = (Spinner) findViewById(R.id.occupation_spinner);
                     occupationSpinner.setAdapter(occupationAdapter);
@@ -256,7 +252,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedOccupation = (Occupation)occupationSpinner.getSelectedItem();
+                                    selectedOccupation = (EntityOccupation)occupationSpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -293,31 +289,32 @@ public class CreateAdvertStep4 extends AppCompatActivity
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
             @Override
             public void handleMessage(Message msg) {
-                PetList pPetList = null;
-                String petListString = null;
+                String clientListResponseString = null;
+                ClientListResponse clientListResponse = null;
                 if(msg != null && msg.obj != null)
                 {
-                    petListString = (String) msg.obj;
+                    clientListResponseString = (String) msg.obj;
                 }
-                if(petListString != null)
+                if(clientListResponseString != null)
                 {
                     Gson gson = new Gson();
-                    pPetList = gson.fromJson(petListString, PetList.class);
+                    clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
-                if(pPetList != null && pPetList.isSuccess() && pPetList.getPets() != null )
+                if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    petList = pPetList.getPets();
+                    petList = (List<EntityPet>)clientListResponse.getList();
                     int selectedPetPosition = 0;
-                    if(product != null && product.getId() == 0 && product.getPet() == null&& petList.size() > 0)
+                    if(product != null && product.getId() == 0 && product.getPetId() == 0 && petList.size() > 0)
                     {
-                        product.setPet(petList.get(0));
+                        product.setPetId(petList.get(0).getId());
+                        product.setPetTitle(petList.get(0).getTitle());
                     }
                     else
                     {
                         int petCounter = petList.size();
                         for(int counter = 0; counter < petCounter; counter++ )
                         {
-                            if(petList.get(counter).getId() == product.getPet().getId())
+                            if(petList.get(counter).getId() == product.getPetId())
                             {
                                 selectedPet = petList.get(counter);
                                 selectedPetPosition = counter;
@@ -326,7 +323,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                         }
                     }
 
-                    petAdapter = new ArrayAdapter<Pet>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, petList);
+                    petAdapter = new ArrayAdapter<EntityPet>( CreateAdvertStep4.this, android.R.layout.simple_spinner_item, petList);
                     petAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     petSpinner = (Spinner) findViewById(R.id.pets_spinner);
                     petSpinner.setAdapter(petAdapter);
@@ -339,7 +336,7 @@ public class CreateAdvertStep4 extends AppCompatActivity
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedPet = (Pet)petSpinner.getSelectedItem();
+                                    selectedPet = (EntityPet)petSpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -430,9 +427,12 @@ public class CreateAdvertStep4 extends AppCompatActivity
     //setting input fields into product info
     public void setInputToProduct()
     {
-        product.setSmoking(selectedSmoking);
-        product.setOccupation(selectedOccupation);
-        product.setPet(selectedPet);
+        product.setSmokingId(selectedSmoking.getId());
+        product.setSmokingTitle(selectedSmoking.getTitle());
+        product.setOccupationId(selectedOccupation.getId());
+        product.setOccupationTitle(selectedOccupation.getTitle());
+        product.setPetId(selectedPet.getId());
+        product.setPetTitle(selectedPet.getTitle());
     }
 
 

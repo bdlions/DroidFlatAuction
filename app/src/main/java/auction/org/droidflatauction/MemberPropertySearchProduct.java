@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -19,15 +17,13 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
-
-import com.bdlions.dto.Product;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import org.auction.udp.BackgroundWork;
-
+import org.bdlions.auction.entity.EntityProduct;
 import java.util.ArrayList;
 
 public class MemberPropertySearchProduct extends AppCompatActivity
@@ -123,7 +119,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
 
     public void fetchProductInfo(final int productId)
     {
-        Product tempProduct = new Product();
+        EntityProduct tempProduct = new EntityProduct();
         tempProduct.setId(productId);
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -139,19 +135,20 @@ public class MemberPropertySearchProduct extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    Product responseProduct = null;
-                    String productInfoString = null;
+                    ClientResponse clientResponse = null;
+                    String clientResponseString = null;
                     if(msg != null && msg.obj != null)
                     {
-                        productInfoString = (String) msg.obj;
+                        clientResponseString = (String) msg.obj;
                     }
-                    if(productInfoString != null)
+                    if(clientResponseString != null)
                     {
                         Gson gson = new Gson();
-                        responseProduct = gson.fromJson(productInfoString, Product.class);
+                        clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
-                    if(responseProduct != null && responseProduct.isSuccess() && responseProduct.getId() > 0 )
+                    if(clientResponse != null && clientResponse.isSuccess())
                     {
+                        EntityProduct responseProduct = (EntityProduct) clientResponse.getResult();
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson2 = gsonBuilder.create();
                         String productString = gson2.toJson(responseProduct);
@@ -159,7 +156,7 @@ public class MemberPropertySearchProduct extends AppCompatActivity
                         progressBarDialog.dismiss();
                         Intent my_advert_property_show_details_intent = new Intent(MemberPropertySearchProduct.this, ShowAdvertProductDetails.class);
                         my_advert_property_show_details_intent.putExtra("productString", productString);
-                        if(session.getUserId() == responseProduct.getUser().getId())
+                        if(session.getUserId() == responseProduct.getUserId())
                         {
                             my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
                         }
