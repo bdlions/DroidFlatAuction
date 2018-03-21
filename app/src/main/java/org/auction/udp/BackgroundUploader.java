@@ -45,7 +45,7 @@ public class BackgroundUploader extends AsyncTask<Object, Integer, Void> {
             String imageUri = (String) params[0];
             Handler handler = (Handler) params [ 1 ];
             File image = new File(imageUri);
-            String fileName = UploadService.uploadImage(Constants.baseUrl, image);
+            String fileName = UploadService.uploadImage(Constants.imageUploadBaseUrl, image);
 
             Message message = new Message();
             message.obj = fileName;

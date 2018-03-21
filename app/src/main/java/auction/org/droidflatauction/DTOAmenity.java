@@ -1,5 +1,5 @@
 package auction.org.droidflatauction;
-import org.bdlions.auction.entity.EntityAmenity;
+
 
 /**
  * Created by bdlions on 29/08/2017.

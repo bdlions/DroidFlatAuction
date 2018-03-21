@@ -29,11 +29,10 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityAvailability;
-import org.bdlions.auction.entity.EntityProduct;
-import org.bdlions.auction.entity.EntityStay;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -144,18 +143,34 @@ public class CreateAdvertStep3 extends AppCompatActivity
                     List<EntityAvailability> availabilityList = null;
                     String clientListResponseString = null;
                     ClientListResponse clientListResponse = null;
+                    Gson gson = new Gson();
                     if(msg != null && msg.obj != null)
                     {
                         clientListResponseString = (String) msg.obj;
                     }
                     if(clientListResponseString != null)
                     {
-                        Gson gson = new Gson();
+
                         clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
                     if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
-                        availabilityList = (List<EntityAvailability>)clientListResponse.getList();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            availabilityList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityAvailability>>(){}.getType());
+                            if(availabilityList == null)
+                            {
+                                progressBarDialog.dismiss();
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+
                         progressBarDialog.dismiss();
                         final ArrayList<Integer> availabilityListId = new ArrayList<Integer>();
                         String productAvailabilityIds = product.getAvailabilityIds();
@@ -370,18 +385,34 @@ public class CreateAdvertStep3 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 String clientListResponseString = null;
                 ClientListResponse clientListResponse = null;
+                Gson gson = new Gson();
                 if(msg != null && msg.obj != null)
                 {
                     clientListResponseString = (String) msg.obj;
                 }
                 if(clientListResponseString != null)
                 {
-                    Gson gson = new Gson();
+
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    stayList = (List<EntityStay>)clientListResponse.getList();
+                    try
+                    {
+                        JSONObject obj = new JSONObject(clientListResponseString);
+                        stayList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityStay>>(){}.getType());
+                        if(stayList == null)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        progressBarDialog.dismiss();
+                        return;
+                    }
+
                     int selectedMinStayPosition = 0;
                     if(product != null && product.getId() == 0 && product.getMaxStayId() == 0 && stayList.size() > 0)
                     {

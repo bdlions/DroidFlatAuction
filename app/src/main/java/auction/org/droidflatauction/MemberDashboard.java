@@ -29,6 +29,7 @@ import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
+import org.json.JSONObject;
 
 
 public class MemberDashboard extends AppCompatActivity
@@ -85,37 +86,51 @@ public class MemberDashboard extends AppCompatActivity
     {
         try
         {
+            EntityUser entityUser = new EntityUser();
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            Gson gson = gsonBuilder.create();
+            String entityUserString = gson.toJson(entityUser);
+
             String sessionId = session.getSessionId();
             org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
             packetHeader.setAction(ACTION.FETCH_USER_PROFILE_INFO);
             packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
             packetHeader.setSessionId(sessionId);
-            new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            new BackgroundWork().execute(packetHeader, entityUserString, new Handler(){
                 @Override
                 public void handleMessage(Message msg) {
+
                     EntityUser entityUser = null;
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
+                    Gson gson = new Gson();
                     if(msg != null  && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        entityUser = (EntityUser) clientResponse.getResult();
                         progressBarDialog.dismiss();
-                        if(session.getUserId() == 0)
+                        try
                         {
-                            session.setUserId(entityUser.getId());
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            entityUser = gson.fromJson(obj.get("result").toString(), EntityUser.class);
+                            if(session.getUserId() == 0)
+                            {
+                                session.setUserId(entityUser.getId());
+                            }
+                            tv_md_user_full_name.setText(entityUser.getFirstName()+" "+entityUser.getLastName());
+                            Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+entityUser.getImg()).into(iv_profile_photo);
+                            return;
                         }
-                        tv_md_user_full_name.setText(entityUser.getFirstName()+" "+entityUser.getLastName());
-                        Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+entityUser.getImg()).into(iv_profile_photo);
-                        return;
+                        catch(Exception ex)
+                        {
+
+                        }
                     }
                     else if(clientResponse != null && !clientResponse.isSuccess())
                     {

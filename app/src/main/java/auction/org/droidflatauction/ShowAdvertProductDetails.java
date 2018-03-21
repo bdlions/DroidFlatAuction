@@ -33,11 +33,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.dto.DTOProduct;
-import org.bdlions.auction.dto.DTOUser;
-import org.bdlions.auction.entity.EntityProduct;
-import org.bdlions.auction.entity.EntityRole;
-import org.bdlions.auction.entity.EntityUser;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class ShowAdvertProductDetails extends AppCompatActivity
@@ -305,18 +302,30 @@ public class ShowAdvertProductDetails extends AppCompatActivity
                     DTOUser user = null;
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
+                    Gson gson = new Gson();
                     if(msg != null  && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        user = (DTOUser) clientResponse.getResult();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            user = gson.fromJson(obj.get("result").toString(), DTOUser.class);
+                            if(user == null || user.getEntityUser() == null || user.getEntityUser().getId() == 0)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
                         if(user == null | user.getEntityUser() == null)
                         {
                             return;

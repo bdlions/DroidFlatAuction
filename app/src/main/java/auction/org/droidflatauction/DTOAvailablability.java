@@ -1,5 +1,4 @@
 package auction.org.droidflatauction;
-import org.bdlions.auction.entity.EntityAvailability;
 
 /**
  * Created by bdlions on 29/08/2017.

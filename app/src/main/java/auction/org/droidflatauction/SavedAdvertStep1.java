@@ -23,8 +23,8 @@ import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.dto.DTOProduct;
-import org.bdlions.auction.entity.EntityProduct;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class SavedAdvertStep1 extends AppCompatActivity
@@ -114,30 +114,40 @@ public class SavedAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
+                    progressBarDialog.dismiss();
                     DTOProduct responseProduct = null;
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
+                    Gson gson = new Gson();
                     if(msg != null  && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
+
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        responseProduct = (DTOProduct)clientResponse.getResult();
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson2 = gsonBuilder.create();
-                        String productString = gson2.toJson(responseProduct);
-                        progressBarDialog.dismiss();
-                        Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
-                        saved_advert_property_show_details_intent.putExtra("productString", productString);
-                        saved_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
-                        startActivity(saved_advert_property_show_details_intent);
-                        return;
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            responseProduct = gson.fromJson(obj.get("result").toString(), DTOProduct.class);
+                            if(responseProduct == null || responseProduct.getEntityProduct() == null || responseProduct.getEntityProduct().getId() == 0)
+                            {
+                                return;
+                            }
+                            Intent saved_advert_property_show_details_intent = new Intent(SavedAdvertStep1.this, ShowAdvertProductDetails.class);
+                            saved_advert_property_show_details_intent.putExtra("productString", obj.get("result").toString());
+                            saved_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
+                            startActivity(saved_advert_property_show_details_intent);
+                            return;
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
                     }
                     else
                     {

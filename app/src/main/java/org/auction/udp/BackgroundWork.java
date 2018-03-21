@@ -30,7 +30,8 @@ public class BackgroundWork extends AsyncTask<Object, Integer, Void> {
     //IServerCallback callback = null;
     Handler handler = null;
 
-   UDPCom udpCom = UDPCom.getInstance("185.5.54.210", 10000);
+    UDPCom udpCom = UDPCom.getInstance("185.5.54.210", 10000);
+    //UDPCom udpCom = UDPCom.getInstance("192.168.0.101", 10000);
 
     @Override
     protected Void doInBackground(Object ... params) {

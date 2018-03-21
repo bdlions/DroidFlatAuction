@@ -25,10 +25,11 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.dto.DTOSearchParam;
-import org.bdlions.auction.entity.EntityLocation;
-import org.bdlions.auction.entity.EntityProduct;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,6 +48,7 @@ public class MemberPropertySearch extends AppCompatActivity
     public int fetchLocationListCounter = 0;
 
     public Dialog progressBarDialog;
+    public DTOSearchParam dtoSearchParam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,11 @@ public class MemberPropertySearch extends AppCompatActivity
         // Session Manager
         session = new SessionManager(getApplicationContext());
 
+        this.dtoSearchParam = new DTOSearchParam();
+
+        progressBarDialog = new Dialog(MemberPropertySearch.this);
+        progressBarDialog.setContentView(R.layout.progressbar);
+        progressBarDialog.show();
         fetchLocationList();
 
         /*try
@@ -116,21 +123,36 @@ public class MemberPropertySearch extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    List<EntityLocation> locations = null;
+                    List<EntityLocation> locations = new ArrayList<>();
                     String clientListResponseString = null;
                     ClientListResponse clientListResponse = null;
+                    Gson gson = new Gson();
                     if(msg != null && msg.obj != null)
                     {
                         clientListResponseString = (String) msg.obj;
                     }
                     if(clientListResponseString != null)
                     {
-                        Gson gson = new Gson();
                         clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
                     if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
-                        locations = (List<EntityLocation>)clientListResponse.getList();
+                        progressBarDialog.dismiss();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            locations = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityLocation>>(){}.getType());
+                            if(locations == null)
+                            {
+                                progressBarDialog.dismiss();
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
 
                         ArrayList<String> locationList = new ArrayList<String>();
                         int totalLocations = locations.size();
@@ -148,6 +170,10 @@ public class MemberPropertySearch extends AppCompatActivity
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                                dtoSearchParam = new DTOSearchParam();
+                                dtoSearchParam.setLocationTitle(listitems.get(position));
+
                                 progressBarDialog = new Dialog(MemberPropertySearch.this);
                                 progressBarDialog.setContentView(R.layout.progressbar);
                                 progressBarDialog.show();
@@ -213,11 +239,11 @@ public class MemberPropertySearch extends AppCompatActivity
     {
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
-        String searchParamsString = gson.toJson(searchParams);
+        String searchParamsString = gson.toJson(dtoSearchParam);
 
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_PRODUCT_LIST);
+        packetHeader.setAction(ACTION.SEARCH_PRODUCT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, searchParamsString, new Handler(){
@@ -225,10 +251,38 @@ public class MemberPropertySearch extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    String resultString = (String)msg.obj;
+                    List<EntityProduct> productList = null;
+                    String clientListResponseString = null;
+                    ClientListResponse clientListResponse = null;
                     Gson gson = new Gson();
-                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
-                    List<EntityProduct> productList = (List<EntityProduct>)response.getList();
+                    if(msg != null && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
+                    {
+                        progressBarDialog.dismiss();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            productList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProduct>>(){}.getType());
+                            if(productList == null)
+                            {
+                                progressBarDialog.dismiss();
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+                    }
+
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
                     ArrayList<Integer> productIdList = new ArrayList<Integer>();
@@ -248,7 +302,7 @@ public class MemberPropertySearch extends AppCompatActivity
                             titleList.add(product.getTitle());
                             bedroomList.add("");
                             bathroomList.add("");
-                            priceList.add("");
+                            priceList.add("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         }
                     }
                     progressBarDialog.dismiss();

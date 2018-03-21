@@ -33,7 +33,6 @@ import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundUploader;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityProduct;
 
 
 public class CreateAdvertStep6 extends AppCompatActivity

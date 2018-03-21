@@ -34,8 +34,8 @@ import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 import org.auction.udp.BackgroundUploader;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.dto.DTOUser;
-import org.bdlions.auction.entity.EntityRole;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -180,18 +180,30 @@ public class EditUserProfile extends AppCompatActivity
                 {
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
+                    Gson gson = new Gson();
                     if(msg != null  && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        user = (DTOUser) clientResponse.getResult();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            user = gson.fromJson(obj.get("result").toString(), DTOUser.class);
+                            if(user == null || user.getEntityUser() == null || user.getEntityUser().getId() == 0)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
                         userRoleList = user.getRoles();
 
                         btnEditProfileName.setText(user.getEntityUser().getFirstName()+" "+user.getEntityUser().getLastName());

@@ -32,10 +32,10 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityProduct;
-import org.bdlions.auction.entity.EntityTime;
+import org.json.JSONObject;
 import org.w3c.dom.Entity;
 
 import java.util.ArrayList;
@@ -129,19 +129,35 @@ public class CreateAdvertStep7 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 String clientListResponseString = null;
                 ClientListResponse clientListResponse = null;
+                Gson gson = new Gson();
                 if(msg != null && msg.obj != null)
                 {
                     clientListResponseString = (String) msg.obj;
                 }
                 if(clientListResponseString != null)
                 {
-                    Gson gson = new Gson();
+
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
                     progressBarDialog.dismiss();
-                    bidTimes = (List<EntityTime>)clientListResponse.getList();
+                    try
+                    {
+                        JSONObject obj = new JSONObject(clientListResponseString);
+                        bidTimes = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityTime>>(){}.getType());
+                        if(bidTimes == null)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        progressBarDialog.dismiss();
+                        return;
+                    }
+
                     if(bidTimes.size() > 0)
                     {
                         int selectedBidStartTimePosition = 0;

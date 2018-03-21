@@ -15,7 +15,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import com.google.gson.Gson;
-import org.bdlions.auction.entity.EntityProduct;
 
 public class SavedAdvertStep2 extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {

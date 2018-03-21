@@ -25,6 +25,8 @@ import com.squareup.picasso.Picasso;
 import org.auction.udp.BackgroundWork;
 import org.bdlions.auction.dto.DTOUser;
 import org.bdlions.auction.entity.EntityRole;
+import org.json.JSONObject;
+
 import java.util.List;
 
 public class UserProfile extends AppCompatActivity
@@ -32,7 +34,7 @@ public class UserProfile extends AppCompatActivity
     private  static ImageButton ib_back_arrow;
     SessionManager session;
     public static TextView tvProfileFullName, tvProfileEmail, tvProfileTelephone,tvProfileBusinessName,tvProfileBusinessNameHeader,tvProfileAddress,tvProfileAddressHeader,tvProfileRole;
-    private static ImageView ivProfilePhoto, ivProfileAgentLogo,ivProfileDocument;
+    private static ImageView ivProfilePhoto, ivProfileAgentLogo,ivProfileDocument, ivUserProfileVerificationYes, ivUserProfileVerificationNo;
     public int fetchProfileCounter = 0;
     public Dialog progressBarDialog;
 
@@ -52,6 +54,9 @@ public class UserProfile extends AppCompatActivity
         ivProfilePhoto = (ImageView) findViewById(R.id.iv_profile_photo);
         ivProfileAgentLogo = (ImageView) findViewById(R.id.iv_profile_agent_logo);
         ivProfileDocument = (ImageView) findViewById(R.id.iv_profile_document);
+
+        ivUserProfileVerificationYes = (ImageView) findViewById(R.id.iv_user_profile_verification_yes);
+        ivUserProfileVerificationNo = (ImageView) findViewById(R.id.iv_user_profile_verification_no);
 
         // Session Manager
         session = new SessionManager(getApplicationContext());
@@ -90,26 +95,34 @@ public class UserProfile extends AppCompatActivity
                     DTOUser user = null;
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
+                    Gson gson = new Gson();
                     if(msg != null  && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        user = (DTOUser) clientResponse.getResult();
-                        if(user == null | user.getEntityUser() == null)
+                        progressBarDialog.dismiss();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            user = gson.fromJson(obj.get("result").toString(), DTOUser.class);
+                            if(user == null || user.getEntityUser() == null || user.getEntityUser().getId() == 0)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
                         {
                             return;
                         }
                         String roleString = "";
                         String agentString = "";
                         List<EntityRole> roleList = user.getRoles();
-
                         if(roleList != null && roleList.size() > 0)
                         {
                             for(int counter = 0; counter < roleList.size(); counter++)
@@ -128,8 +141,6 @@ public class UserProfile extends AppCompatActivity
                         tvProfileBusinessName.setText(user.getEntityUser().getBusinessName());
                         tvProfileAddress.setText(user.getEntityUser().getAddress());
 
-
-
                         tvProfileFullName.setText(user.getEntityUser().getFirstName()+" "+user.getEntityUser().getLastName());
                         tvProfileEmail.setText(user.getEntityUser().getEmail());
                         tvProfileTelephone.setText(user.getEntityUser().getCell());
@@ -138,7 +149,17 @@ public class UserProfile extends AppCompatActivity
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profilePicturePath+user.getEntityUser().getImg()).into(ivProfilePhoto);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.agentLogoPath_100_100+user.getEntityUser().getAgentLogo()).into(ivProfileAgentLogo);
                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.profileDocument+user.getEntityUser().getDocument()).into(ivProfileDocument);
-                        progressBarDialog.dismiss();
+
+                        if(user.getEntityUser().isIsVerified())
+                        {
+                            ivUserProfileVerificationYes.setVisibility(View.VISIBLE);
+                            ivUserProfileVerificationNo.setVisibility(View.INVISIBLE);
+                        }
+                        else
+                        {
+                            ivUserProfileVerificationYes.setVisibility(View.INVISIBLE);
+                            ivUserProfileVerificationNo.setVisibility(View.VISIBLE);
+                        }
                     }
                     else
                     {

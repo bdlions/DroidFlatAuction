@@ -23,7 +23,8 @@ import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityProduct;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class MemberPropertySearchProduct extends AppCompatActivity
@@ -135,37 +136,49 @@ public class MemberPropertySearchProduct extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
+                    DTOProduct dtoProduct = null;
+                    EntityProduct responseProduct = new EntityProduct();
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
+                    Gson gson = new Gson();
                     if(msg != null && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
+
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        EntityProduct responseProduct = (EntityProduct) clientResponse.getResult();
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson2 = gsonBuilder.create();
-                        String productString = gson2.toJson(responseProduct);
-
                         progressBarDialog.dismiss();
-                        Intent my_advert_property_show_details_intent = new Intent(MemberPropertySearchProduct.this, ShowAdvertProductDetails.class);
-                        my_advert_property_show_details_intent.putExtra("productString", productString);
-                        if(session.getUserId() == responseProduct.getUserId())
+                        try
                         {
-                            my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
-                        }
-                        else
-                        {
-                            my_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            dtoProduct = gson.fromJson(obj.get("result").toString(), DTOProduct.class);
+                            if(dtoProduct == null || dtoProduct.getEntityProduct() == null || dtoProduct.getEntityProduct().getId() == 0)
+                            {
+                                return;
+                            }
+                            responseProduct = dtoProduct.getEntityProduct();
+                            Intent my_advert_property_show_details_intent = new Intent(MemberPropertySearchProduct.this, ShowAdvertProductDetails.class);
+                            my_advert_property_show_details_intent.putExtra("productString", obj.get("result").toString());
+                            if(session.getUserId() == responseProduct.getUserId())
+                            {
+                                my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
+                            }
+                            else
+                            {
+                                my_advert_property_show_details_intent.putExtra("adIdentity", Constants.OTHER_AD_IDENTITY);
 
+                            }
+                            startActivity(my_advert_property_show_details_intent);
                         }
-                        startActivity(my_advert_property_show_details_intent);
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
                     }
                     else
                     {

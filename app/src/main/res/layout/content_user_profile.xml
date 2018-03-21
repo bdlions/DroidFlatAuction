@@ -212,12 +212,21 @@
             android:textSize="16dp"
             android:textStyle="bold" />
         <ImageView
-            android:id="@+id/user_profile_verification"
+            android:id="@+id/iv_user_profile_verification_yes"
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginTop="6dp"
             android:layout_marginLeft="5dp"
+            android:visibility="invisible"
             android:src="@drawable/success"/>
+        <ImageView
+            android:id="@+id/iv_user_profile_verification_no"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="5dp"
+            android:visibility="invisible"
+            android:src="@drawable/cross"/>
     </LinearLayout>
     </LinearLayout>
 </ScrollView>

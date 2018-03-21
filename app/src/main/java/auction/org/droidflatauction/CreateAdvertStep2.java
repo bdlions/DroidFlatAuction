@@ -26,10 +26,13 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityAmenity;
-import org.bdlions.auction.entity.EntityProduct;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CreateAdvertStep2 extends AppCompatActivity
@@ -37,12 +40,22 @@ public class CreateAdvertStep2 extends AppCompatActivity
     private  static ImageButton ib_back_arrow,ib_forward_arrow;
     private static Spinner sp_area;
     private static EditText etManageProductPrice;
+
+    ArrayAdapter<EntityLocation> locationAdapter;
     ArrayAdapter<CharSequence> area_adapter;
+
+    private static Spinner locationSpinner;
+
+    public List<EntityLocation> locationList = new ArrayList<>();
+
+    EntityLocation selectedLocation;
+
     public ListView listViewAmenity;
     EntityProduct product;
     SessionManager session;
     NavigationManager navigationManager;
     public Dialog progressBarDialog;
+    public int fetchLocationCounter = 0;
     public int fetchAmenityListCounter = 0;
 
     @Override
@@ -78,7 +91,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
 
         onClickButtonBackArrowListener();
         onClickButtonForwardArrowListener();
-        areaSpinner();
+        //areaSpinner();
 
         listViewAmenity = (ListView)findViewById(R.id.amenities_listView);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -94,7 +107,130 @@ public class CreateAdvertStep2 extends AppCompatActivity
         progressBarDialog.setContentView(R.layout.progressbar);
         progressBarDialog.show();
 
-        this.fetchAmenityList();
+        fetchLocationList();
+
+        //this.fetchAmenityList();
+    }
+
+    public void fetchLocationList()
+    {
+        String sessionId = session.getSessionId();
+        org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
+        packetHeader.setAction(ACTION.FETCH_LOCATION_LIST);
+        packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
+        packetHeader.setSessionId(sessionId);
+        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                try
+                {
+
+                    String clientListResponseString = null;
+                    ClientListResponse clientListResponse = null;
+                    Gson gson = new Gson();
+                    if(msg != null && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
+                    {
+                        progressBarDialog.dismiss();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            locationList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityLocation>>(){}.getType());
+                            if(locationList == null)
+                            {
+                                progressBarDialog.dismiss();
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+
+                        int selectedLocationPosition = 0;
+                        //setting default product category
+                        if(product != null && product.getId() == 0 && product.getLocationId() == 0 && locationList.size() > 0)
+                        {
+                            product.setLocationId(locationList.get(0).getId());
+                            product.setLocationTitle(locationList.get(0).getSearchString());
+                            product.setPostcode(locationList.get(0).getPostcode());
+                            product.setLat(locationList.get(0).getLat());
+                            product.setLon(locationList.get(0).getLon());
+                        }
+                        //setting product selected category
+                        else
+                        {
+                            int locationCounter = locationList.size();
+                            for(int counter = 0; counter < locationCounter; counter++ )
+                            {
+                                if(locationList.get(counter).getId() == product.getLocationId())
+                                {
+                                    selectedLocation = locationList.get(counter);
+                                    selectedLocationPosition = counter;
+                                    break;
+                                }
+                            }
+                        }
+
+                        locationAdapter = new ArrayAdapter<EntityLocation>( CreateAdvertStep2.this, android.R.layout.simple_spinner_item, locationList);
+                        locationAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        locationSpinner = (Spinner) findViewById(R.id.area_spinner);
+                        locationSpinner.setAdapter(locationAdapter);
+                        if(selectedLocation != null)
+                        {
+                            locationSpinner.setSelection(selectedLocationPosition);
+                        }
+                        locationSpinner.setOnItemSelectedListener(
+                                new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
+                                    {
+                                        selectedLocation = (EntityLocation) locationSpinner.getSelectedItem();
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> arg0) {
+                                        // TODO Auto-generated method stub
+                                    }
+                                }
+                        );
+                        fetchAmenityList();
+                    }
+                    else
+                    {
+                        fetchLocationCounter++;
+                        if (fetchLocationCounter <= 5)
+                        {
+                            fetchLocationList();
+                        }
+                        else
+                        {
+                            progressBarDialog.dismiss();
+                        }
+                    }
+                }
+                catch(Exception ex)
+                {
+                    //System.out.println(ex.toString());
+                    if (fetchLocationCounter <= 5)
+                    {
+                        fetchLocationList();
+                    }
+                    else
+                    {
+                        progressBarDialog.dismiss();
+                    }
+                }
+            }
+        });
     }
 
     public void fetchAmenityList()
@@ -112,18 +248,34 @@ public class CreateAdvertStep2 extends AppCompatActivity
                     List<EntityAmenity> amenityList = null;
                     String clientListResponseString = null;
                     ClientListResponse clientListResponse = null;
+                    Gson gson = new Gson();
                     if(msg != null && msg.obj != null)
                     {
                         clientListResponseString = (String) msg.obj;
                     }
                     if(clientListResponseString != null)
                     {
-                        Gson gson = new Gson();
+
                         clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                     }
                     if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                     {
-                        amenityList = (List<EntityAmenity>)clientListResponse.getList();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            amenityList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityAmenity>>(){}.getType());
+                            if(amenityList == null)
+                            {
+                                progressBarDialog.dismiss();
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+
                         progressBarDialog.dismiss();
                         final ArrayList<Integer> amenityListId = new ArrayList<Integer>();
                         String productAmenityIds = product.getAmenityIds();
@@ -324,6 +476,13 @@ public class CreateAdvertStep2 extends AppCompatActivity
             Toast.makeText(getBaseContext(),"Invalid price " + strAssignedPrice, Toast.LENGTH_SHORT).show();
             return false;
         }
+
+        if(selectedLocation == null)
+        {
+            Toast.makeText(getBaseContext(),"Location is required." , Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
         return isValid;
     }
 
@@ -340,9 +499,15 @@ public class CreateAdvertStep2 extends AppCompatActivity
         {
             Toast.makeText(getBaseContext(),"Invalid price " + strAssignedPrice, Toast.LENGTH_SHORT).show();
         }
+
+        product.setLocationId(selectedLocation.getId());
+        product.setLocationTitle(selectedLocation.getSearchString());
+        product.setPostcode(selectedLocation.getPostcode());
+        product.setLat(selectedLocation.getLat());
+        product.setLon(selectedLocation.getLon());
     }
 
-    public void areaSpinner(){
+    /*public void areaSpinner(){
         sp_area = (Spinner) findViewById(R.id.area_spinner);
         area_adapter = ArrayAdapter.createFromResource(this,R.array.area_spinner_options,android.R.layout.simple_spinner_item);
         area_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -358,7 +523,7 @@ public class CreateAdvertStep2 extends AppCompatActivity
 
             }
         });
-    }
+    }*/
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

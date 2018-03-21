@@ -20,13 +20,15 @@ import android.widget.Toast;
 
 //import com.bdlions.dto.AccountSettingFA;
 import com.bdlions.dto.response.ClientListResponse;
+import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityProduct;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,21 +107,52 @@ public class ManageAdvertDashboard extends AppCompatActivity
 
     public void fetchMyAds()
     {
+        DTOProduct dtoProduct = new DTOProduct();
+        dtoProduct.setOffset(0);
+        dtoProduct.setLimit(10);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String dtoProductString = gson.toJson(dtoProduct);
+
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_USER_PRODUCT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+        new BackgroundWork().execute(packetHeader, dtoProductString, new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 try
                 {
-                    String resultString = (String)msg.obj;
+                    List<EntityProduct> productList = new ArrayList<>();
+                    ClientListResponse clientListResponse = null;
+                    String clientListResponseString = null;
                     Gson gson = new Gson();
-                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
-                    System.out.println(response);
-                    List<EntityProduct> productList = (List<EntityProduct>)response.getList();
+                    if(msg != null  && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess())
+                    {
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            productList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProduct>>(){}.getType());
+                            if(productList == null)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
+                    }
+
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
                     ArrayList<Integer> productIdList = new ArrayList<Integer>();
@@ -187,21 +220,53 @@ public class ManageAdvertDashboard extends AppCompatActivity
 
     public void fetchSavedAds()
     {
+        DTOProduct dtoProduct = new DTOProduct();
+        dtoProduct.setOffset(0);
+        dtoProduct.setLimit(10);
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String dtoProductString = gson.toJson(dtoProduct);
+
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_SAVED_PRODUCT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+        new BackgroundWork().execute(packetHeader, dtoProductString, new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 try
                 {
-                    String resultString = (String)msg.obj;
+                    progressBarDialog.dismiss();
+                    List<EntityProduct> productList = new ArrayList<>();
+                    ClientListResponse clientListResponse = null;
+                    String clientListResponseString = null;
                     Gson gson = new Gson();
-                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
-                    System.out.println(response);
-                    List<EntityProduct> productList = (List<EntityProduct>)response.getList();
+                    if(msg != null  && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess())
+                    {
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            productList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProduct>>(){}.getType());
+                            if(productList == null)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
+                    }
+
                     ArrayList<Integer> imageList = new ArrayList<Integer>();
                     ArrayList<String> imgList = new ArrayList<String>();
                     ArrayList<Integer> productIdList = new ArrayList<Integer>();
@@ -219,12 +284,12 @@ public class ManageAdvertDashboard extends AppCompatActivity
                             imageList.add(R.drawable.property_image_01);
                             imgList.add(product.getImg());
                             titleList.add(product.getTitle());
-                            bedroomList.add(product.getCategoryTitle() + ", " + product.getSizeTitle());
-                            bathroomList.add(product.getTypeTitle());
+                            bedroomList.add("");
+                            bathroomList.add("");
                             priceList.add("£" + String.format("%.2f",  product.getBasePrice()) + " Guide Price");
                         }
                     }
-                    progressBarDialog.dismiss();
+
                     Intent saved_advert_intent = new Intent(getBaseContext(), SavedAdvertStep1.class);
                     saved_advert_intent.putExtra("imageList", imageList);
                     saved_advert_intent.putExtra("imgList", imgList);

@@ -24,7 +24,6 @@ import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityProduct;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 

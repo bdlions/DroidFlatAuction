@@ -5,9 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -30,13 +27,11 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityProduct;
-import org.bdlions.auction.entity.EntityProductCategory;
-import org.bdlions.auction.entity.EntityProductSize;
-import org.bdlions.auction.entity.EntityProductType;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -245,18 +240,33 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 String clientListResponseString = null;
                 ClientListResponse clientListResponse = null;
+                Gson gson = new Gson();
                 if(msg != null && msg.obj != null)
                 {
                     clientListResponseString = (String) msg.obj;
                 }
                 if(clientListResponseString != null)
                 {
-                    Gson gson = new Gson();
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    productCategoryList = (List<EntityProductCategory>)clientListResponse.getList();
+                    try
+                    {
+                        JSONObject obj = new JSONObject(clientListResponseString);
+                        productCategoryList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductCategory>>(){}.getType());
+                        if(productCategoryList == null)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        progressBarDialog.dismiss();
+                        return;
+                    }
+
                     int selectedCategoryPosition = 0;
 
                     //setting default product category
@@ -336,18 +346,34 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 String clientListResponseString = null;
                 ClientListResponse clientListResponse = null;
+                Gson gson = new Gson();
                 if(msg != null && msg.obj != null)
                 {
                     clientListResponseString = (String) msg.obj;
                 }
                 if(clientListResponseString != null)
                 {
-                    Gson gson = new Gson();
+
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    productSizeList = (List<EntityProductSize>)clientListResponse.getList();
+                    try
+                    {
+                        JSONObject obj = new JSONObject(clientListResponseString);
+                        productSizeList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductSize>>(){}.getType());
+                        if(productSizeList == null)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        progressBarDialog.dismiss();
+                        return;
+                    }
+
                     int selectedSizePosition = 0;
                     if(product != null && product.getId() == 0 && product.getSizeId() == 0 && productSizeList.size() > 0)
                     {
@@ -424,18 +450,34 @@ public class CreateAdvertStep1 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 String clientListResponseString = null;
                 ClientListResponse clientListResponse = null;
+                Gson gson = new Gson();
                 if(msg != null && msg.obj != null)
                 {
                     clientListResponseString = (String) msg.obj;
                 }
                 if(clientListResponseString != null)
                 {
-                    Gson gson = new Gson();
+
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
                 {
-                    productTypeList = (List<EntityProductType>)clientListResponse.getList();
+                    try
+                    {
+                        JSONObject obj = new JSONObject(clientListResponseString);
+                        productTypeList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductType>>(){}.getType());
+                        if(productTypeList == null)
+                        {
+                            progressBarDialog.dismiss();
+                            return;
+                        }
+                    }
+                    catch(Exception ex)
+                    {
+                        progressBarDialog.dismiss();
+                        return;
+                    }
+
                     int selectedTypePosition = 0;
                     if(product != null && product.getId() == 0 && product.getTypeId() == 0 && productTypeList.size() > 0)
                     {
