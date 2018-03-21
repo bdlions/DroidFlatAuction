@@ -22,9 +22,13 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.auction.udp.BackgroundWork;
 import org.bdlions.auction.dto.DTOMessageBody;
 import org.bdlions.auction.entity.EntityMessageBody;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -103,6 +107,8 @@ public class MessageInbox extends AppCompatActivity
         EntityMessageBody entityMessageBody = new EntityMessageBody();
         entityMessageBody.setMessageHeaderId(messageId);
         dtoMessageBody.setEntityMessageBody(entityMessageBody);
+        dtoMessageBody.setOffset(0);
+        dtoMessageBody.setLimit(10);
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -117,11 +123,34 @@ public class MessageInbox extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    String resultString = (String)msg.obj;
+                    List<DTOMessageBody> messageTextList = new ArrayList<>();
+                    ClientListResponse clientListResponse = null;
+                    String clientListResponseString = null;
                     Gson gson = new Gson();
-                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
-                    System.out.println(response);
-                    List<DTOMessageBody> messageTextList = (List<DTOMessageBody>)response.getList();
+                    if(msg != null  && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess())
+                    {
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            messageTextList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<DTOMessageBody>>(){}.getType());
+                            if(messageTextList == null)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
+                    }
 
                     int messageTextListCounter = messageTextList.size();
                     ArrayList<String> messageBodyList = new ArrayList<String>();

@@ -59,8 +59,8 @@ public class ManageAdvertAccountSettingsStep extends AppCompatActivity
 
         progressBarDialog = new Dialog(ManageAdvertAccountSettingsStep.this);
         progressBarDialog.setContentView(R.layout.progressbar);
-        progressBarDialog.show();
-        fetchAccountSettingFA();
+        //progressBarDialog.show();
+        //fetchAccountSettingFA();
 
         onClickButtonBackArrowListener();
         onClickButtonSubmitListener();

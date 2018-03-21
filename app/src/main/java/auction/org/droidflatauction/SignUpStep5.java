@@ -16,7 +16,10 @@ import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.entity.EntityUser;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class SignUpStep5 extends AppCompatActivity {
     private  static ImageButton ib_back_arrow;
@@ -59,14 +62,27 @@ public class SignUpStep5 extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        DTOUser dtoUser = new DTOUser();
+                        entityUser.setGenderId(1);
+                        EntityRole entityRole = new EntityRole();
+                        entityRole.setId(1);
+                        List<EntityRole> roles = new ArrayList<>();
+                        roles.add(entityRole);
+                        dtoUser.setRoles(roles);
+                        dtoUser.setEntityUser(entityUser);
+                        GsonBuilder gsonBuilder = new GsonBuilder();
+                        Gson gson = gsonBuilder.create();
+                        String dtoUserString = gson.toJson(dtoUser);
+
                         progressBarDialog.show();
 
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         packetHeader.setAction(ACTION.SIGN_UP);
                         packetHeader.setRequestType(REQUEST_TYPE.AUTH);
-                        new BackgroundWork().execute(packetHeader, userString, new Handler(){
+                        new BackgroundWork().execute(packetHeader, dtoUserString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
+                                progressBarDialog.dismiss();
                                 SignInResponse signInResponse = null;
                                 String stringSignInResponse = null;
                                 if(msg != null && msg.obj != null)
@@ -81,7 +97,7 @@ public class SignUpStep5 extends AppCompatActivity {
 
                                 if(signInResponse != null && signInResponse.isSuccess())
                                 {
-                                    Toast.makeText(getApplicationContext(), "Registration successful. Please login.", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(), "Registration successful. Please activate you account from email and login.", Toast.LENGTH_LONG).show();
                                     Intent sing_up_step5_accept_intent = new Intent(getBaseContext(), SignIn.class);
                                     startActivity(sing_up_step5_accept_intent);
                                 }

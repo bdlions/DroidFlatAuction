@@ -8,7 +8,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import org.bdlions.auction.entity.EntityUser;
 
 public class SignUpStep1 extends AppCompatActivity {
     private  static ImageButton ib_back_arrow,ib_forward_arrow;

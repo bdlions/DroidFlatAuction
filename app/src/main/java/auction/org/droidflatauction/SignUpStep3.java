@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
-import org.bdlions.auction.entity.EntityUser;
+
 
 
 public class SignUpStep3 extends AppCompatActivity {

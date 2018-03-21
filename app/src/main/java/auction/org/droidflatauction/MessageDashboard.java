@@ -19,8 +19,12 @@ import com.bdlions.dto.response.ClientListResponse;
 import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import org.auction.udp.BackgroundWork;
-import org.bdlions.auction.dto.DTOMessageHeader;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,21 +93,53 @@ public class MessageDashboard extends AppCompatActivity
 
     public void fetchMessageInboxList()
     {
+        DTOMessageHeader dtoMessageHeader = new DTOMessageHeader();
+        dtoMessageHeader.setOffset(0);
+        dtoMessageHeader.setLimit(10);
+        dtoMessageHeader.setSender(new EntityUser());
+        dtoMessageHeader.getSender().setId(session.getUserId());
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String dtoMessageHeaderString = gson.toJson(dtoMessageHeader);
+
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_MESSAGE_INBOX_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+        new BackgroundWork().execute(packetHeader, dtoMessageHeaderString, new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 try
                 {
-                    String resultString = (String)msg.obj;
+                    List<DTOMessageHeader> messageList = new ArrayList<>();
+                    ClientListResponse clientListResponse = null;
+                    String clientListResponseString = null;
                     Gson gson = new Gson();
-                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
-                    System.out.println(response);
-                    List<DTOMessageHeader> messageList = (List<DTOMessageHeader>)response.getList();
+                    if(msg != null  && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess())
+                    {
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            messageList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<DTOMessageHeader>>(){}.getType());
+                            if(messageList == null)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
+                    }
 
                     ArrayList<Integer> messageIdList = new ArrayList<Integer>();
                     ArrayList<String> userNameList = new ArrayList<String>();
@@ -118,10 +154,10 @@ public class MessageDashboard extends AppCompatActivity
                         {
                             DTOMessageHeader message = messageList.get(messageCounter);
                             messageIdList.add(message.getEntityMessageHeader().getId());
-                            userNameList.add(message.getSender().getFirstName() + " " + message.getSender().getLastName());
+                            userNameList.add(message.getReceiver().getFirstName() + " " + message.getReceiver().getLastName());
                             subjectList.add(message.getEntityMessageHeader().getSubject());
                             imageList.add(R.drawable.user);
-                            imgList.add(message.getSender().getImg());
+                            imgList.add(message.getReceiver().getImg());
                         }
                     }
                     progressBarDialog.dismiss();
@@ -168,21 +204,53 @@ public class MessageDashboard extends AppCompatActivity
 
     public void fetchMessageSentList()
     {
+        DTOMessageHeader dtoMessageHeader = new DTOMessageHeader();
+        dtoMessageHeader.setOffset(0);
+        dtoMessageHeader.setLimit(10);
+        dtoMessageHeader.setSender(new EntityUser());
+        dtoMessageHeader.getSender().setId(session.getUserId());
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        Gson gson = gsonBuilder.create();
+        String dtoMessageHeaderString = gson.toJson(dtoMessageHeader);
+
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
         packetHeader.setAction(ACTION.FETCH_MESSAGE_SENT_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
-        new BackgroundWork().execute(packetHeader, "{}", new Handler(){
+        new BackgroundWork().execute(packetHeader, dtoMessageHeaderString, new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 try
                 {
-                    String resultString = (String)msg.obj;
+                    List<DTOMessageHeader> messageList = new ArrayList<>();
+                    ClientListResponse clientListResponse = null;
+                    String clientListResponseString = null;
                     Gson gson = new Gson();
-                    ClientListResponse response = gson.fromJson(resultString, ClientListResponse.class);
-                    System.out.println(response);
-                    List<DTOMessageHeader> messageList = (List<DTOMessageHeader>)response.getList();
+                    if(msg != null  && msg.obj != null)
+                    {
+                        clientListResponseString = (String) msg.obj;
+                    }
+                    if(clientListResponseString != null)
+                    {
+                        clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
+                    }
+                    if(clientListResponse != null && clientListResponse.isSuccess())
+                    {
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientListResponseString);
+                            messageList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<DTOMessageHeader>>(){}.getType());
+                            if(messageList == null)
+                            {
+                                return;
+                            }
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
+                    }
 
 
                     ArrayList<Integer> messageIdList = new ArrayList<Integer>();
@@ -198,10 +266,10 @@ public class MessageDashboard extends AppCompatActivity
                         {
                             DTOMessageHeader message = messageList.get(messageCounter);
                             messageIdList.add(message.getEntityMessageHeader().getId());
-                            userNameList.add(message.getSender().getFirstName() + " " + message.getSender().getLastName());
+                            userNameList.add(message.getReceiver().getFirstName() + " " + message.getReceiver().getLastName());
                             subjectList.add(message.getEntityMessageHeader().getSubject());
                             imageList.add(R.drawable.user);
-                            imgList.add(message.getSender().getImg());
+                            imgList.add(message.getReceiver().getImg());
                         }
                     }
                     progressBarDialog.dismiss();

@@ -337,8 +337,8 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     public void onClick(View v) {
                         progressBarDialog = new Dialog(ManageAdvertDashboard.this);
                         progressBarDialog.setContentView(R.layout.progressbar);
-                        progressBarDialog.show();
-                        fetchIndividualAdBids();
+                        //progressBarDialog.show();
+                        //fetchIndividualAdBids();
                     }
                 }
         );
@@ -418,8 +418,8 @@ public class ManageAdvertDashboard extends AppCompatActivity
                     public void onClick(View v) {
                         progressBarDialog = new Dialog(ManageAdvertDashboard.this);
                         progressBarDialog.setContentView(R.layout.progressbar);
-                        progressBarDialog.show();
-                        fetchStats();
+                        //progressBarDialog.show();
+                        //fetchStats();
                     }
                 }
         );
