@@ -83,7 +83,9 @@ public class ManageAdvertDashboard extends AppCompatActivity
                         Intent create_advert_intent = new Intent(getBaseContext(), CreateAdvertStep1.class);
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
-                        String productString = gson.toJson(new EntityProduct());
+                        DTOProduct dtoProduct = new DTOProduct();
+                        dtoProduct.setEntityProduct(new EntityProduct());
+                        String productString = gson.toJson(dtoProduct);
                         create_advert_intent.putExtra("productString", productString);
                         startActivity(create_advert_intent);
                     }

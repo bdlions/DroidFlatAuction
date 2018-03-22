@@ -84,7 +84,11 @@ public class CreateAdvertStep1 extends AppCompatActivity
         {
             String productString = (String)getIntent().getExtras().get("productString");
             Gson gson = new Gson();
-            product = gson.fromJson(productString, EntityProduct.class);
+            DTOProduct dtoProduct = gson.fromJson(productString, DTOProduct.class);
+            if(dtoProduct != null && dtoProduct.getEntityProduct() != null)
+            {
+                product = dtoProduct.getEntityProduct();
+            }
 
             progressBarDialog = new Dialog(CreateAdvertStep1.this);
             progressBarDialog.setContentView(R.layout.progressbar);
@@ -166,11 +170,12 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         try
                         {
                             JSONObject obj = new JSONObject(clientResponseString);
-                            product = gson.fromJson(obj.get("result").toString(), EntityProduct.class);
-                            if(product == null || product.getId() == 0)
+                            DTOProduct dtoProduct = gson.fromJson(obj.get("result").toString(), DTOProduct.class);
+                            if(dtoProduct == null || dtoProduct.getEntityProduct() == null || dtoProduct.getEntityProduct().getId() == 0)
                             {
                                 return;
                             }
+                            product = dtoProduct.getEntityProduct();
                             //formatting date to user display format
                             String availableFrom = product.getAvailableFrom();
                             String availableTo = product.getAvailableTo();
