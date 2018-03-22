@@ -4,13 +4,14 @@ package auction.org.droidflatauction;
 
 /**
  *
- * //@author nazmul hasan
+ * @author nazmul hasan
  */
 
 public class EntityProductCategory
 {
     private int id;
     private String title;
+    private int orderNo;
 
     public int getId() {
         return id;
@@ -26,6 +27,14 @@ public class EntityProductCategory
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(int orderNo) {
+        this.orderNo = orderNo;
     }
 
     @Override

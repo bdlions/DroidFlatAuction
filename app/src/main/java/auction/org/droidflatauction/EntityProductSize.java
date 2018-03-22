@@ -2,19 +2,13 @@ package auction.org.droidflatauction;
 
 /**
  *
- * //@author nazmul hasan
+ * @author nazmul hasan
  */
 
 public class EntityProductSize {
-
-    //@Id
-    //@GeneratedValue(strategy=GenerationType.IDENTITY)
-    //@Column(name = "id")
-    
     private int id;
-
-    //@Column(name = "title", length = 200)
     private String title;
+    private int orderNo;
 
     public EntityProductSize() 
     {
@@ -35,6 +29,14 @@ public class EntityProductSize {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public int getOrderNo() {
+        return orderNo;
+    }
+
+    public void setOrderNo(int orderNo) {
+        this.orderNo = orderNo;
     }
 
     @Override
