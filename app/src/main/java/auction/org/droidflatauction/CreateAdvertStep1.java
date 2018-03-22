@@ -151,46 +151,58 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 {
                     ClientResponse clientResponse = null;
                     String clientResponseString = null;
-                    if(msg != null && msg.obj != null)
+                    Gson gson = new Gson();
+                    if(msg != null  && msg.obj != null)
                     {
                         clientResponseString = (String) msg.obj;
                     }
                     if(clientResponseString != null)
                     {
-                        Gson gson = new Gson();
                         clientResponse = gson.fromJson(clientResponseString, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        product = (EntityProduct) clientResponse.getResult();
+                        progressBarDialog.dismiss();
+                        try
+                        {
+                            JSONObject obj = new JSONObject(clientResponseString);
+                            product = gson.fromJson(obj.get("result").toString(), EntityProduct.class);
+                            if(product == null || product.getId() == 0)
+                            {
+                                return;
+                            }
+                            //formatting date to user display format
+                            String availableFrom = product.getAvailableFrom();
+                            String availableTo = product.getAvailableTo();
+                            if(availableFrom != null && !availableFrom.equals(""))
+                            {
+                                String[] availableFromArray = availableFrom.split("-");
+                                product.setAvailableFrom(availableFromArray[2]+"-"+availableFromArray[1]+"-"+availableFromArray[0]);
+                            }
+                            if(availableTo != null && !availableTo.equals(""))
+                            {
+                                String[] availableToArray = availableTo.split("-");
+                                product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
+                            }
 
-                        //formatting date to user display format
-                        String availableFrom = product.getAvailableFrom();
-                        String availableTo = product.getAvailableTo();
-                        if(availableFrom != null && !availableFrom.equals(""))
-                        {
-                            String[] availableFromArray = availableFrom.split("-");
-                            product.setAvailableFrom(availableFromArray[2]+"-"+availableFromArray[1]+"-"+availableFromArray[0]);
+                            String bidStartFrom = product.getAuctionStartDate();
+                            String bidStartTo = product.getAuctionEndDate();
+                            if(bidStartFrom != null && !bidStartFrom.equals(""))
+                            {
+                                String[] bidStartFromArray = bidStartFrom.split("-");
+                                product.setAuctionStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
+                            }
+                            if(bidStartTo != null && !bidStartTo.equals(""))
+                            {
+                                String[] bidStartToArray = bidStartTo.split("-");
+                                product.setAuctionEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
+                            }
+                            fetchProductTypeList();
                         }
-                        if(availableTo != null && !availableTo.equals(""))
+                        catch(Exception ex)
                         {
-                            String[] availableToArray = availableTo.split("-");
-                            product.setAvailableTo(availableToArray[2]+"-"+availableToArray[1]+"-"+availableToArray[0]);
+                            return;
                         }
-
-                        String bidStartFrom = product.getAuctionStartDate();
-                        String bidStartTo = product.getAuctionEndDate();
-                        if(bidStartFrom != null && !bidStartFrom.equals(""))
-                        {
-                            String[] bidStartFromArray = bidStartFrom.split("-");
-                            product.setAuctionStartDate(bidStartFromArray[2]+"-"+bidStartFromArray[1]+"-"+bidStartFromArray[0]);
-                        }
-                        if(bidStartTo != null && !bidStartTo.equals(""))
-                        {
-                            String[] bidStartToArray = bidStartTo.split("-");
-                            product.setAuctionEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
-                        }
-                        fetchProductTypeList();
                     }
                     else
                     {
