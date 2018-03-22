@@ -198,6 +198,10 @@ public class CreateAdvertStep8 extends AppCompatActivity
 
                         DTOProduct dtoProduct = new DTOProduct();
                         dtoProduct.setEntityProduct(product);
+                        if(product.getImages() != null || !product.getImages().equals(""))
+                        {
+                            dtoProduct.setImages(product.getImages());
+                        }
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
