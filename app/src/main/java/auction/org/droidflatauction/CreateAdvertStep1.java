@@ -202,6 +202,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                                 String[] bidStartToArray = bidStartTo.split("-");
                                 product.setAuctionEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
                             }
+                            progressBarDialog.show();
                             fetchProductTypeList();
                         }
                         catch(Exception ex)
