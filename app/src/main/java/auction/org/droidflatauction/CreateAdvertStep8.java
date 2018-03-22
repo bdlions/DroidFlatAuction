@@ -189,11 +189,10 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             if(product.getImg() == null || product.getImg().equals(""))
                             {
                                 product.setImg("a.jpg");
-                                product.setImages("a.jpg");
                             }
-                            else
+                            if(product.getImages() == null || product.getImages().equals(""))
                             {
-                                product.setImages(product.getImg());
+                                product.setImages("a.jpg");
                             }
                         }
 

@@ -79,6 +79,7 @@ public class CreateAdvertStep6 extends AppCompatActivity
                                     if(imgUploadType == Constants.IMG_UPLOAD_TYPE_PRODUCT_PICTURE)
                                     {
                                         product.setImg(img);
+                                        product.setImages(img);
                                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.imageUploadPath+product.getImg()).into(ivEditProductPhoto);
                                         Picasso.with(getApplicationContext()).load(Constants.baseUrl+Constants.imageUploadPath+product.getImg()).into(ivUploadProductPhoto);
                                         //call server to upload image
