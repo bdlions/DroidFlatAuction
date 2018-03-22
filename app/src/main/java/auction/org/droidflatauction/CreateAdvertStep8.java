@@ -23,7 +23,12 @@ import com.bdlions.util.ACTION;
 import com.bdlions.util.REQUEST_TYPE;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
+
 import org.auction.udp.BackgroundWork;
+import org.bdlions.auction.entity.*;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -121,18 +126,6 @@ public class CreateAdvertStep8 extends AppCompatActivity
                     @Override
                     public void onClick(View v) {
 
-                        //for testing purpose some default fields are set here but it should come from user selection
-                        //ProductCategory productCategory = new ProductCategory();
-                        //productCategory.setId(1);
-                        //product.setProductCategory(productCategory);
-
-                        //ProductSize productSize = new ProductSize();
-                        //productSize.setId(1);
-                        //product.setProductSize(productSize);
-
-                        //ProductType productType = new ProductType();
-                        //productType.setId(1);
-                        //product.setProductType(productType);
 
                         //convert date related fields here
                         Calendar c = Calendar.getInstance();
@@ -189,29 +182,6 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             product.setAuctionEndDate(currentDate);
                         }
 
-                        //Location location = new Location();
-                        //location.setId(1);
-                        //product.setLocation(location);
-                        product.setLocationId(1);
-
-
-                        //Stay minStay = new Stay();
-                        //minStay.setId(1);
-                        //Stay maxStay = new Stay();
-                        //maxStay.setId(1);
-                        //product.setMinStay(minStay);
-                        //product.setMaxStay(maxStay);
-
-                        //Smoking smoking = new Smoking();
-                        //smoking.setId(1);
-                        //Occupation occupation = new Occupation();
-                        //occupation.setId(1);
-                        //Pet pet = new Pet();
-                        //pet.setId(1);
-                        //product.setSmoking(smoking);
-                        //product.setOccupation(occupation);
-                        //product.setPet(pet);
-
                         //from apk, we are allowing to upload one image
                         if(product.getId() == 0)
                         {
@@ -227,51 +197,73 @@ public class CreateAdvertStep8 extends AppCompatActivity
                             }
                         }
 
+                        DTOProduct dtoProduct = new DTOProduct();
+                        dtoProduct.setEntityProduct(product);
 
                         GsonBuilder gsonBuilder = new GsonBuilder();
                         Gson gson = gsonBuilder.create();
-                        productString = gson.toJson(product);
+                        String dtoProductString = gson.toJson(dtoProduct);
+                        System.out.println(dtoProductString);
 
                         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
                         if(product.getId() == 0)
                         {
                             packetHeader.setAction(ACTION.ADD_PRODUCT_INFO);
+                            packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
                         }
                         else
                         {
                             packetHeader.setAction(ACTION.UPDATE_PRODUCT_INFO);
+                            packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
                         }
 
                         progressBarDialog.show();
 
-                        packetHeader.setRequestType(REQUEST_TYPE.UPDATE);
+
                         packetHeader.setSessionId(session.getSessionId());
-                        new BackgroundWork().execute(packetHeader, productString, new Handler(){
+                        new BackgroundWork().execute(packetHeader, dtoProductString, new Handler(){
                             @Override
                             public void handleMessage(Message msg) {
                                 progressBarDialog.dismiss();
                                 EntityProduct responseProduct = null;
                                 ClientResponse clientResponse = new ClientResponse();
                                 String stringClientResponse = null;
+                                Gson gson = new Gson();
                                 if(msg != null && msg.obj != null)
                                 {
                                     stringClientResponse = (String)msg.obj;
                                 }
                                 if(stringClientResponse != null)
                                 {
-                                    Gson gson = new Gson();
+
                                     clientResponse = gson.fromJson(stringClientResponse, ClientResponse.class);
                                 }
                                 if(clientResponse != null && clientResponse.isSuccess())
                                 {
                                     Toast.makeText(getApplicationContext(), clientResponse.getMessage(), Toast.LENGTH_LONG).show();
                                     //go to ad details page instead of manageAdvertDashboard page
-                                    responseProduct = (EntityProduct) clientResponse.getResult();
-                                    if(responseProduct != null && responseProduct.getId() > 0)
+                                    if(product.getId() == 0)
                                     {
-                                        progressBarDialog.show();
-                                        fetchProductInfo(responseProduct.getId());
+                                        try
+                                        {
+                                            JSONObject obj = new JSONObject(stringClientResponse);
+                                            responseProduct = gson.fromJson(obj.get("result").toString(), EntityProduct.class);
+                                            if(responseProduct == null || responseProduct.getId() == 0)
+                                            {
+                                                Toast.makeText(getApplicationContext(),"Unable to process your request.", Toast.LENGTH_LONG).show();
+                                                return;
+
+                                            }
+                                            product.setId(responseProduct.getId());
+                                        }
+                                        catch(Exception ex)
+                                        {
+                                            Toast.makeText(getApplicationContext(),"Unable to process your request.", Toast.LENGTH_LONG).show();
+                                            return;
+                                        }
                                     }
+                                    progressBarDialog.show();
+                                    fetchProductInfo(product.getId());
                                 }
                                 else if(clientResponse != null && !clientResponse.isSuccess())
                                 {
@@ -306,29 +298,38 @@ public class CreateAdvertStep8 extends AppCompatActivity
             public void handleMessage(Message msg) {
                 try
                 {
-                    EntityProduct responseProduct = null;
+                    DTOProduct responseProduct = null;
                     ClientResponse clientResponse = new ClientResponse();
                     String stringClientResponse = null;
+                    Gson gson = new Gson();
                     if(msg != null && msg.obj != null)
                     {
                         stringClientResponse = (String)msg.obj;
                     }
                     if(stringClientResponse != null)
                     {
-                        Gson gson = new Gson();
+
                         clientResponse = gson.fromJson(stringClientResponse, ClientResponse.class);
                     }
                     if(clientResponse != null && clientResponse.isSuccess())
                     {
-                        responseProduct = (EntityProduct)clientResponse.getResult();
-                        GsonBuilder gsonBuilder = new GsonBuilder();
-                        Gson gson2 = gsonBuilder.create();
-                        String productString = gson2.toJson(responseProduct);
-
-                        Intent my_advert_property_show_details_intent = new Intent(CreateAdvertStep8.this, ShowAdvertProductDetails.class);
-                        my_advert_property_show_details_intent.putExtra("productString", productString);
-                        my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
-                        startActivity(my_advert_property_show_details_intent);
+                        try
+                        {
+                            JSONObject obj = new JSONObject(stringClientResponse);
+                            responseProduct = gson.fromJson(obj.get("result").toString(), DTOProduct.class);
+                            if(responseProduct == null || responseProduct.getEntityProduct() == null || responseProduct.getEntityProduct().getId() == 0)
+                            {
+                                return;
+                            }
+                            Intent my_advert_property_show_details_intent = new Intent(CreateAdvertStep8.this, ShowAdvertProductDetails.class);
+                            my_advert_property_show_details_intent.putExtra("productString", obj.get("result").toString());
+                            my_advert_property_show_details_intent.putExtra("adIdentity", Constants.MY_AD_IDENTITY);
+                            startActivity(my_advert_property_show_details_intent);
+                        }
+                        catch(Exception ex)
+                        {
+                            return;
+                        }
                     }
                     else
                     {

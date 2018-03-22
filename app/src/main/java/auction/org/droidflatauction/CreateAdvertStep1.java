@@ -97,7 +97,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
             else
             {
                 product.setImg("a.jpg");
-                fetchProductCategoryList();
+                fetchProductTypeList();
             }
         }
         catch(Exception ex)
@@ -190,8 +190,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                             String[] bidStartToArray = bidStartTo.split("-");
                             product.setAuctionEndDate(bidStartToArray[2]+"-"+bidStartToArray[1]+"-"+bidStartToArray[0]);
                         }
-
-                        fetchProductCategoryList();
+                        fetchProductTypeList();
                     }
                     else
                     {
@@ -226,13 +225,13 @@ public class CreateAdvertStep1 extends AppCompatActivity
     }
 
     /***
-     * this method will fetch product category list from the server
-    * */
-    public void fetchProductCategoryList()
+     * this method will fetch product type list from the server
+     * */
+    public void fetchProductTypeList()
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_PRODUCT_CATEGORY_LIST);
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_TYPE_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
@@ -247,6 +246,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 }
                 if(clientListResponseString != null)
                 {
+
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
@@ -254,8 +254,8 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     try
                     {
                         JSONObject obj = new JSONObject(clientListResponseString);
-                        productCategoryList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductCategory>>(){}.getType());
-                        if(productCategoryList == null)
+                        productTypeList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductType>>(){}.getType());
+                        if(productTypeList == null)
                         {
                             progressBarDialog.dismiss();
                             return;
@@ -267,43 +267,40 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         return;
                     }
 
-                    int selectedCategoryPosition = 0;
-
-                    //setting default product category
-                    if(product != null && product.getId() == 0 && product.getCategoryId() == 0 && productCategoryList.size() > 0)
+                    int selectedTypePosition = 0;
+                    if(product != null && product.getId() == 0 && product.getTypeId() == 0 && productTypeList.size() > 0)
                     {
-                        product.setCategoryId(productCategoryList.get(0).getId());
-                        product.setCategoryTitle(productCategoryList.get(0).getTitle());
+                        product.setTypeId(productTypeList.get(0).getId());
+                        product.setTypeTitle(productTypeList.get(0).getTitle());
                     }
-                    //setting product selected category
                     else
                     {
-                        int categoryCounter = productCategoryList.size();
-                        for(int counter = 0; counter < categoryCounter; counter++ )
+                        int typeCounter = productTypeList.size();
+                        for(int counter = 0; counter < typeCounter; counter++ )
                         {
-                            if(productCategoryList.get(counter).getId() == product.getCategoryId())
+                            if(productTypeList.get(counter).getId() == product.getTypeId())
                             {
-                                selectedProductCategory = productCategoryList.get(counter);
-                                selectedCategoryPosition = counter;
+                                selectedProductType = productTypeList.get(counter);
+                                selectedTypePosition = counter;
                                 break;
                             }
                         }
                     }
 
-                    productCategoryAdapter = new ArrayAdapter<EntityProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
-                    productCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    productCategorySpinner = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
-                    productCategorySpinner.setAdapter(productCategoryAdapter);
-                    if(selectedProductCategory != null)
+                    productTypeAdapter = new ArrayAdapter<EntityProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
+                    productTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    productTypeSpinner = (Spinner) findViewById(R.id.i_have_for_rent_spinner);
+                    productTypeSpinner.setAdapter(productTypeAdapter);
+                    if(selectedProductType != null)
                     {
-                        productCategorySpinner.setSelection(selectedCategoryPosition);
+                        productTypeSpinner.setSelection(selectedTypePosition);
                     }
-                    productCategorySpinner.setOnItemSelectedListener(
+                    productTypeSpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedProductCategory = (EntityProductCategory)productCategorySpinner.getSelectedItem();
+                                    selectedProductType = (EntityProductType) productTypeSpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -316,14 +313,13 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 }
                 else
                 {
-                    fetchProductCategoryCounter++;
-                    if (fetchProductCategoryCounter <= 5)
+                    fetchProductTypeCounter++;
+                    if (fetchProductTypeCounter <= 5)
                     {
-                        fetchProductCategoryList();
+                        fetchProductTypeList();
                     }
                     else
                     {
-                        //display pop up with error message
                         progressBarDialog.dismiss();
                     }
                 }
@@ -416,7 +412,7 @@ public class CreateAdvertStep1 extends AppCompatActivity
                                 }
                             }
                     );
-                    fetchProductTypeList();
+                    fetchProductCategoryList();
                 }
                 else
                 {
@@ -436,13 +432,13 @@ public class CreateAdvertStep1 extends AppCompatActivity
     }
 
     /***
-     * this method will fetch product type list from the server
+     * this method will fetch product category list from the server
      * */
-    public void fetchProductTypeList()
+    public void fetchProductCategoryList()
     {
         String sessionId = session.getSessionId();
         org.bdlions.transport.packet.PacketHeaderImpl packetHeader = new org.bdlions.transport.packet.PacketHeaderImpl();
-        packetHeader.setAction(ACTION.FETCH_PRODUCT_TYPE_LIST);
+        packetHeader.setAction(ACTION.FETCH_PRODUCT_CATEGORY_LIST);
         packetHeader.setRequestType(REQUEST_TYPE.REQUEST);
         packetHeader.setSessionId(sessionId);
         new BackgroundWork().execute(packetHeader, "{}", new Handler(){
@@ -457,7 +453,6 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 }
                 if(clientListResponseString != null)
                 {
-
                     clientListResponse = gson.fromJson(clientListResponseString, ClientListResponse.class);
                 }
                 if(clientListResponse != null && clientListResponse.isSuccess() && clientListResponse.getList() != null )
@@ -465,8 +460,8 @@ public class CreateAdvertStep1 extends AppCompatActivity
                     try
                     {
                         JSONObject obj = new JSONObject(clientListResponseString);
-                        productTypeList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductType>>(){}.getType());
-                        if(productTypeList == null)
+                        productCategoryList = gson.fromJson(obj.get("list").toString(), new TypeToken<List<EntityProductCategory>>(){}.getType());
+                        if(productCategoryList == null)
                         {
                             progressBarDialog.dismiss();
                             return;
@@ -478,40 +473,43 @@ public class CreateAdvertStep1 extends AppCompatActivity
                         return;
                     }
 
-                    int selectedTypePosition = 0;
-                    if(product != null && product.getId() == 0 && product.getTypeId() == 0 && productTypeList.size() > 0)
+                    int selectedCategoryPosition = 0;
+
+                    //setting default product category
+                    if(product != null && product.getId() == 0 && product.getCategoryId() == 0 && productCategoryList.size() > 0)
                     {
-                        product.setTypeId(productTypeList.get(0).getId());
-                        product.setTypeTitle(productTypeList.get(0).getTitle());
+                        product.setCategoryId(productCategoryList.get(0).getId());
+                        product.setCategoryTitle(productCategoryList.get(0).getTitle());
                     }
+                    //setting product selected category
                     else
                     {
-                        int typeCounter = productTypeList.size();
-                        for(int counter = 0; counter < typeCounter; counter++ )
+                        int categoryCounter = productCategoryList.size();
+                        for(int counter = 0; counter < categoryCounter; counter++ )
                         {
-                            if(productTypeList.get(counter).getId() == product.getTypeId())
+                            if(productCategoryList.get(counter).getId() == product.getCategoryId())
                             {
-                                selectedProductType = productTypeList.get(counter);
-                                selectedTypePosition = counter;
+                                selectedProductCategory = productCategoryList.get(counter);
+                                selectedCategoryPosition = counter;
                                 break;
                             }
                         }
                     }
 
-                    productTypeAdapter = new ArrayAdapter<EntityProductType>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productTypeList);
-                    productTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    productTypeSpinner = (Spinner) findViewById(R.id.type_of_property_spinner);
-                    productTypeSpinner.setAdapter(productTypeAdapter);
-                    if(selectedProductType != null)
+                    productCategoryAdapter = new ArrayAdapter<EntityProductCategory>( CreateAdvertStep1.this, android.R.layout.simple_spinner_item, productCategoryList);
+                    productCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    productCategorySpinner = (Spinner) findViewById(R.id.type_of_property_spinner);
+                    productCategorySpinner.setAdapter(productCategoryAdapter);
+                    if(selectedProductCategory != null)
                     {
-                        productTypeSpinner.setSelection(selectedTypePosition);
+                        productCategorySpinner.setSelection(selectedCategoryPosition);
                     }
-                    productTypeSpinner.setOnItemSelectedListener(
+                    productCategorySpinner.setOnItemSelectedListener(
                             new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> arg0, View arg1,int arg2, long arg3)
                                 {
-                                    selectedProductType = (EntityProductType) productTypeSpinner.getSelectedItem();
+                                    selectedProductCategory = (EntityProductCategory)productCategorySpinner.getSelectedItem();
                                 }
 
                                 @Override
@@ -524,19 +522,22 @@ public class CreateAdvertStep1 extends AppCompatActivity
                 }
                 else
                 {
-                    fetchProductTypeCounter++;
-                    if (fetchProductTypeCounter <= 5)
+                    fetchProductCategoryCounter++;
+                    if (fetchProductCategoryCounter <= 5)
                     {
-                        fetchProductTypeList();
+                        fetchProductCategoryList();
                     }
                     else
                     {
+                        //display pop up with error message
                         progressBarDialog.dismiss();
                     }
                 }
             }
         });
     }
+
+
 
 
 

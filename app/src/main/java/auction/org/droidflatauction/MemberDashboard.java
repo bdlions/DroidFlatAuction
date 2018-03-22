@@ -17,9 +17,6 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import org.bdlions.auction.entity.EntityUser;
-
 import com.bdlions.dto.response.ClientResponse;
 import com.bdlions.dto.response.SignInResponse;
 import com.bdlions.util.ACTION;
